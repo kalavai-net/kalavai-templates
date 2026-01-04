@@ -1,0 +1,212 @@
+# example: https://raw.githubusercontent.com/ray-project/ray/master/doc/source/cluster/kubernetes/configs/ray-cluster.gpu.yaml
+apiVersion: ray.io/v1
+kind: RayCluster
+metadata:
+  name: {{ .Release.Name }}-raycluster
+  labels:
+    # must have this label
+    kalavai.job.name: {{ .Release.Name }}
+spec:
+  # gcsFaultToleranceOptions:
+  #   # fault tolerance https://docs.ray.io/en/latest/cluster/kubernetes/user-guides/kuberay-gcs-ft.html
+  #   # example: https://github.com/ray-project/kuberay/blob/master/ray-operator/config/samples/ray-cluster.external-redis.yaml
+  #   {{ if .Values.externalRedisUrl }}
+  #   redisAddress: "{{.Values.externalRedisUrl}}"
+  #   {{ else }}
+  #   redisAddress: "{{ .Release.Name }}-redis-service:6379"
+  #   {{ end }}
+  #   redisPassword: # <- Add redis password from a Kubernetes secret.
+  #     valueFrom:
+  #       secretKeyRef:
+  #         name: {{ .Release.Name }}-secret
+  #         key: redis_password
+  rayVersion: "{{ .Values.rayVersion }}"
+  autoscalerOptions:
+    upscalingMode: {{ .Values.upscalingMode }}
+    idleTimeoutSeconds: {{ .Values.idleTimeoutSeconds }}
+  enableInTreeAutoscaling: true
+  headGroupSpec:
+    serviceType: ClusterIP
+    rayStartParams:
+      dashboard-host: "0.0.0.0"
+      num-cpus: "0" # avoid workload on head
+      num-gpus: "0"
+    template: # Pod template
+      metadata:
+        labels:
+          kalavai.job.name: {{ .Release.Name }}
+          role: leader
+      spec: # Pod spec
+        terminationGracePeriodSeconds: 60
+        priorityClassName: "kalavai-system-priority"
+      {{ if .Values.system.nodeSelectors }}
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+            {{ if eq .Values.system.nodeSelectorsOps "OR" }}
+              {{ range $k, $v := .Values.system.nodeSelectors }}
+              - matchExpressions:
+                - key: {{$k}}
+                  operator: In
+                  values:
+                  {{ range $v }}
+                  - "{{ . }}"
+                  {{ end }}
+              {{ end }}
+            {{ else }}
+              - matchExpressions:
+              {{ range $k, $v := .Values.system.nodeSelectors }}
+                {{ range $v }}
+                - key: {{ $k }}
+                  operator: In
+                  values:
+                  - "{{ . }}"
+                {{ end }}
+              {{ end }}
+            {{ end }}
+        {{ end }}
+        restartPolicy: Always
+        containers:
+        - name: ray-head
+          image: docker.io/rayproject/ray:{{ .Values.rayVersion }}-py{{ .Values.pythonVersion }}-cu{{ .Values.cudaVersion }}
+          imagePullPolicy: IfNotPresent
+          resources:
+            # proportional to the size of the cluster (recommended 8CPU / 32GB RAM)
+            limits:
+              cpu: 4
+              memory: 8Gi
+            requests:
+              cpu: 2
+              memory: 4Gi
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh","-c","ray stop"]
+          ports:
+          - containerPort: 6379
+            name: gcs
+          - containerPort: 8265
+            name: dashboard
+          - containerPort: 10001
+            name: client
+          - containerPort: 8000
+            name: serve
+  workerGroupSpecs:
+  # NVIDIA group of GPUs
+  - groupName: nvidia-group
+    replicas: {{ .Values.minNvidiaWorkers}}
+    minReplicas: {{ .Values.minNvidiaWorkers}}
+    maxReplicas: {{ .Values.maxNvidiaWorkers}}
+    rayStartParams: 
+      num-gpus: "1"
+    template:
+      metadata:
+        labels:
+          kalavai.job.name: {{ .Release.Name }}
+      spec:
+        #restartPolicy: Never # for testing
+        terminationGracePeriodSeconds: 60
+        priorityClassName: {{ .Values.system.jobPriority }}
+        runtimeClassName: nvidia
+      {{ if .Values.system.nodeSelectors }}
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+            {{ if eq .Values.system.nodeSelectorsOps "OR" }}
+              {{ range $k, $v := .Values.system.nodeSelectors }}
+              - matchExpressions:
+                - key: {{$k}}
+                  operator: In
+                  values:
+                  {{ range $v }}
+                  - "{{ . }}"
+                  {{ end }}
+              {{ end }}
+            {{ else }}
+              - matchExpressions:
+              {{ range $k, $v := .Values.system.nodeSelectors }}
+                {{ range $v }}
+                - key: {{ $k }}
+                  operator: In
+                  values:
+                  - "{{ . }}"
+                {{ end }}
+              {{ end }}
+            {{ end }}
+        {{ end }}
+        containers:
+        - name: ml-work-group
+          image: docker.io/rayproject/ray:{{ .Values.rayVersion }}-py{{ .Values.pythonVersion }}-cu{{ .Values.cudaVersion }}
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+              nvidia.com/gpumem-percentage: {{ .Values.cudaGpuMemPercentage }}
+              cpu: {{ .Values.cpus }}
+              memory: {{ .Values.memory }}Gi
+            requests:
+              nvidia.com/gpu: 1
+              cpu: {{ .Values.cpus }}
+              memory: {{ .Values.memory }}Gi
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh","-c","ray stop"]
+  # AMD group of GPUs
+  - groupName: amd-group
+    replicas: {{ .Values.minAmdWorkers }}
+    minReplicas: {{ .Values.minAmdWorkers }}
+    maxReplicas: {{ .Values.maxAmdWorkers }}
+    rayStartParams: 
+      num-gpus: "1"
+    template:
+      metadata:
+        labels:
+          kalavai.job.name: {{ .Release.Name }}
+      spec:
+      {{ if .Values.system.nodeSelectors }}
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+            {{ if eq .Values.system.nodeSelectorsOps "OR" }}
+              {{ range $k, $v := .Values.system.nodeSelectors }}
+              - matchExpressions:
+                - key: {{$k}}
+                  operator: In
+                  values:
+                  {{ range $v }}
+                  - "{{ . }}"
+                  {{ end }}
+              {{ end }}
+            {{ else }}
+              - matchExpressions:
+              {{ range $k, $v := .Values.system.nodeSelectors }}
+                {{ range $v }}
+                - key: {{ $k }}
+                  operator: In
+                  values:
+                  - "{{ . }}"
+                {{ end }}
+              {{ end }}
+            {{ end }}
+        {{ end }}
+        containers:
+        - name: ml-work-group
+          image: docker.io/rayproject/ray:{{ .Values.rayVersion}}-py{{ .Values.pythonVersion }}-{{ .Values.cudaVersion}}
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              amd.com/gpu: 1
+              cpu: {{ .Values.cpus }}
+              memory: {{ .Values.memory }}Gi
+            requests:
+              amd.com/gpu: 1
+              cpu: {{ .Values.cpus }}
+              memory: {{ .Values.memory }}Gi
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh","-c","ray stop"]

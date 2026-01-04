@@ -1,0 +1,204 @@
+{
+   "$schema": "http://json-schema.org/draft-07/schema#",
+   "type": "object",
+   "properties": {
+      "vllmVersion": {
+         "description": "vLLM engine version to deploy (v0.11.2, v0.12.0, v0.13.0)",
+         "type": "string",
+         "enum": ["v0.11.2", "v0.12.0", "v0.13.0"]
+      },
+      "gpuBackend": {
+         "description": "Use 'cuda' (nvidia cards) or 'rocm' (AMD cards) backend",
+         "type": "string",
+         "enum": ["cuda", "rocm"]
+      },
+      "modelNameOverride": {
+         "description": "Model name to use (defaults to model_id) during inference",
+         "type": [
+            "string",
+            "null"
+         ]
+      },
+      "workingMemory": {
+         "description": "Temporary storage to use to cache model weights (in GB), should be big enough to hold the model weights. All workers should have enough free disk to accommodate the weights.",
+         "type": "integer"
+      },
+      "workers": {
+         "description": "Number of workers, corresponding to the number of nodes (or machines) that will be used to deploy the model",
+         "type": "integer"
+      },
+      "modelId": {
+         "description": "Huggingface model id to deploy",
+         "type": [
+            "integer",
+            "null"
+         ]
+      },
+      "loraModules": {
+         "description": "LoRa adaptor(s) to load; semi-colon separated list of huggingface repos of the lora adaptors to load",
+         "type": [
+            "string",
+            "null"
+         ]
+      },
+      "hfToken": {
+         "description": "Huggingface access token, only required to load gated model weights",
+         "type": [
+            "integer",
+            "null"
+         ]
+      },
+      "cpus": {
+         "description": "CPUs to be used per single worker (final one = cpus * workers). Workers should have these many CPUs available.",
+         "type": "integer"
+      },
+      "gpus": {
+         "description": "GPUs to be used per single worker (final one = gpus * workers). Workers should have these many GPUs available.",
+         "type": "integer"
+      },
+      "memory": {
+         "description": "RAM memory to be used per single worker (final one = memory * workers). Workers should have these much RAM available.",
+         "type": "integer"
+      },
+      "cudaGpuMemPercentage": {
+         "description": "Maximum memory fraction allowed to be used from the GPU vRAM.",
+         "type": "integer"
+      },
+      "toolCallParser": {
+         "description": "Tool call parser to use. https://docs.vllm.ai/en/latest/features/tool_calling.html#automatic-function-calling",
+         "type": "string",
+         "enum": ["pythonic", "gigachat3", "olmo3", "qwen3_xml", "glm45", "longcat", "hunyuan_a13b", "kimi_k2", "deepseek_v31", "minimax", "hermes", "xlam", "jamba", "internlm", "granite-20b-fc", "granite", "llama4_pythonic", "llama3_json", "mistral"]
+      },
+      "templateUrl": {
+         "description": "URL of a publicly available template jinja file to use for chat completions (https://docs.vllm.ai/en/v0.8.1/serving/openai_compatible_server.html#chat-template). Some here: https://github.com/vllm-project/vllm/tree/main/examples",
+         "type": [
+            "string",
+            "null"
+         ]
+      },
+      "lmcacheMaxLocalCpuSize": {
+         "description": "LMCache: Maximum CPU cache size in GB. See https://docs.lmcache.ai/api_reference/configurations.html",
+         "type": "integer"
+      },
+      "lmcacheChunkSize": {
+         "description": "LMCache: chunk size. See https://docs.lmcache.ai/api_reference/configurations.html",
+         "type": "integer"
+      },
+      "lmcacheLocalCpu": {
+         "description": "LMCache: whether or not to use CPU offloading. See https://docs.lmcache.ai/api_reference/configurations.html",
+         "type": "boolean"
+      },
+      "lmcacheMaxLocalDiskSize": {
+         "description": "LMCache: Maximum disk cache size in GB. See https://docs.lmcache.ai/api_reference/configurations.html",
+         "type": "integer"
+      },
+      "lmcacheLocalDisk": {
+         "description": "LMCache: Path to local disk cache. Format: \u201cfile:///path/to/cache\u201d or null. See https://docs.lmcache.ai/api_reference/configurations.html",
+         "type": [
+            "integer",
+            "null"
+         ]
+      },
+      "lmcacheRemoteUrl": {
+         "description": "LMCache: Remote storage URL. Format: \u201cprotocol://host:port\u201d or null. See https://docs.lmcache.ai/api_reference/configurations.html",
+         "type": [
+            "integer",
+            "null"
+         ]
+      },
+      "extra": {
+         "description": "Extra parameters to pass to the vLLM server. See https://docs.vllm.ai/en/stable/configuration/engine_args.html",
+         "type": "string"
+      },
+      "nodeport": {
+         "description": "Specify the node port for the service that exposes the job",
+         "type": [
+            "string",
+            "null"
+         ]
+      },
+      "litellmBaseUrl": {
+         "description": "Base URL of the LiteLLM service (central model registry). This can be an external LiteLLM instance or an internal deployment in the pool (default)",
+         "type": "string"
+      },
+      "litellmKey": {
+         "description": "Master key of the LiteLLM service (central model registry)",
+         "type": [
+            "string",
+            "null"
+         ]
+      },
+      "litellmAccessGroup": {
+         "description": "What access group to assign the model to (ringfencing)",
+         "type": [
+            "string",
+            "null"
+         ]
+      },
+      "litellmKalavaiExtras": {
+         "description": "Extra information to store in the LiteLLM model registration (must be a dictionary)",
+         "type": "string"
+      },
+      "lagoUrl": {
+         "description": "Base URL of the Lago service (payment system)",
+         "type": [
+            "string",
+            "null"
+         ]
+      },
+      "lagoApiKey": {
+         "description": "Master key of the Lago service",
+         "type": [
+            "string",
+            "null"
+         ]
+      },
+      "lagoExternalSubscriptionId": {
+         "description": "ID of the Lago subscription to send events to",
+         "type": [
+            "string",
+            "null"
+         ]
+      },
+      "lagoEventCode": {
+         "description": "Event code to use when submitting event to Lago payment API",
+         "type": [
+            "string",
+            "null"
+         ]
+      },
+      "lagoEventInterval": {
+         "description": "Interval in seconds to send the lago event",
+         "type": [
+            "string",
+            "null"
+         ]
+      },
+      "system": {
+         "properties": {
+            "jobPriority": {
+               "type": "string",
+               "description": "PriorityClassName to use for the deployment"
+            },
+            "nodeSelectors": {
+               "type": [
+                  "object",
+                  "null"
+               ],
+               "description": "target specific devices. Expected format -> key: value pairs, where 'value' is a list of elements"
+            },
+            "nodeSelectorsOps": {
+               "type": "string",
+               "enum": ["OR", "AND"],
+               "description": "Logical operation to use to apply to nodeSelectors. Accepted values: 'OR', 'AND'"
+            }
+         }
+      }
+   },
+   "required": [
+      "workingMemory",
+      "workers",
+      "modelId",
+      "hfToken"
+   ]
+}

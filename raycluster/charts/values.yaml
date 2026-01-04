@@ -1,0 +1,18 @@
+cpus: 2
+cudaGpuMemPercentage: 100
+cudaVersion: '128'
+externalRedisUrl: null
+idleTimeoutSeconds: 60
+maxAmdWorkers: 0
+maxNvidiaWorkers: 1
+memory: 8
+minAmdWorkers: 0
+minNvidiaWorkers: 0
+pythonVersion: '312'
+rayVersion: 2.49.0
+redisPassword: changeme
+system:
+  jobPriority: user-spot-priority
+  nodeSelectors: null
+  nodeSelectorsOps: OR
+upscalingMode: Default

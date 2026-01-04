@@ -1,0 +1,63 @@
+{{ if .Values.externalRedisUrl }}
+apiVersion: v1
+stringData:
+  redis_password: {{ .Values.redisPassword}}
+kind: Secret
+metadata:
+  name: {{ .Release.Name }}-secret
+  labels:
+    kalavai.job.name: {{ .Release.Name }}
+type: Opaque
+immutable: true
+---
+# Redis for fault tolerance
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-redis-service
+  labels:
+    app: {{ .Release.Name }}-redis
+    kalavai.job.name: {{ .Release.Name }}
+spec:
+  type: ClusterIP
+  ports:
+  - name: redis
+    port: 6379
+  selector:
+    app: {{ .Release.Name }}-redis
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-redis
+  labels:
+    app: {{ .Release.Name }}-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-redis
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-redis
+        kalavai.job.name: {{ .Release.Name }}
+    spec:
+      priorityClassName: "kalavai-system-priority"
+      containers:
+      - name: redis
+        image: redis:7.4.0
+        command:
+        - "sh"
+        - "-c"
+        - |
+          redis-server --requirepass $REDIS_PASSWORD
+        ports:
+        - containerPort: 6379
+        env:
+        - name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name }}-secret
+                key: redis_password
+{{ end }}

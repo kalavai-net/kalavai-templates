@@ -1,0 +1,91 @@
+{
+   "$schema": "http://json-schema.org/draft-07/schema#",
+   "type": "object",
+   "properties": {
+      "minNvidiaWorkers": {
+         "description": "Minimum NVIDIA GPU workers to always have running (can be 0). 1 worker == 1 GPU",
+         "type": "integer"
+      },
+      "maxNvidiaWorkers": {
+         "description": "Maximum target NVIDIA GPU workers for autoscaling. 1 worker == 1 GPU",
+         "type": "integer"
+      },
+      "minAmdWorkers": {
+         "description": "Minimum AMD GPU workers to always have running (can be 0). 1 worker == 1 GPU",
+         "type": "integer"
+      },
+      "maxAmdWorkers": {
+         "description": "Maximum target AMD GPU workers for autoscaling. 1 worker == 1 GPU",
+         "type": "integer"
+      },
+      "cpus": {
+         "description": "CPUs to be allocated per WORKER (final one = cpus * workers).",
+         "type": "integer"
+      },
+      "memory": {
+         "description": "RAM memory to be allocated per WORKER (final one = memory * workers).",
+         "type": "integer"
+      },
+      "cudaGpuMemPercentage": {
+         "description": "Maximum memory fraction allowed to be used from the GPU vRAM.",
+         "type": "integer"
+      },
+      "rayVersion": {
+         "description": "Ray PIP version to use in the cluster (e.g. 2.49.0)",
+         "type": "string"
+      },
+      "pythonVersion": {
+         "description": "Python version to use in the cluster (39, 310, 311, 312)",
+         "type": "string",
+         "enum": ["39", "310", "311", "312"]
+      },
+      "cudaVersion": {
+         "description": "CUDA version to use in the cluster (117 to 128)",
+         "type": "string",
+         "enum": ["117", "118", "121", "123", "124", "125", "126", "128"]
+      },
+      "upscalingMode": {
+         "description": "Defines autoscale mode. One of: Conservative, Default or Aggressive. https://docs.ray.io/en/latest/cluster/kubernetes/user-guides/configuring-autoscaling.html#scale-up-and-scale-down-speed",
+         "type": "string"
+      },
+      "idleTimeoutSeconds": {
+         "description": "Defines the waiting time in seconds before scaling down an idle worker pod. Aggressive. https://docs.ray.io/en/latest/cluster/kubernetes/user-guides/configuring-autoscaling.html#scale-up-and-scale-down-speed",
+         "type": "integer"
+      },
+      "externalRedisUrl": {
+         "description": "External Redis DB for Ray fault tolerance. If blank, a local Redis instance will be deployed. https://docs.ray.io/en/latest/cluster/kubernetes/user-guides/kuberay-gcs-ft.html",
+         "type": [
+            "string",
+            "null"
+         ]
+      },
+      "redisPassword": {
+         "description": "Admin password for the (external or internal) Redis DB",
+         "type": "string"
+      },
+      "system": {
+         "properties": {
+            "jobPriority": {
+               "type": "string",
+               "description": "PriorityClassName to use for the deployment"
+            },
+            "nodeSelectors": {
+               "type": [
+                  "object",
+                  "null"
+               ],
+               "description": "target specific devices. Expected format -> key: value pairs, where 'value' is a list of elements"
+            },
+            "nodeSelectorsOps": {
+               "type": "string",
+               "enum": ["OR", "AND"],
+               "description": "Logical operation to use to apply to nodeSelectors. Accepted values: 'OR', 'AND'"
+            }
+         }
+      }
+   },
+   "required": [
+      "maxNvidiaWorkers",
+      "memory"
+   ]
+}

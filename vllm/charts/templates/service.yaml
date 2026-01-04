@@ -1,0 +1,23 @@
+# deploy NodePort to expose model (if not using LiteLLM registration)
+{{ if not .Values.litellmKey }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-service
+  labels:
+    # must have this!
+    kalavai.job.name: {{ .Release.Name }}
+spec:
+  type: NodePort
+  selector:
+    role: leader
+    kalavai.job.name: {{ .Release.Name }}
+  ports:
+    - name: main
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
+    {{ if .Values.nodeport }}
+      nodePort: {{ .Values.nodeport }}
+    {{ end }}
+{{ end }}

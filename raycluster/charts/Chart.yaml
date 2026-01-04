@@ -1,0 +1,14 @@
+apiVersion: v2
+appVersion: 0.0.1
+description: An open source framework to build and scale your ML and Python applications
+  easily
+icon: https://github.com/ray-project/ray/raw/master/doc/source/images/ray_header_logo.png
+kubeVersion: '>= 1.25.0'
+maintainers:
+- email: carlos@kalavai.net
+  name: Carlos Fernandez Musoles
+  url: https://kalavai.net
+name: ray-cluster
+sources:
+- https://docs.ray.io/en/latest
+version: 0.0.1

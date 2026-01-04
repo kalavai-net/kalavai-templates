@@ -1,0 +1,34 @@
+FROM kalavai/ray-base:latest AS base
+
+FROM rayproject/ray:2.51.0.2f4360-extra-py312-cu124
+
+ARG PIP_VLLM_VERSION=0.11.2
+WORKDIR /home/ray/workspace
+
+# copy over ray scripts
+COPY --from=base /home/ray/workspace/ .
+
+RUN sudo apt update && sudo apt install bc wget ffmpeg curl -y && \
+    sudo rm -rf /var/lib/apt/lists/*
+
+# install dependencies
+COPY common_requirements.txt .
+
+#pip3 install lmcache --prefer-binary --no-cache-dir && \
+# reinstalling Ray after vllm so we pin the version and submodules (otherwise vllm brings its own)
+#RUN python3 -m venv /home/ray/workspace/env
+#RUN . /home/ray/workspace/env/bin/activate && \
+RUN pip install -r common_requirements.txt --no-cache-dir
+RUN pip install vllm==$PIP_VLLM_VERSION --no-cache-dir
+#RUN pip install -U vllm --pre --extra-index-url https://wheels.vllm.ai/nightly
+    #pip install ray[serve-grpc,default]==2.43.0 --no-cache-dir
+
+# install torchdec https://github.com/QwenLM/Qwen2.5-VL?tab=readme-ov-file#installing-cuda-enabled-torchcodec 
+#pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118 --no-cache-dir && \
+#RUN . /home/ray/workspace/env/bin/activate && \
+RUN pip install torchcodec --index-url=https://download.pytorch.org/whl/cu124 --no-cache-dir
+
+COPY run_model.sh .
+RUN sudo chmod +x /home/ray/workspace/run_model.sh
+
+ENTRYPOINT [ "/bin/bash" ]

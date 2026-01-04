@@ -1,0 +1,13 @@
+apiVersion: v2
+appVersion: 0.0.1
+description: A high-throughput and memory-efficient inference and serving engine for LLMs
+icon: https://docs.vllm.ai/en/latest/assets/logos/vllm-logo-only-light.ico
+kubeVersion: '>= 1.25.0'
+maintainers:
+- email: carlos@kalavai.net
+  name: Carlos Fernandez Musoles
+  url: https://kalavai.net
+name: vllm
+sources:
+- https://docs.vllm.ai/
+version: 0.0.1

@@ -1,0 +1,35 @@
+vllmVersion: v0.11.2
+cpus: 2
+cudaGpuMemPercentage: 100
+extra: --dtype float16 --enforce-eager
+gpuBackend: cuda
+gpus: 1
+hfToken: null
+lagoApiKey: null
+lagoEventCode: null
+lagoEventInterval: null
+lagoExternalSubscriptionId: null
+lagoUrl: null
+litellmAccessGroup: null
+litellmBaseUrl: http://litellm.default.svc.cluster.local:4000
+litellmKalavaiExtras: '{}'
+litellmKey: null
+lmcacheChunkSize: 256
+lmcacheLocalCpu: true
+lmcacheLocalDisk: null
+lmcacheMaxLocalCpuSize: 5.0
+lmcacheMaxLocalDiskSize: 0
+lmcacheRemoteUrl: null
+loraModules: null
+memory: 8
+modelId: null
+modelNameOverride: null
+nodeport: null
+system:
+  jobPriority: user-spot-priority
+  nodeSelectors: null
+  nodeSelectorsOps: OR
+templateUrl: null
+toolCallParser: llama3_json
+workers: 1
+workingMemory: 5

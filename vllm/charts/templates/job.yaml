@@ -1,0 +1,275 @@
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+  name: {{ .Release.Name}}
+  labels:
+    # must have this label
+    kalavai.job.name: {{ .Release.Name}}
+spec:
+  queue: default
+  priorityClassName: {{ .Values.system.jobPriority}}
+  schedulerName: volcano
+  plugins:
+    env: []
+    svc: ["--disable-network-policy=true"]
+  maxRetry: 100000
+  tasks:
+  - replicas: 1   # One ps pod specified
+    name: server
+    policies:
+    - event: PodEvicted
+      action: RestartJob
+    - event: PodFailed
+      action: RestartJob
+    - event: TaskCompleted
+      action: RestartJob
+    - event: Unknown
+      action: RestartJob
+    template: # Definition of the ps pod
+      metadata:
+        labels:
+          role: leader
+          kalavai.job.name: {{ .Release.Name}}
+      spec:
+        terminationGracePeriodSeconds: 60
+      {{ if eq .Values.gpuBackend "cuda" }}
+        runtimeClassName: nvidia
+      {{ end }}
+      {{ if .Values.system.nodeSelectors }}
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+            {{ if eq .Values.system.nodeSelectorsOps "OR" }}
+              {{ range $k, $v := .Values.system.nodeSelectors }}
+              - matchExpressions:
+                - key: {{$k}}
+                  operator: In
+                  values:
+                  {{ range $v }}
+                  - "{{ . }}"
+                  {{ end }}
+              {{ end }}
+            {{ else }}
+              - matchExpressions:
+              {{ range $k, $v := .Values.system.nodeSelectors }}
+                {{ range $v }}
+                - key: {{ $k }}
+                  operator: In
+                  values:
+                  - "{{ . }}"
+                {{ end }}
+              {{ end }}
+            {{ end }}
+        {{ end }}
+        containers:
+        - name: vllm-leader
+          image: docker.io/kalavai/ray-vllm-{{ .Values.gpuBackend}}:{{ .Values.vllmVersion }}
+          command:
+          - sh
+          - -c
+          - |
+            RAY_BACKEND_LOG_LEVEL=error /home/ray/workspace/ray_init.sh leader --ray_cluster_size={{ .Values.workers}} --ray_object_store_memory={{ mul .Values.memory 500000000}};
+            sleep 30;
+          {{ if eq .Values.gpuBackend "cuda" }}
+            nvidia-smi;
+          {{ else }}
+            rocm-smi;
+            python -c "import torch; print(torch.cuda.device_count(), torch.cuda.get_device_name(0))";
+          {{ end }}
+            ray status;
+            # Run model
+            echo "Total parallelism: { mul .Values.workers .Values.gpus}}";
+            /home/ray/workspace/run_model.sh \
+              --model_path="/home/ray/cache/{{ .Values.modelId }}" \
+              --model_id={{ .Values.modelId}} \
+              --model_name={{ .Values.modelNameOverride }} \
+              --extra='{{ .Values.extra }}' \
+              --template_url='{{ .Values.templateUrl }}' \
+              --tensor_parallel_size={{ .Values.gpus }} \
+              --pipeline_parallel_size={{ .Values.workers }} \
+              --tool_call_parser={{ .Values.toolCallParser }} \
+              --lora_modules="{{ .Values.loraModules }}";
+            exit 1
+          env:
+          - name: HF_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name}}-secret
+                key: hf_token
+          - name: LMCACHE_CHUNK_SIZE
+            value: "{{ .Values.lmcacheChunkSize}}"
+          - name: LMCACHE_LOCAL_CPU
+            value: "{{ .Values.lmcacheLocalCpu}}"
+          - name: LMCACHE_MAX_LOCAL_CPU_SIZE
+            value: "{{ .Values.lmcacheMaxLocalCpuSize}}"
+          - name: LMCACHE_MAX_LOCAL_DISK_SIZE
+            value: "{{ .Values.lmcacheMaxLocalDiskSize}}"
+          - name: LMCACHE_REMOTE_URL
+            value: {{ .Values.lmcacheRemoteUrl}}
+          - name: LMCACHE_LOCAL_DISK
+            value: {{ .Values.lmcacheLocalDisk}}
+          - name: VLLM_LOGGING_LEVEL
+            value: DEBUG
+          # - name: HSA_OVERRIDE_GFX_VERSION
+          #   value: "10.3.0"
+          ports:
+          - containerPort: 8080
+            name: model-port
+          - containerPort: 8265
+            name: dashboard-port
+          # this blocks internal traffic, which causes issues when tasks wait for each other
+          # readinessProbe:
+          #   httpGet:
+          #     path: /health
+          #     port: 8080
+          #   initialDelaySeconds: 5
+          #   periodSeconds: 10
+          resources:
+            requests:
+              cpu: {{ .Values.cpus}}
+              memory: {{ .Values.memory}}Gi
+            {{ if eq .Values.gpuBackend "cuda" }}
+              nvidia.com/gpu: {{ .Values.gpus}}
+            {{ else }}
+              amd.com/gpu: {{ .Values.gpus}}
+            {{ end }}
+              ephemeral-storage: {{ .Values.workingMemory}}Gi
+            limits:
+              cpu: {{ .Values.cpus}}
+              memory: {{ .Values.memory}}Gi
+            {{ if eq .Values.gpuBackend "cuda" }}
+              nvidia.com/gpu: {{ .Values.gpus}}
+              nvidia.com/gpumem-percentage: {{ .Values.cudaGpuMemPercentage}}
+            {{ else }}
+              amd.com/gpu: {{ .Values.gpus}}
+            {{ end }}
+              ephemeral-storage: {{ .Values.workingMemory}}Gi
+          volumeMounts:
+            - mountPath: /dev/shm
+              name: dshm
+            - name: cache
+              mountPath: /home/ray/cache
+        volumes:
+        - name: cache
+          emptyDir: {}
+        - name: dshm
+          emptyDir:
+            medium: Memory
+            sizeLimit: {{ div .Values.memory 2}}Gi
+        restartPolicy: OnFailure
+  - replicas: {{ sub .Values.workers 1}}
+    name: worker
+    policies:
+    - event: PodEvicted
+      action: RestartJob
+    - event: PodFailed
+      action: RestartJob
+    - event: TaskCompleted
+      action: RestartJob
+    - event: Unknown
+      action: RestartJob
+    template: # Definition of worker pods
+      metadata:
+        labels:
+          kalavai.job.name: {{ .Release.Name}}
+      spec:
+        terminationGracePeriodSeconds: 60
+      {{ if eq .Values.gpuBackend "cuda" }}
+        runtimeClassName: nvidia
+      {{ end }}
+      {{ if .Values.system.nodeSelectors }}
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+            {{ if eq .Values.system.nodeSelectorsOps "OR" }}
+              {{ range $k, $v := .Values.system.nodeSelectors }}
+              - matchExpressions:
+                - key: {{$k}}
+                  operator: In
+                  values:
+                  {{ range $v }}
+                  - "{{ . }}"
+                  {{ end }}
+              {{ end }}
+            {{ else }}
+              - matchExpressions:
+              {{ range $k, $v := .Values.system.nodeSelectors }}
+                {{ range $v }}
+                - key: {{ $k }}
+                  operator: In
+                  values:
+                  - "{{ . }}"
+                {{ end }}
+              {{ end }}
+            {{ end }}
+        {{ end }}
+        containers:
+        - name: vllm-worker
+          image: docker.io/kalavai/ray-vllm-{{ .Values.gpuBackend}}:{{ .Values.vllmVersion }}
+          command:
+          - sh
+          - -c
+          - |
+            PS_HOST=`cat /etc/volcano/server.host`;
+          {{ if eq .Values.gpuBackend "cuda" }}
+            nvidia-smi;
+          {{ else }}
+            rocm-smi;
+            python -c "import torch; print(torch.cuda.device_count(), torch.cuda.get_device_name(0))";
+          {{ end }}
+            RAY_BACKEND_LOG_LEVEL=error /home/ray/workspace/ray_init.sh worker --ray_address=$PS_HOST --ray_port=6379 --ray_object_store_memory={{ mul .Values.memory 500000000}} --ray_block=1
+          env:
+          - name: HF_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name}}-secret
+                key: hf_token
+          - name: LMCACHE_CHUNK_SIZE
+            value: "{{ .Values.lmcacheChunkSize}}"
+          - name: LMCACHE_LOCAL_CPU
+            value: "{{ .Values.lmcacheLocalCpu}}"
+          - name: LMCACHE_MAX_LOCAL_CPU_SIZE
+            value: "{{ .Values.lmcacheMaxLocalCpuSize}}"
+          - name: LMCACHE_MAX_LOCAL_DISK_SIZE
+            value: "{{ .Values.lmcacheMaxLocalDiskSize}}"
+          - name: LMCACHE_REMOTE_URL
+            value: {{ .Values.lmcacheRemoteUrl}}
+          - name: LMCACHE_LOCAL_DISK
+            value: {{ .Values.lmcacheLocalDisk}}
+          # - name: HSA_OVERRIDE_GFX_VERSION
+          #   value: "10.3.0"
+          resources:
+            requests:
+              cpu: {{ .Values.cpus}}
+              memory: {{ .Values.memory}}Gi
+            {{ if eq .Values.gpuBackend "cuda" }}
+              nvidia.com/gpu: {{ .Values.gpus}}
+            {{ else }}
+              amd.com/gpu: {{ .Values.gpus}}
+            {{ end }}
+              ephemeral-storage: {{ .Values.workingMemory}}Gi
+            limits:
+              cpu: {{ .Values.cpus}}
+              memory: {{ .Values.memory}}Gi
+            {{ if eq .Values.gpuBackend "cuda" }}
+              nvidia.com/gpu: {{ .Values.gpus}}
+              nvidia.com/gpumem-percentage: {{ .Values.cudaGpuMemPercentage}}
+            {{ else }}
+              amd.com/gpu: {{ .Values.gpus}}
+            {{ end }}
+              ephemeral-storage: {{ .Values.workingMemory}}Gi
+          volumeMounts:
+            - mountPath: /dev/shm
+              name: dshm
+            - name: cache
+              mountPath: /home/ray/cache
+        volumes:
+        - name: cache
+          emptyDir: {}
+        - name: dshm
+          emptyDir:
+            medium: Memory
+            sizeLimit: {{ div .Values.memory 2}}Gi
+        restartPolicy: OnFailure

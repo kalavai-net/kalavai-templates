@@ -1,0 +1,6 @@
+huggingface-hub
+bitsandbytes
+llmcompressor
+num2words
+gptmodel
+autoawq

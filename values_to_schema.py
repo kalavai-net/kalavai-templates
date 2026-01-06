@@ -7,11 +7,11 @@ import json
 
 
 TEMPLATE = "vllm"
-INPUT_VALUES_FILE = f"{TEMPLATE}/values.yaml"
-INPUT_METADATA_FILE = f"{TEMPLATE}/metadata.json"
-OUTPUT_SCHEMA_FILE = f"{TEMPLATE}/charts/values.schema.json"
-OUTPUT_VALUES_FILE = f"{TEMPLATE}/charts/values.yaml"
-OUTPUT_CHART_FILE = f"{TEMPLATE}/charts/Chart.yaml"
+INPUT_VALUES_FILE = f"charts/{TEMPLATE}/values.yaml"
+INPUT_METADATA_FILE = f"charts/{TEMPLATE}/metadata.json"
+OUTPUT_SCHEMA_FILE = f"charts/{TEMPLATE}/values.schema.json"
+OUTPUT_VALUES_FILE = f"charts/{TEMPLATE}/values.yaml"
+OUTPUT_CHART_FILE = f"charts/{TEMPLATE}/Chart.yaml"
 
 
 def get_type(value):

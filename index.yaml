@@ -1,0 +1,41 @@
+apiVersion: v1
+entries:
+  ray-cluster:
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2026-01-06T11:54:03.798939702Z"
+    description: An open source framework to build and scale your ML and Python applications
+      easily
+    digest: d33b9f1b7c178f69933c8f14c86be1bdb2efb0ff0eb16c56ae5857f4c25e7c6e
+    icon: https://github.com/ray-project/ray/raw/master/doc/source/images/ray_header_logo.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: ray-cluster
+    sources:
+    - https://docs.ray.io/en/latest
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/ray-cluster-0.0.1/ray-cluster-0.0.1.tgz
+    version: 0.0.1
+  vllm:
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2026-01-06T11:54:03.992906432Z"
+    description: A high-throughput and memory-efficient inference and serving engine
+      for LLMs
+    digest: 6ac968453b6a8a7894de7960207d559b4b12033a04006f459941bbc5f7f2ac34
+    icon: https://docs.vllm.ai/en/latest/assets/logos/vllm-logo-only-light.ico
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: vllm
+    sources:
+    - https://docs.vllm.ai/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
+    version: 0.0.1
+generated: "2026-01-06T11:54:03.992919576Z"

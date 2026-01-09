@@ -180,6 +180,10 @@
       },
       "system": {
          "properties": {
+            "priorityClassName": {
+                "type": "string",
+                "description": "PriorityClassName to use for the deployment"
+            },
             "jobId": {
                 "type": "string",
                 "description": "Job ID to label spawned objects."

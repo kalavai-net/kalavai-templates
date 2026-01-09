@@ -26,7 +26,7 @@ modelId: null
 modelNameOverride: null
 nodeport: null
 system:
-  jobPriority: user-spot-priority
+  priorityClassName: user-spot-priority
   nodeSelectors: null
   nodeSelectorsOps: OR
 templateUrl: null

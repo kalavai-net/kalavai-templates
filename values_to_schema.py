@@ -67,7 +67,7 @@ if __name__ == "__main__":
     # global system properties
     properties["system"] = {
         "properties": {
-            "jobPriority": {
+            "priorityClassName": {
                 "type": "string",
                 "description": "PriorityClassName to use for the deployment"
             },

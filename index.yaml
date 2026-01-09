@@ -2,6 +2,24 @@ apiVersion: v1
 entries:
   ray-cluster:
   - apiVersion: v2
+    appVersion: 0.0.4
+    created: "2026-01-09T09:47:04.572329401Z"
+    description: An open source framework to build and scale your ML and Python applications
+      easily
+    digest: 989d4d4a6e96ff215814b5b9d0969494aa4fde45cb6ccb902624f07aef71d83e
+    icon: https://github.com/ray-project/ray/raw/master/doc/source/images/ray_header_logo.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: ray-cluster
+    sources:
+    - https://docs.ray.io/en/latest
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/ray-cluster-0.0.4/ray-cluster-0.0.4.tgz
+    version: 0.0.4
+  - apiVersion: v2
     appVersion: 0.0.3
     created: "2026-01-09T09:32:43.581079987Z"
     description: An open source framework to build and scale your ML and Python applications
@@ -57,6 +75,24 @@ entries:
     version: 0.0.1
   vllm:
   - apiVersion: v2
+    appVersion: 0.0.4
+    created: "2026-01-09T09:47:04.73229204Z"
+    description: A high-throughput and memory-efficient inference and serving engine
+      for LLMs
+    digest: 39edd46fbe37931792ea486d45fbd6734292366b2226cba2447ac64301a0d960
+    icon: https://docs.vllm.ai/en/latest/assets/logos/vllm-logo-only-light.ico
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: vllm
+    sources:
+    - https://docs.vllm.ai/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.4/vllm-0.0.4.tgz
+    version: 0.0.4
+  - apiVersion: v2
     appVersion: 0.0.3
     created: "2026-01-09T09:32:43.832538759Z"
     description: A high-throughput and memory-efficient inference and serving engine
@@ -110,4 +146,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-01-09T09:32:43.83255565Z"
+generated: "2026-01-09T09:47:04.732319642Z"

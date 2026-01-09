@@ -15,5 +15,5 @@ system:
   jobPriority: user-spot-priority
   nodeSelectors: null
   nodeSelectorsOps: OR
-  jobId: null
 upscalingMode: Default
+jobId: null

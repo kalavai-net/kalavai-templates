@@ -174,6 +174,10 @@
             "null"
          ]
       },
+      "jobId": {
+         "type": "string",
+         "description": "Job ID to label spawned objects."
+      },
       "system": {
          "properties": {
             "jobId": {
@@ -191,10 +195,6 @@
                "type": "string",
                "enum": ["OR", "AND"],
                "description": "Logical operation to use to apply to nodeSelectors. Accepted values: 'OR', 'AND'"
-            },
-            "jobLabel": {
-                "type": "string",
-                "description": "Job label to use to tag spawned objects."
             }
          }
       }

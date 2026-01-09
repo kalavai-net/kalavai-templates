@@ -67,17 +67,21 @@ if __name__ == "__main__":
             },
             "nodeSelectors": {
                 "type": ["object", "null"],
-                "enum": ["OR", "AND"],
                 "description": "target specific devices. Expected format -> key: value pairs, where 'value' is a list of elements"
             },
             "nodeSelectorsOps": {
                 "type": "string",
+                "enum": ["OR", "AND"],
                 "description": "Logical operation to use to apply to nodeSelectors. Accepted values: 'OR', 'AND'"
+            },
+            "jobId": {
+                "type": "string",
+                "description": "Id to tag spawned objects."
             }
         }
     }
     schema["properties"] = properties
-    schema["required"] = required
+    schema["required"] = required + ["system"]
 
     with open(OUTPUT_SCHEMA_FILE, "w") as f:
         json.dump(schema, f, indent=3)

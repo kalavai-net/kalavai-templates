@@ -29,6 +29,7 @@ system:
   jobPriority: user-spot-priority
   nodeSelectors: null
   nodeSelectorsOps: OR
+  jobId: null
 templateUrl: null
 toolCallParser: llama3_json
 workers: 1

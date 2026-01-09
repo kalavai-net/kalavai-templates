@@ -5,7 +5,7 @@ metadata:
   name: {{ .Release.Name }}-raycluster
   labels:
     # must have this label
-    kalavai.job.name: {{ .Release.Name }}
+    kalavai.job.name: {{ .Values.system.jobId }}
 spec:
   # gcsFaultToleranceOptions:
   #   # fault tolerance https://docs.ray.io/en/latest/cluster/kubernetes/user-guides/kuberay-gcs-ft.html
@@ -34,7 +34,7 @@ spec:
     template: # Pod template
       metadata:
         labels:
-          kalavai.job.name: {{ .Release.Name }}
+          kalavai.job.name: {{ .Values.system.jobId }}
           role: leader
       spec: # Pod spec
         terminationGracePeriodSeconds: 60
@@ -103,7 +103,7 @@ spec:
     template:
       metadata:
         labels:
-          kalavai.job.name: {{ .Release.Name }}
+          kalavai.job.name: {{ .Values.system.jobId }}
       spec:
         #restartPolicy: Never # for testing
         terminationGracePeriodSeconds: 60
@@ -164,7 +164,7 @@ spec:
     template:
       metadata:
         labels:
-          kalavai.job.name: {{ .Release.Name }}
+          kalavai.job.name: {{ .Values.system.jobId }}
       spec:
       {{ if .Values.system.nodeSelectors }}
         affinity:

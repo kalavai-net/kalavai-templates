@@ -80,6 +80,10 @@
                "type": "string",
                "enum": ["OR", "AND"],
                "description": "Logical operation to use to apply to nodeSelectors. Accepted values: 'OR', 'AND'"
+            },
+            "jobId": {
+                "type": "string",
+                "description": "Job ID to label spawned objects."
             }
          }
       }

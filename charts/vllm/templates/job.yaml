@@ -4,7 +4,7 @@ metadata:
   name: {{ .Release.Name}}
   labels:
     # must have this label
-    kalavai.job.name: {{ .Release.Name}}
+    kalavai.job.name: {{ .Values.system.jobId}}
 spec:
   queue: default
   priorityClassName: {{ .Values.system.jobPriority}}
@@ -29,7 +29,7 @@ spec:
       metadata:
         labels:
           role: leader
-          kalavai.job.name: {{ .Release.Name}}
+          kalavai.job.name: {{ .Values.system.jobId}}
       spec:
         terminationGracePeriodSeconds: 60
       {{ if eq .Values.gpuBackend "cuda" }}
@@ -172,7 +172,7 @@ spec:
     template: # Definition of worker pods
       metadata:
         labels:
-          kalavai.job.name: {{ .Release.Name}}
+          kalavai.job.name: {{ .Values.system.jobId}}
       spec:
         terminationGracePeriodSeconds: 60
       {{ if eq .Values.gpuBackend "cuda" }}

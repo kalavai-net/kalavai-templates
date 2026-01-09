@@ -10,10 +10,7 @@ minAmdWorkers: 0
 minNvidiaWorkers: 0
 pythonVersion: '312'
 rayVersion: 2.49.0
-redisPassword: changeme
 system:
   jobPriority: user-spot-priority
-  nodeSelectors: null
   nodeSelectorsOps: OR
-  jobId: null
 upscalingMode: Default

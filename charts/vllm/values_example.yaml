@@ -1,0 +1,15 @@
+vllmVersion: v0.13.0
+cpus: 2
+extra: --dtype float16 --enforce-eager
+gpuBackend: cuda
+gpus: 1
+hfToken: null
+memory: 8
+system:
+  jobPriority: user-spot-priority
+  nodeSelectors: null
+  nodeSelectorsOps: OR
+templateUrl: null
+toolCallParser: llama3_json
+workers: 1
+workingMemory: 5

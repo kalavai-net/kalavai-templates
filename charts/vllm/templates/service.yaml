@@ -6,12 +6,12 @@ metadata:
   name: {{ .Release.Name }}-service
   labels:
     # must have this!
-    kalavai.job.name: {{ .Release.Name }}
+    kalavai.job.name: {{ .Values.system.jobId }}
 spec:
   type: NodePort
   selector:
     role: leader
-    kalavai.job.name: {{ .Release.Name }}
+    kalavai.job.name: {{ .Values.system.jobId }}
   ports:
     - name: main
       port: 8080

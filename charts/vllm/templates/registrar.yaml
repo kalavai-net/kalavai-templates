@@ -3,16 +3,16 @@ kind: Deployment
 metadata:
   name: {{ .Release.Name }}-registrar
   labels:
-    kalavai.job.name: {{ .Release.Name }}
+    kalavai.job.name: {{ .Values.system.jobId }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      kalavai.job.name: {{ .Release.Name }}
+      kalavai.job.name: {{ .Values.system.jobId }}
   template:
     metadata:
         labels:
-          kalavai.job.name: {{ .Release.Name }}
+          kalavai.job.name: {{ .Values.system.jobId }}
     spec:
       priorityClassName: {{ .Values.jobPriority }}
       terminationGracePeriodSeconds: 60

@@ -6,7 +6,7 @@ kind: Secret
 metadata:
   name: {{ .Release.Name }}-secret
   labels:
-    kalavai.job.name: {{ .Release.Name }}
+    kalavai.job.name: {{ .Values.system.jobId }}
 type: Opaque
 immutable: true
 ---
@@ -17,7 +17,7 @@ metadata:
   name: {{ .Release.Name }}-redis-service
   labels:
     app: {{ .Release.Name }}-redis
-    kalavai.job.name: {{ .Release.Name }}
+    kalavai.job.name: {{ .Values.system.jobId }}
 spec:
   type: ClusterIP
   ports:
@@ -41,7 +41,7 @@ spec:
     metadata:
       labels:
         app: {{ .Release.Name }}-redis
-        kalavai.job.name: {{ .Release.Name }}
+        kalavai.job.name: {{ .Values.system.jobId }}
     spec:
       priorityClassName: "kalavai-system-priority"
       containers:

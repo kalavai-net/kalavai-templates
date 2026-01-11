@@ -58,12 +58,6 @@ if __name__ == "__main__":
         if property["required"]:
             required.append(camel_name)
     
-    # Add job id
-    properties["jobId"] = {
-        "type": "string",
-        "description": "Id to tag spawned objects."
-    }
-    
     # global system properties
     properties["system"] = {
         "properties": {
@@ -79,6 +73,10 @@ if __name__ == "__main__":
                 "type": "string",
                 "enum": ["OR", "AND"],
                 "description": "Logical operation to use to apply to nodeSelectors. Accepted values: 'OR', 'AND'"
+            },
+            "jobId": {
+                "type": "string",
+                "description": "Id to tag spawned objects."
             }
         }
     }

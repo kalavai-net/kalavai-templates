@@ -61,7 +61,10 @@
       },
       "redisPassword": {
          "description": "Admin password for the (external or internal) Redis DB",
-         "type": "string"
+         "type": [
+            "string",
+            "null"
+         ]
       },
       "jobId": {
          "type": "string",

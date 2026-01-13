@@ -30,7 +30,7 @@
       "modelId": {
          "description": "Huggingface model id to deploy",
          "type": [
-            "integer",
+            "string",
             "null"
          ]
       },
@@ -44,7 +44,7 @@
       "hfToken": {
          "description": "Huggingface access token, only required to load gated model weights",
          "type": [
-            "integer",
+            "string",
             "null"
          ]
       },
@@ -102,7 +102,7 @@
       "lmcacheRemoteUrl": {
          "description": "LMCache: Remote storage URL. Format: \u201cprotocol://host:port\u201d or null. See https://docs.lmcache.ai/api_reference/configurations.html",
          "type": [
-            "integer",
+            "string",
             "null"
          ]
       },
@@ -119,7 +119,10 @@
       },
       "litellmBaseUrl": {
          "description": "Base URL of the LiteLLM service (central model registry). This can be an external LiteLLM instance or an internal deployment in the pool (default)",
-         "type": "string"
+         "type": [
+            "string",
+            "null"
+         ]
       },
       "litellmKey": {
          "description": "Master key of the LiteLLM service (central model registry)",
@@ -137,7 +140,10 @@
       },
       "litellmKalavaiExtras": {
          "description": "Extra information to store in the LiteLLM model registration (must be a dictionary)",
-         "type": "string"
+         "type": [
+            "string",
+            "null"
+         ]
       },
       "lagoUrl": {
          "description": "Base URL of the Lago service (payment system)",

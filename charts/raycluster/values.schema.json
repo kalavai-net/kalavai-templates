@@ -66,10 +66,6 @@
             "null"
          ]
       },
-      "jobId": {
-         "type": "string",
-         "description": "Job ID to label spawned objects."
-      },
       "system": {
          "properties": {
             "priorityClassName": {

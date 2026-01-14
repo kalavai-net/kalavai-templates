@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: 0.0.6
+appVersion: 0.0.7
 description: An open source framework to build and scale your ML and Python applications
   easily
 icon: https://github.com/ray-project/ray/raw/master/doc/source/images/ray_header_logo.png
@@ -11,4 +11,4 @@ maintainers:
 name: ray-cluster
 sources:
 - https://docs.ray.io/en/latest
-version: 0.0.6
+version: 0.0.7

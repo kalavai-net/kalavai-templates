@@ -2,6 +2,24 @@ apiVersion: v1
 entries:
   ray-cluster:
   - apiVersion: v2
+    appVersion: 0.0.7
+    created: "2026-01-14T11:55:51.230382238Z"
+    description: An open source framework to build and scale your ML and Python applications
+      easily
+    digest: ad15a0a2b4d2a13b4b37248b647c78ec269e54518837f37f326f03c9e4808623
+    icon: https://github.com/ray-project/ray/raw/master/doc/source/images/ray_header_logo.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: ray-cluster
+    sources:
+    - https://docs.ray.io/en/latest
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/ray-cluster-0.0.7/ray-cluster-0.0.7.tgz
+    version: 0.0.7
+  - apiVersion: v2
     appVersion: 0.0.6
     created: "2026-01-13T13:10:18.469632855Z"
     description: An open source framework to build and scale your ML and Python applications
@@ -110,6 +128,24 @@ entries:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/ray-cluster-0.0.1/ray-cluster-0.0.1.tgz
     version: 0.0.1
   vllm:
+  - apiVersion: v2
+    appVersion: 0.0.9
+    created: "2026-01-14T11:55:51.380900979Z"
+    description: A high-throughput and memory-efficient inference and serving engine
+      for LLMs
+    digest: 8001194bfc7987b124c63b5f751c952bdc8a364f8c81ba1a83202fa2d3e935fb
+    icon: https://docs.vllm.ai/en/latest/assets/logos/vllm-logo-only-light.ico
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: vllm
+    sources:
+    - https://docs.vllm.ai/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.9/vllm-0.0.9.tgz
+    version: 0.0.9
   - apiVersion: v2
     appVersion: 0.0.8
     created: "2026-01-13T13:10:18.632346508Z"
@@ -254,4 +290,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-01-13T13:10:18.632406309Z"
+generated: "2026-01-14T11:55:51.380971971Z"

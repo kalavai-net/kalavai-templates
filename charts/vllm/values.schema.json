@@ -60,9 +60,9 @@
          "description": "RAM memory to be used per single worker (final one = memory * workers). Workers should have these much RAM available.",
          "type": "integer"
       },
-      "cudaGpuMemPercentage": {
-         "description": "Maximum memory fraction allowed to be used from the GPU vRAM.",
-         "type": "integer"
+      "gpuMemory": {
+         "description": "[NVIDIA only] Maximum memory allowed to be used from the GPU vRAM.",
+         "type": ["integer", "null"]
       },
       "toolCallParser": {
          "description": "Tool call parser to use. https://docs.vllm.ai/en/latest/features/tool_calling.html#automatic-function-calling",

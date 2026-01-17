@@ -140,7 +140,9 @@ spec:
               memory: {{ .Values.memory}}Gi
             {{ if eq .Values.gpuBackend "cuda" }}
               nvidia.com/gpu: {{ .Values.gpus}}
-              nvidia.com/gpumem-percentage: {{ .Values.cudaGpuMemPercentage}}
+              {{ if .Values.gpuMemory }}
+              nvidia.com/gpumem: {{ .Values.gpuMemory}}
+              {{ end }}
             {{ else }}
               amd.com/gpu: {{ .Values.gpus}}
             {{ end }}
@@ -255,7 +257,9 @@ spec:
               memory: {{ .Values.memory}}Gi
             {{ if eq .Values.gpuBackend "cuda" }}
               nvidia.com/gpu: {{ .Values.gpus}}
-              nvidia.com/gpumem-percentage: {{ .Values.cudaGpuMemPercentage}}
+              {{ if .Values.gpuMemory }}
+              nvidia.com/gpumem: {{ .Values.gpuMemory}}
+              {{ end }}
             {{ else }}
               amd.com/gpu: {{ .Values.gpus}}
             {{ end }}

@@ -26,9 +26,9 @@
          "description": "RAM memory to be allocated per WORKER (final one = memory * workers).",
          "type": "integer"
       },
-      "cudaGpuMemPercentage": {
-         "description": "Maximum memory fraction allowed to be used from the GPU vRAM.",
-         "type": "integer"
+      "gpuMemory": {
+         "description": "[NVIDIA only] Maximum memory allowed to be used from the GPU vRAM.",
+         "type": ["integer", "null"]
       },
       "rayVersion": {
          "description": "Ray PIP version to use in the cluster (e.g. 2.49.0)",

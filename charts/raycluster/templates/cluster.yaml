@@ -143,7 +143,9 @@ spec:
           resources:
             limits:
               nvidia.com/gpu: 1
-              nvidia.com/gpumem-percentage: {{ .Values.cudaGpuMemPercentage }}
+              {{ if .Values.gpuMemory }}
+              nvidia.com/gpumem: {{ .Values.gpuMemory}}
+              {{ end }}
               cpu: {{ .Values.cpus }}
               memory: {{ .Values.memory }}Gi
             requests:

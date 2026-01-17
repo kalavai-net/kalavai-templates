@@ -1,6 +1,6 @@
 vllmVersion: v0.11.2
 cpus: 2
-cudaGpuMemPercentage: 100
+gpuMemory: null
 extra: --dtype float16 --enforce-eager
 gpuBackend: cuda
 gpus: 1

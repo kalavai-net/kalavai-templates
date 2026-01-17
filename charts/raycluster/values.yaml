@@ -1,5 +1,5 @@
 cpus: 2
-cudaGpuMemPercentage: 100
+gpuMemory: null
 cudaVersion: '128'
 externalRedisUrl: null
 idleTimeoutSeconds: 60

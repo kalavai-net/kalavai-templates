@@ -1,0 +1,27 @@
+backend: cpu
+cpus: 2
+cudaGpuMemPercentage: 100
+hfToken: null
+lagoApiKey: null
+lagoEventCode: null
+lagoEventInterval: null
+lagoExternalSubscriptionId: null
+lagoUrl: null
+litellmAccessGroup: null
+litellmBaseUrl: http://litellm.default.svc.cluster.local:4000
+litellmKalavaiExtras: '{}'
+litellmKey: null
+memory: 4
+modelFilename: null
+modelNameOverride: null
+nodeport: null
+parallel: 1
+repoId: null
+rpcPort: '50052'
+serverExtra: null
+system:
+  jobPriority: user-spot-priority
+  nodeSelectors: null
+  nodeSelectorsOps: OR
+workers: 1
+workingMemory: 5

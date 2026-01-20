@@ -1,0 +1,235 @@
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+  name: {{ .Release.Name}}
+  labels:
+    # must have this label
+    kalavai.job.name: {{ .Values.system.jobId}}
+spec:
+  queue: default
+  priorityClassName: {{ .Values.system.jobPriority}}
+  schedulerName: volcano
+  plugins:
+    env: []
+    svc: ["--disable-network-policy=true"]
+  maxRetry: 100000
+  tasks:
+  - replicas: 1   # One ps pod specified
+    name: server
+    policies:
+    - event: PodEvicted
+      action: RestartJob
+    - event: PodFailed
+      action: RestartJob
+    - event: TaskCompleted
+      action: RestartJob
+    - event: Unknown
+      action: RestartJob
+    template: # Definition of the ps pod
+      metadata:
+        labels:
+          role: leader
+          kalavai.job.name: {{ .Values.system.jobId}}
+      spec:
+        terminationGracePeriodSeconds: 60
+      {{ if eq .Values.gpuBackend "cuda" }}
+        runtimeClassName: nvidia
+      {{ end }}
+      {{ if .Values.system.nodeSelectors }}
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+            {{ if eq .Values.system.nodeSelectorsOps "OR" }}
+              {{ range $k, $v := .Values.system.nodeSelectors }}
+              - matchExpressions:
+                - key: {{$k}}
+                  operator: In
+                  values:
+                  {{ range $v }}
+                  - "{{ . }}"
+                  {{ end }}
+              {{ end }}
+            {{ else }}
+              - matchExpressions:
+              {{ range $k, $v := .Values.system.nodeSelectors }}
+                {{ range $v }}
+                - key: {{ $k }}
+                  operator: In
+                  values:
+                  - "{{ . }}"
+                {{ end }}
+              {{ end }}
+            {{ end }}
+        {{ end }}
+        containers:
+        - name: llamacpp-leader
+        {{ if eq .Values.backend "cuda" }}
+          image: docker.io/kalavai/llamacpp-cuda:latest
+        {{ elif eq .Values.backend "rocm" }}
+          image: docker.io/kalavai/llamacpp-rocm:latest
+        {{ else }}
+          image: docker.io/kalavai/llamacpp-cpu:latest
+        {{ end }}
+          command:
+          - sh
+          - -c
+          - |
+          {{ if eq .Values.backend == "cuda" }}
+            /workspace/build.sh server_nvidia;
+          {{ elif eq .Values.backend == "rocm" }}
+            /workspace/build.sh server_amd; 
+          {{ else }}
+            /workspace/build.sh server_cpu;
+          {{ end }}
+            HOSTS=`cat /etc/volcano/worker.host`;
+            export WORKERS=$(/workspace/get_workers_address.sh --rpc_port=50052 --rpc_servers="${HOSTS}")
+            /workspace/run_api_server.sh \
+              --repo_id={{ .Values.repoId }} \
+              --model_filename={{ .Values.modelFilename }} \
+              --local_dir=/cache \
+              --port=8080 \
+              --rpc_servers=$WORKERS \
+              --parallel={{ .Values.parallel }} \
+              --extra='{{ .Values.serverExtra}}'
+          env:
+          - name: HF_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name}}-secret
+                key: hf_token
+          ports:
+          - containerPort: 8080
+            name: model-port
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: {{ .Values.cpus}}
+              memory: {{ .Values.memory}}Gi
+            {{ if eq .Values.gpuBackend "cuda" }}
+              nvidia.com/gpu: {{ .Values.gpus}}
+            {{ else }}
+              amd.com/gpu: {{ .Values.gpus}}
+            {{ end }}
+              ephemeral-storage: {{ .Values.workingMemory}}Gi
+            limits:
+              cpu: {{ .Values.cpus}}
+              memory: {{ .Values.memory}}Gi
+            {{ if eq .Values.gpuBackend "cuda" }}
+              nvidia.com/gpu: {{ .Values.gpus}}
+              {{ if .Values.gpuMemory }}
+              nvidia.com/gpumem: {{ .Values.gpuMemory}}
+              {{ end }}
+            {{ else }}
+              amd.com/gpu: {{ .Values.gpus}}
+            {{ end }}
+              ephemeral-storage: {{ .Values.workingMemory}}Gi
+          volumeMounts:
+            - name: cache
+              mountPath: /cache
+        volumes:
+        - name: cache
+          emptyDir: {}
+        restartPolicy: OnFailure
+  - replicas: {{ sub .Values.workers 1}}
+    name: worker
+    policies:
+    - event: PodEvicted
+      action: RestartJob
+    - event: PodFailed
+      action: RestartJob
+    - event: TaskCompleted
+      action: RestartJob
+    - event: Unknown
+      action: RestartJob
+    template: # Definition of worker pods
+      metadata:
+        labels:
+          kalavai.job.name: {{ .Values.system.jobId}}
+      spec:
+        terminationGracePeriodSeconds: 60
+      {{ if eq .Values.gpuBackend "cuda" }}
+        runtimeClassName: nvidia
+      {{ end }}
+      {{ if .Values.system.nodeSelectors }}
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+            {{ if eq .Values.system.nodeSelectorsOps "OR" }}
+              {{ range $k, $v := .Values.system.nodeSelectors }}
+              - matchExpressions:
+                - key: {{$k}}
+                  operator: In
+                  values:
+                  {{ range $v }}
+                  - "{{ . }}"
+                  {{ end }}
+              {{ end }}
+            {{ else }}
+              - matchExpressions:
+              {{ range $k, $v := .Values.system.nodeSelectors }}
+                {{ range $v }}
+                - key: {{ $k }}
+                  operator: In
+                  values:
+                  - "{{ . }}"
+                {{ end }}
+              {{ end }}
+            {{ end }}
+        {{ end }}
+        containers:
+        - name: llamacpp-worker
+        {{ if eq .Values.backend "cuda" }}
+          image: docker.io/kalavai/llamacpp-cuda:latest
+        {{ elif eq .Values.backend "rocm" }}
+          image: docker.io/kalavai/llamacpp-rocm:latest
+        {{ else }}
+          image: docker.io/kalavai/llamacpp-cpu:latest
+        {{ end }}
+          command:
+          - sh
+          - -c
+          - |
+          {{ if eq .Values.backend "cuda" }}
+            /workspace/build.sh nvidia;
+          {{ elif eq .Values.backend "rocm" }}
+            /workspace/build.sh amd; 
+          {{ else }}
+            /workspace/build.sh cpu;
+          {{ end }}
+            /workspace/run_rpc_worker.sh --rpc_port=50052
+          env:
+          - name: HF_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name}}-secret
+                key: hf_token
+          resources:
+            requests:
+              cpu: {{ .Values.cpus}}
+              memory: {{ .Values.memory}}Gi
+            {{ if eq .Values.gpuBackend "cuda" }}
+              nvidia.com/gpu: {{ .Values.gpus}}
+            {{ else }}
+              amd.com/gpu: {{ .Values.gpus}}
+            {{ end }}
+              ephemeral-storage: {{ .Values.workingMemory}}Gi
+            limits:
+              cpu: {{ .Values.cpus}}
+              memory: {{ .Values.memory}}Gi
+            {{ if eq .Values.gpuBackend "cuda" }}
+              nvidia.com/gpu: {{ .Values.gpus}}
+              {{ if .Values.gpuMemory }}
+              nvidia.com/gpumem: {{ .Values.gpuMemory}}
+              {{ end }}
+            {{ else }}
+              amd.com/gpu: {{ .Values.gpus}}
+            {{ end }}
+              ephemeral-storage: {{ .Values.workingMemory}}Gi
+        restartPolicy: OnFailure

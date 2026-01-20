@@ -6,7 +6,7 @@ import yaml
 import json
 
 
-TEMPLATE = "vllm"
+TEMPLATE = "llamacpp"
 INPUT_VALUES_FILE = f"charts/{TEMPLATE}/values.yaml"
 INPUT_METADATA_FILE = f"charts/{TEMPLATE}/metadata.json"
 OUTPUT_SCHEMA_FILE = f"charts/{TEMPLATE}/values.schema.json"

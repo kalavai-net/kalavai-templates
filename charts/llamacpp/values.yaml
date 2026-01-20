@@ -17,7 +17,6 @@ modelNameOverride: null
 nodeport: null
 parallel: 1
 repoId: null
-rpcPort: '50052'
 serverExtra: null
 system:
   jobPriority: user-spot-priority

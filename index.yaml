@@ -199,6 +199,24 @@ entries:
     version: 0.0.1
   vllm:
   - apiVersion: v2
+    appVersion: 0.0.12
+    created: "2026-01-21T09:12:45.220523456Z"
+    description: A high-throughput and memory-efficient inference and serving engine
+      for LLMs
+    digest: 1834cd9d64865a42fa507859029288b9ed9527360ef4df8e87b273ed9d71b3f0
+    icon: https://docs.vllm.ai/en/latest/assets/logos/vllm-logo-only-light.ico
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: vllm
+    sources:
+    - https://docs.vllm.ai/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.12/vllm-0.0.12.tgz
+    version: 0.0.12
+  - apiVersion: v2
     appVersion: 0.0.11
     created: "2026-01-21T08:03:18.707660241Z"
     description: A high-throughput and memory-efficient inference and serving engine
@@ -396,4 +414,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-01-21T08:03:18.707729604Z"
+generated: "2026-01-21T09:12:45.220591132Z"

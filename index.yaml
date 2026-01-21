@@ -2,6 +2,23 @@ apiVersion: v1
 entries:
   llama.cpp:
   - apiVersion: v2
+    appVersion: 0.0.3
+    created: "2026-01-21T08:03:18.393641559Z"
+    description: LLM inference in C/C++
+    digest: 2bc66e45aaec84156c0ab8725c302afc08c2e37bf9ea993ac3f188b540b699f2
+    icon: https://user-images.githubusercontent.com/1991296/230134379-7181e485-c521-4d23-a0d6-f7b3b61ba524.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: llama.cpp
+    sources:
+    - https://github.com/ggml-org/llama.cpp
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/llama.cpp-0.0.3/llama.cpp-0.0.3.tgz
+    version: 0.0.3
+  - apiVersion: v2
     appVersion: 0.0.2
     created: "2026-01-20T16:59:01.392485048Z"
     description: LLM inference in C/C++
@@ -182,6 +199,24 @@ entries:
     version: 0.0.1
   vllm:
   - apiVersion: v2
+    appVersion: 0.0.11
+    created: "2026-01-21T08:03:18.707660241Z"
+    description: A high-throughput and memory-efficient inference and serving engine
+      for LLMs
+    digest: 1ea4d46eee9adfbd6b748fb2a15373e2a279d148b41025631d68da8e9ce516ba
+    icon: https://docs.vllm.ai/en/latest/assets/logos/vllm-logo-only-light.ico
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: vllm
+    sources:
+    - https://docs.vllm.ai/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.11/vllm-0.0.11.tgz
+    version: 0.0.11
+  - apiVersion: v2
     appVersion: 0.0.10
     created: "2026-01-17T19:00:31.20080202Z"
     description: A high-throughput and memory-efficient inference and serving engine
@@ -361,4 +396,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-01-20T16:59:01.39252888Z"
+generated: "2026-01-21T08:03:18.707729604Z"

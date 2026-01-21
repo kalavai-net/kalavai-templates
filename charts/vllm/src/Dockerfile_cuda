@@ -1,4 +1,4 @@
-FROM kalavai/ray-base:latest AS base
+FROM ghcr.io/kalavai-net/ray-base:latest AS base
 
 FROM rayproject/ray:2.51.0.2f4360-extra-py312-cu124
 

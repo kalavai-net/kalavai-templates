@@ -1,8 +1,8 @@
 ARG VLLM_VERSION=v0.11.2
 
-FROM kalavai/ray-base:latest AS base
+FROM ghcr.io/kalavai-net/ray-base:latest AS base
 
-FROM kalavai/vllm-rocm:${VLLM_VERSION}
+FROM ghcr.io/kalavai-net/vllm-rocm-base:${VLLM_VERSION}
 
 WORKDIR /home/ray/workspace
 

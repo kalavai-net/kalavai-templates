@@ -16,6 +16,7 @@ git checkout releases/v$PIP_VLLM_VERSION
 DOCKER_BUILDKIT=1 docker build --build-arg BUILD_FA="0" -f docker/Dockerfile.rocm -t ghcr.io/kalavai-net/vllm-rocm-base:v$PIP_VLLM_VERSION .
 docker push ghcr.io/kalavai-net/vllm-rocm-base:v$PIP_VLLM_VERSION
 cd ..
+rm -rf vllm
 
 docker build --build-arg VLLM_VERSION=v$PIP_VLLM_VERSION -t ghcr.io/kalavai-net/vllm-rocm:v$PIP_VLLM_VERSION -f src/Dockerfile_rocm src/
 docker push ghcr.io/kalavai-net/vllm-rocm:v$PIP_VLLM_VERSION

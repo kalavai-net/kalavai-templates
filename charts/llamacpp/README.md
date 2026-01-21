@@ -7,6 +7,15 @@ Deploy LLM models across multiple worker nodes using [llama.cpp](https://github.
 This template makes heavy use of the [llama.cpp library](https://github.com/ggerganov/llama.cpp).
 
 
+## Build
+
+Build and push images:
+
+```bash
+sh build_images.sh
+```
+
+
 ## Key template variables
 
 - `cpu_workers`: Number of CPU-only workers per deployment. You can mix and match both CPU and GPU workers.

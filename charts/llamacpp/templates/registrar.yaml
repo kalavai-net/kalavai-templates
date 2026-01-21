@@ -46,7 +46,7 @@ spec:
       {{ end }}
       containers:
       - name: registrar-leader
-        image: docker.io/kalavai/kalavai-utils:latest
+        image: ghcr.io/kalavai-net/kalavai-utils:latest
         command:
         - sh
         - -c

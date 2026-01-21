@@ -160,7 +160,7 @@ curl "http://51.159.144.100:30768/v1/completions" \
 Select the pip vLLM target version (e.g. 0.11.2) and pass it on to the build script:
 
 ```bash
-sh bash.sh 0.11.2
+sh build_images.sh 0.11.2
 ```
 
 This script will:

@@ -64,7 +64,7 @@ spec:
         {{ end }}
         containers:
         - name: vllm-leader
-          image: docker.io/kalavai/ray-vllm-{{ .Values.gpuBackend}}:{{ .Values.vllmVersion }}
+          image: ghcr.io/kalavai-net/vllm-{{ .Values.gpuBackend}}:{{ .Values.vllmVersion }}
           command:
           - sh
           - -c
@@ -209,7 +209,7 @@ spec:
         {{ end }}
         containers:
         - name: vllm-worker
-          image: docker.io/kalavai/ray-vllm-{{ .Values.gpuBackend}}:{{ .Values.vllmVersion }}
+          image: ghcr.io/kalavai-net/vllm-{{ .Values.gpuBackend}}:{{ .Values.vllmVersion }}
           command:
           - sh
           - -c

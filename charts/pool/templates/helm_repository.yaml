@@ -1,7 +1,7 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  name: kalavai-repo-{{ .Release.name }}
+  name: kalavai-repo-{{ .Release.Name }}
   labels:
     kalavai.job.name: {{ .Values.system.jobId}}
 spec:

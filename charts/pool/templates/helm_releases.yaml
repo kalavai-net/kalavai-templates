@@ -8,17 +8,17 @@ spec:
   interval: 10m
   chart:
     spec:
-      chart: {{ .Release.name}}-watcher
+      chart: {{ .Release.Name}}-watcher
       version: "{{ .Values.watcherVersion}}"
       sourceRef:
         kind: HelmRepository
-        name: kalavai-repo-{{ .Release.name }}
-        namespace: {{ .Release.namespace }}
+        name: kalavai-repo-{{ .Release.Name }}
+        namespace: {{ .Release.Namespace }}
   values:
     image_tag: {{ .Values.watcherImageTag}}
     deployment:
       replicas: 1
-      static_workspace: {{ .Release.namespace}}
+      static_workspace: {{ .Release.Namespace}}
       is_shared_pool: False
       in_cluster: True
       admin_key: {{ .Values.watcherAdminKey}}
@@ -33,7 +33,7 @@ spec:
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: {{ .Release.name}}-api
+  name: {{ .Release.Name}}-api
   labels:
     kalavai.job.name: {{ .Values.system.jobId}}
 spec:
@@ -44,8 +44,8 @@ spec:
       version: "{{ .Values.kalavaiApiVersion}}"
       sourceRef:
         kind: HelmRepository
-        name: kalavai-repo-{{ .Release.name }}
-        namespace: {{ .Release.namespace }}
+        name: kalavai-repo-{{ .Release.Name }}
+        namespace: {{ .Release.Namespace }}
   values:
     bridge:
       replicas: 1

@@ -1,0 +1,70 @@
+{
+   "$schema": "http://json-schema.org/draft-07/schema#",
+   "type": "object",
+   "properties": {
+      "watcherVersion": {
+         "description": "Kube watcher version to install in the pool",
+         "type": "string",
+         "enum": ["0.4.20"]
+      },
+      "watcherImageTag": {
+         "description": "Kube watcher image tag to install in the pool",
+         "type": "string",
+         "enum": ["2026.1.2", "latest"]
+      },
+      "watcherAdminKey": {
+         "description": "Kube watcher admin key (full privileges)",
+         "type": "string"
+      },
+      "watcherWriteKey": {
+         "description": "Kube watcher write key (full namespace privileges)",
+         "type": "string"
+      },
+      "watcherReadonlyKey": {
+         "description": "Kube watcher readonly key (read only privileges)",
+         "type": "string"
+      },
+      "kalavaiApiVersion": {
+         "description": "Kalavai API service version to install in the pool",
+         "type": "string",
+         "enum": ["0.1.12"]
+      },
+      "kalavaiApiImageTag": {
+         "description": "Kalavai API service image tag to install in the pool",
+         "type": "string",
+         "enum": ["0.8.10"]
+      },
+      "system": {
+         "properties": {
+            "priorityClassName": {
+               "type": "string",
+               "description": "PriorityClassName to use for the deployment"
+            },
+            "nodeSelectors": {
+               "type": [
+                  "object",
+                  "null"
+               ],
+               "description": "target specific devices. Expected format -> key: value pairs, where 'value' is a list of elements"
+            },
+            "nodeSelectorsOps": {
+               "type": "string",
+               "enum": [
+                  "OR",
+                  "AND"
+               ],
+               "description": "Logical operation to use to apply to nodeSelectors. Accepted values: 'OR', 'AND'"
+            },
+            "jobId": {
+               "type": "string",
+               "description": "Id to tag spawned objects."
+            }
+         }
+      }
+   },
+   "required": [
+      "watcherAdminKey",
+      "watcherWriteKey",
+      "watcherReadonlyKey"
+   ]
+}

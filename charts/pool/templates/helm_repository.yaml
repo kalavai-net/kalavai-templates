@@ -1,0 +1,9 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: kalavai-repo-{{ .Release.name }}
+  labels:
+    kalavai.job.name: {{ .Values.system.jobId}}
+spec:
+  interval: 1h
+  url: https://kalavai-net.github.io/helm-charts/

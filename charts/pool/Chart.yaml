@@ -1,0 +1,13 @@
+apiVersion: v2
+appVersion: 0.0.1
+description: A functional Kalavai pool to manage AI workloads at scale
+icon: https://kalavai-net.github.io/kalavai-client/assets/icons/logo_no_background.png
+kubeVersion: '>= 1.25.0'
+maintainers:
+- email: carlos@kalavai.net
+  name: Carlos Fernandez Musoles
+  url: https://kalavai.net
+name: kalavai-pool
+sources:
+- https://kalavai-net.github.io/kalavai-client/
+version: 0.0.1

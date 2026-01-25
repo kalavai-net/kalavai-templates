@@ -1,0 +1,59 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: watcher-api
+  labels:
+    kalavai.job.name: {{ .Values.system.jobId}}
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: {{ .Release.name}}-watcher
+      version: "{{ .Values.watcherVersion}}"
+      sourceRef:
+        kind: HelmRepository
+        name: kalavai-repo-{{ .Release.name }}
+        namespace: {{ .Release.namespace }}
+  values:
+    image_tag: {{ .Values.watcherImageTag}}
+    deployment:
+      replicas: 1
+      static_workspace: {{ .Release.namespace}}
+      is_shared_pool: False
+      in_cluster: True
+      admin_key: {{ .Values.watcherAdminKey}}
+      write_key: {{ .Values.watcherWriteKey}}
+      readonly_key: {{ .Values.watcherReadonlyKey}}
+      use_auth_key: True
+    service:
+      type: ClusterIP
+    labels:
+      kalavai.job.name: {{ .Values.system.jobId}}
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: {{ .Release.name}}-api
+  labels:
+    kalavai.job.name: {{ .Values.system.jobId}}
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: kalavai-api
+      version: "{{ .Values.kalavaiApiVersion}}"
+      sourceRef:
+        kind: HelmRepository
+        name: kalavai-repo-{{ .Release.name }}
+        namespace: {{ .Release.namespace }}
+  values:
+    bridge:
+      replicas: 1
+      image_tag: {{ .Values.kalavaiApiImageTag}}
+      labels:
+        kalavai.job.name: {{ .Values.system.jobId}}
+      enabled: true
+      watcher_api_url: watcher-api-service:8000
+      watcher_api_key: {{ .Values.watcherAdminKey}}
+      service:
+        type: ClusterIP

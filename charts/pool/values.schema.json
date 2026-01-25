@@ -5,7 +5,7 @@
       "watcherVersion": {
          "description": "Kube watcher version to install in the pool",
          "type": "string",
-         "enum": ["0.4.20"]
+         "enum": ["0.4.21"]
       },
       "watcherImageTag": {
          "description": "Kube watcher image tag to install in the pool",
@@ -27,7 +27,7 @@
       "kalavaiApiVersion": {
          "description": "Kalavai API service version to install in the pool",
          "type": "string",
-         "enum": ["0.1.12"]
+         "enum": ["0.1.13"]
       },
       "kalavaiApiImageTag": {
          "description": "Kalavai API service image tag to install in the pool",

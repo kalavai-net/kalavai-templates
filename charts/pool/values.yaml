@@ -1,5 +1,5 @@
 kalavaiApiImageTag: 0.8.10
-kalavaiApiVersion: 0.1.12
+kalavaiApiVersion: 0.1.13
 system:
   jobPriority: user-spot-priority
   nodeSelectors: null
@@ -7,5 +7,5 @@ system:
 watcherAdminKey: admin_key
 watcherImageTag: 2026.1.2
 watcherReadonlyKey: readonly_key
-watcherVersion: 0.4.20
+watcherVersion: 0.4.21
 watcherWriteKey: write_key

@@ -1,0 +1,9 @@
+{
+    "name": "Serverless",
+    "type": "other",
+    "description": "Deploy docker containers on your cluster.",
+    "docs": "",
+    "icon": "https://1000logos.net/wp-content/uploads/2021/11/Docker-Logo-2013.png",
+    "template_rules": "With the Serverless template you can deploy any docker container on your cluster.",
+    "values_rules": ""
+}

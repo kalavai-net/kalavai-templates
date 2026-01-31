@@ -1,0 +1,16 @@
+command: null
+containerImage: nginx
+cpus: 1
+gpus: 0
+gpuMemory: null
+gpuBackend: null
+memory: 1
+ports:
+- 80
+restartPolicy: OnFailure
+system:
+  jobPriority: user-spot-priority
+  nodeSelectors: null
+  nodeSelectorsOps: OR
+workers: 1
+workingMemory: 5

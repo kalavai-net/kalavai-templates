@@ -1,0 +1,100 @@
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+  name: {{ .Release.Name}}
+  labels:
+    # must have this label
+    kalavai.job.name: {{ .Values.system.jobId}}
+spec:
+  schedulerName: volcano
+  priorityClassName: {{ .Values.system.jobPriority}}
+  plugins:
+    env: []
+    svc: ["--disable-network-policy=true"]
+  maxRetry: 100000
+  tasks:
+  - replicas: {{ .Values.workers}}   # One ps pod specified
+    name: worker
+    maxRetry: 100000
+    policies:
+    - event: PodEvicted
+      action: RestartJob
+    - event: PodFailed
+      action: RestartJob
+    - event: TaskCompleted
+      action: RestartJob
+    - event: Unknown
+      action: RestartJob
+    template: # Definition of the ps pod
+      metadata:
+        labels:
+          kalavai.job.name: {{ .Values.system.jobId}}
+          role: leader
+      spec:
+        terminationGracePeriodSeconds: 60
+        {{ if .Values.system.nodeSelectors }}
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+            {{ if eq .Values.system.nodeSelectorsOps "OR" }}
+              {{ range $k, $v := .Values.system.nodeSelectors }}
+              - matchExpressions:
+                - key: {{$k}}
+                  operator: In
+                  values:
+                  {{ range $v }}
+                  - "{{ . }}"
+                  {{ end }}
+              {{ end }}
+            {{ else }}
+              - matchExpressions:
+              {{ range $k, $v := .Values.system.nodeSelectors }}
+                {{ range $v }}
+                - key: {{ $k }}
+                  operator: In
+                  values:
+                  - "{{ . }}"
+                {{ end }}
+              {{ end }}
+            {{ end }}
+        {{ end }}
+        containers:
+        - name: container
+          image: {{ .Values.containerImage}}
+          imagePullPolicy: Always
+        {{- if .Values.command }}
+          command:
+          - sh
+          - -c
+          - |
+            {{ .Values.command}}
+        {{ end }}
+          ports:
+          {{- range .Values.ports }}
+          - name: port-{{ . }}
+            containerPort: {{ . }}
+            protocol: TCP
+          {{- end }}
+          resources:
+            requests:
+              cpu: {{ .Values.cpus}}
+              memory: {{ .Values.memory}}Gi
+            {{- if eq .Values.gpuBackend "cuda" }}
+              nvidia.com/gpu: {{ .Values.gpus}}
+            {{- else if eq .Values.gpuBackend "amd" }}
+              amd.com/gpu: {{ .Values.gpus}}
+            {{ end }}
+            limits:
+              cpu: {{ .Values.cpus}}
+              memory: {{ .Values.memory}}Gi
+            {{- if eq .Values.gpuBackend "cuda" }}
+              nvidia.com/gpu: {{ .Values.gpus}}
+              {{- if .Values.gpuMemory }}
+              nvidia.com/gpumem: {{ .Values.gpuMemory}}
+              {{ end }}
+            {{- else if eq .Values.gpuBackend "amd"}}
+              amd.com/gpu: {{ .Values.gpus}}
+            {{ end }}
+              ephemeral-storage: {{ .Values.workingMemory}}Gi
+        restartPolicy: {{ .Values.restartPolicy}}

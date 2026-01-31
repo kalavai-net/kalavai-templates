@@ -300,6 +300,24 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/ray-cluster-0.0.1/ray-cluster-0.0.1.tgz
     version: 0.0.1
+  serverless:
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2026-01-31T17:34:48.291733472Z"
+    description: Serverless is a template that allows you to deploy docker containers
+      on your cluster.
+    digest: e3e16d7be90d994679e8dffe3874152a0e541d823edec11dac4bbcb3be6b848a
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: serverless
+    sources:
+    - ""
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/serverless-0.0.1/serverless-0.0.1.tgz
+    version: 0.0.1
   vllm:
   - apiVersion: v2
     appVersion: 0.0.12
@@ -517,4 +535,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-01-25T14:26:02.271467121Z"
+generated: "2026-01-31T17:34:48.291789186Z"

@@ -40,14 +40,10 @@
          "description": "Container restart policy [OnFailure, Always, Never]",
          "type": "string"
       },
-      "ports": {
-         "type": "array",
-         "description": "A list of container ports to open",
-         "items": {
-            "type": "integer",
-            "minimum": 1,
-            "maximum": 65535
-         }
+      "port": {
+         "type": "integer",
+         "description": "Container port to open for external access"
+
       },
       "workingMemory": {
          "description": "Temporary storage to use to cache model weights (in GB), should be big enough to hold the model weights. All workers should have enough free disk to accommodate the weights.",

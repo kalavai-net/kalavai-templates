@@ -5,8 +5,7 @@ gpus: 0
 gpuMemory: null
 gpuBackend: null
 memory: 1
-ports:
-- 80
+port: 80
 restartPolicy: OnFailure
 system:
   jobPriority: user-spot-priority

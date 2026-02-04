@@ -71,11 +71,14 @@ spec:
             {{ .Values.command}}
         {{ end }}
           ports:
-          {{- range .Values.ports }}
-          - name: port-{{ . }}
-            containerPort: {{ . }}
+          - name: port-{{ .Values.port }}
+            containerPort: {{ .Values.port }}
             protocol: TCP
-          {{- end }}
+          # {{- range .Values.ports }}
+          # - name: port-{{ . }}
+          #   containerPort: {{ . }}
+          #   protocol: TCP
+          # {{- end }}
           resources:
             requests:
               cpu: {{ .Values.cpus}}

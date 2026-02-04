@@ -302,6 +302,23 @@ entries:
     version: 0.0.1
   serverless:
   - apiVersion: v2
+    appVersion: 0.0.2
+    created: "2026-02-04T14:19:43.421932845Z"
+    description: Serverless is a template that allows you to deploy docker containers
+      on your cluster.
+    digest: dcbf52eef4c77357e508570b0ff41b43431ce1b4f1be2f45ad349ff97603dd48
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: serverless
+    sources:
+    - ""
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/serverless-0.0.2/serverless-0.0.2.tgz
+    version: 0.0.2
+  - apiVersion: v2
     appVersion: 0.0.1
     created: "2026-01-31T17:34:48.291733472Z"
     description: Serverless is a template that allows you to deploy docker containers
@@ -535,4 +552,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-01-31T17:34:48.291789186Z"
+generated: "2026-02-04T14:19:43.422007974Z"

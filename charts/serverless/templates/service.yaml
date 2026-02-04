@@ -11,9 +11,13 @@ spec:
     role: leader
     kalavai.job.name: {{ .Values.system.jobId }}
   ports:
-  {{- range .Values.ports }}
-  - name: port-{{ . }}
-    port: {{ . }}
-    targetPort: {{ . }}
+  - name: port-{{ .Values.port }}
+    port: {{ .Values.port }}
+    targetPort: {{ .Values.port }}
     protocol: TCP
-  {{- end }}
+  # {{- range .Values.ports }}
+  # - name: port-{{ . }}
+  #   port: {{ . }}
+  #   targetPort: {{ . }}
+  #   protocol: TCP
+  # {{- end }}

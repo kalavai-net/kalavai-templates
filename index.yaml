@@ -105,6 +105,23 @@ entries:
     version: 0.0.1
   llama.cpp:
   - apiVersion: v2
+    appVersion: 0.0.4
+    created: "2026-02-08T18:06:14.72350841Z"
+    description: LLM inference in C/C++
+    digest: 721584720d4cc6be9e1bf1820a34278bbcbb0402322b3a244ccfbb68cacb110b
+    icon: https://user-images.githubusercontent.com/1991296/230134379-7181e485-c521-4d23-a0d6-f7b3b61ba524.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: llama.cpp
+    sources:
+    - https://github.com/ggml-org/llama.cpp
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/llama.cpp-0.0.4/llama.cpp-0.0.4.tgz
+    version: 0.0.4
+  - apiVersion: v2
     appVersion: 0.0.3
     created: "2026-01-21T08:03:18.393641559Z"
     description: LLM inference in C/C++
@@ -353,6 +370,24 @@ entries:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/serverless-0.0.1/serverless-0.0.1.tgz
     version: 0.0.1
   vllm:
+  - apiVersion: v2
+    appVersion: 0.0.17
+    created: "2026-02-08T18:06:15.132872056Z"
+    description: A high-throughput and memory-efficient inference and serving engine
+      for LLMs
+    digest: 530ef77a778f24668fa66954a5b50493424c2cf8969b490ae2fee35cbd000e62
+    icon: https://docs.vllm.ai/en/latest/assets/logos/vllm-logo-only-light.ico
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: vllm
+    sources:
+    - https://docs.vllm.ai/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.17/vllm-0.0.17.tgz
+    version: 0.0.17
   - apiVersion: v2
     appVersion: 0.0.16
     created: "2026-02-08T18:03:01.835768823Z"
@@ -641,4 +676,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-02-08T18:03:01.835964738Z"
+generated: "2026-02-08T18:06:15.133096972Z"

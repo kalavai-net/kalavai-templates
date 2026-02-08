@@ -277,3 +277,107 @@ spec:
             medium: Memory
             sizeLimit: {{ div .Values.memory 2}}Gi
         restartPolicy: OnFailure
+  {{ if .Values.litellmKey }}
+  - replicas: 1
+    name: registrar
+    policies:
+    - event: PodEvicted
+      action: RestartJob
+    - event: PodFailed
+      action: RestartJob
+    - event: TaskCompleted
+      action: RestartJob
+    - event: Unknown
+      action: RestartJob
+    template: # Definition of worker pods
+      metadata:
+        labels:
+          kalavai.job.name: {{ .Values.system.jobId}}
+      spec:
+        terminationGracePeriodSeconds: 60
+      {{ if eq .Values.gpuBackend "cuda" }}
+        runtimeClassName: nvidia
+      {{ end }}
+      {{ if .Values.system.nodeSelectors }}
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+            {{ if eq .Values.system.nodeSelectorsOps "OR" }}
+              {{ range $k, $v := .Values.system.nodeSelectors }}
+              - matchExpressions:
+                - key: {{$k}}
+                  operator: In
+                  values:
+                  {{ range $v }}
+                  - "{{ . }}"
+                  {{ end }}
+              {{ end }}
+            {{ else }}
+              - matchExpressions:
+              {{ range $k, $v := .Values.system.nodeSelectors }}
+                {{ range $v }}
+                - key: {{ $k }}
+                  operator: In
+                  values:
+                  - "{{ . }}"
+                {{ end }}
+              {{ end }}
+            {{ end }}
+        {{ end }}
+        containers:
+        - name: registrar-leader
+          image: ghcr.io/kalavai-net/kalavai-utils:latest
+          command:
+          - sh
+          - -c
+          - |
+            echo "Waiting for model to be served..."
+            echo "Namespace: "$VC_NAMESPACE;
+            PS_HOST=`cat /etc/volcano/server.host`;
+            /workspace/wait_for_service.sh --servers="$PS_HOST" --port=8080
+            export MODEL_API_BASE="http://"$PS_HOST"."$VC_NAMESPACE":8080/v1";
+            /workspace/start_point.sh \
+              --litellm_kalavai_extras='{{ .Values.litellmKalavaiExtras }}' \
+              --litellm_access_group={{ .Values.litellmAccessGroup }}
+          env:
+          - name: VC_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: LITELLM_MODEL_NAME
+          {{ if .Values.modelNameOverride }}
+            value: "{{ .Values.modelNameOverride }}"
+          {{ else }}
+            value: "{{ .Values.modelId }}"
+          {{ end }}
+          - name: LITELLM_BASE_URL
+            value: {{ .Values.litellmBaseUrl }}
+          - name: LITELLM_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name }}-secret
+                key: litellm_key
+          - name: MODEL_ID
+            value: {{ .Values.modelId }}
+          - name: DEPLOYMENT_ID
+            value: {{ .Release.Name }}
+          - name: PROVIDER
+            value: hosted_vllm
+          lifecycle:
+            preStop:
+              exec:
+                command: 
+                - sh
+                - -c
+                - |
+                  /workspace/cleanup.sh
+          resources:
+            requests:
+              cpu: 0.05
+              memory: 0.05Gi
+            limits:
+              cpu: 0.05
+              memory: 0.05Gi
+        restartPolicy: Always
+  {{ end }}

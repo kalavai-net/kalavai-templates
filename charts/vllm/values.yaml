@@ -1,4 +1,4 @@
-vllmVersion: v0.14.0
+vllmVersion: v0.15.1
 cpus: 2
 gpuMemory: null
 extra: --dtype float16 --enforce-eager

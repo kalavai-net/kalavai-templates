@@ -9,7 +9,8 @@ WORKDIR /home/ray/workspace
 # Get utils scripts
 COPY --from=base /home/ray/workspace/ .
 
-RUN sudo apt update && sudo apt install bc wget ffmpeg curl hipblas hipsparse rocsparse rocrand rocthrust rocsolver rocfft hipcub rocprim g++ -y && \
+RUN sudo apt update && sudo apt install -y --no-install-recommends \
+    bc wget ffmpeg curl hipblas hipsparse rocsparse rocrand rocthrust rocsolver rocfft hipcub rocprim g++ && \
     sudo rm -rf /var/lib/apt/lists/*
 
 # install dependencies

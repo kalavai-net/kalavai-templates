@@ -295,9 +295,6 @@ spec:
           kalavai.job.name: {{ .Values.system.jobId}}
       spec:
         terminationGracePeriodSeconds: 60
-      {{ if eq .Values.gpuBackend "cuda" }}
-        runtimeClassName: nvidia
-      {{ end }}
       {{ if .Values.system.nodeSelectors }}
         affinity:
           nodeAffinity:

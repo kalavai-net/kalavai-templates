@@ -1,0 +1,134 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    # KAI uses labels for queue and project association
+    kai.scheduler/queue: {{ .Values.system.queue | default "default" }}
+    kalavai.job.name: {{ .Values.system.jobId }}
+spec:
+  # The Pod-Grouper will automatically set minMember based on this
+  parallelism: {{ .Values.workers }} 
+  completions: {{ .Values.workers }}
+  backoffLimit: 100 # Equivalent to maxRetry
+  template:
+    metadata:
+      labels:
+        # Essential: KAI tracks workloads via this label
+        kai.scheduler/queue: {{ .Values.system.queue | default "default" }}
+        kalavai.job.name: {{ .Values.system.jobId }}
+      annotations:
+        # If using fractional GPUs on NVIDIA:
+        # gpu-fraction: "0.5" 
+    spec:
+      schedulerName: kai-scheduler
+      priorityClassName: {{ .Values.system.jobPriority }}
+      terminationGracePeriodSeconds: 60
+      {{ if eq .Values.gpuBackend "cuda" }}
+      runtimeClassName: nvidia
+      {{ end }}
+
+      # Node Affinity (Remains the same as standard K8s)
+      {{- if .Values.system.nodeSelectors }}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            {{- if eq .Values.system.nodeSelectorsOps "OR" }}
+              {{- range $k, $v := .Values.system.nodeSelectors }}
+              - matchExpressions:
+                - key: {{ $k }}
+                  operator: In
+                  values: {{ $v | toJson }}
+              {{- end }}
+            {{- else }}
+              - matchExpressions:
+              {{- range $k, $v := .Values.system.nodeSelectors }}
+                - key: {{ $k }}
+                  operator: In
+                  values: {{ $v | toJson }}
+              {{- end }}
+            {{- end }}
+      {{- end }}
+
+      containers:
+      - name: vllm-node
+        image: ghcr.io/kalavai-net/vllm-{{ .Values.gpuBackend }}:{{ .Values.vllmVersion }}
+        command:
+        - sh
+        - -c
+        - |
+          # SERVICE DISCOVERY CHANGE: 
+          # Instead of /etc/volcano/server.host, use the service name you create
+          LEADER_HOST="{{ .Release.Name }}-leader-svc"; 
+          
+          {{ if eq .Values.gpuBackend "cuda" }}
+          nvidia-smi;
+          {{ else }}
+          rocm-smi;
+          {{ end }}
+
+          # Logic to determine if I am leader or worker based on index
+          # (K8s Jobs provide the index via environment variable)
+          if [ "$JOB_COMPLETION_INDEX" = "0" ]; then
+            echo "Starting as Leader..."
+            /home/ray/workspace/run_model.sh \
+              --model_path="/home/ray/cache/{{ .Values.modelId }}" \
+              --model_id={{ .Values.modelId}} \
+              --model_name={{ .Values.modelNameOverride }} \
+              --extra='{{ .Values.extra }}' \
+              --template_url='{{ .Values.templateUrl }}' \
+              --tensor_parallel_size={{ .Values.gpus }} \
+              --pipeline_parallel_size={{ .Values.workers }} \
+              --tool_call_parser={{ .Values.toolCallParser }} \
+              --lora_modules="{{ .Values.loraModules }}";
+          else
+            echo "Starting as worker. Connecting to $LEADER_HOST......"
+            RAY_BACKEND_LOG_LEVEL=error /home/ray/workspace/ray_init.sh worker --ray_address=$LEADER_HOST --ray_port=6379 --ray_object_store_memory={{ mul .Values.memory 500000000}} --ray_block=1
+          fi
+        resources:
+          limits:
+            cpu: {{ .Values.cpus }}
+            memory: {{ .Values.memory }}Gi
+            {{- if eq .Values.gpuBackend "cuda" }}
+            nvidia.com/gpu: {{ .Values.gpus }}
+            {{- else }}
+            amd.com/gpu: {{ .Values.gpus }}
+            {{- end }}
+          requests:
+            cpu: {{ .Values.cpus }}
+            memory: {{ .Values.memory }}Gi
+            {{- if eq .Values.gpuBackend "cuda" }}
+            nvidia.com/gpu: {{ .Values.gpus }}
+            {{- else }}
+            amd.com/gpu: {{ .Values.gpus }}
+            {{- end }}
+        volumeMounts:
+          - mountPath: /dev/shm
+            name: dshm
+          - name: cache
+            mountPath: /home/ray/cache
+      volumes:
+      - name: cache
+        emptyDir: {}
+      - name: dshm
+        emptyDir:
+          medium: Memory
+          sizeLimit: {{ div .Values.memory 2 }}Gi
+      restartPolicy: OnFailure
+# helm upgrade -i kai-scheduler oci://ghcr.io/nvidia/kai-scheduler/kai-scheduler -n kai-scheduler --create-namespace --version v0.12.12
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-headless
+spec:
+  clusterIP: None # This makes it "Headless"
+  selector:
+    # This must match the label in your Job's pod template
+    kalavai.job.name: {{ .Values.system.jobId }}
+  ports:
+  - port: 6379
+    name: ray-port
+  - port: 8080
+    name: model-port

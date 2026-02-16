@@ -26,6 +26,7 @@ modelId: null
 modelNameOverride: null
 nodeport: null
 system:
+  queue: default
   priorityClassName: user-spot-priority
   nodeSelectors: null
   nodeSelectorsOps: OR

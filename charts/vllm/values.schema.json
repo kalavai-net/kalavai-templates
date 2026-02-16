@@ -182,6 +182,10 @@
       },
       "system": {
          "properties": {
+            "queue": {
+                "type": "string",
+                "description": "Queue to use for the deployment"
+            },
             "priorityClassName": {
                 "type": "string",
                 "description": "PriorityClassName to use for the deployment"

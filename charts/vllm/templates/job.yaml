@@ -79,7 +79,7 @@ spec:
           {{ end }}
             ray status;
             # Run model
-            echo "Total parallelism: { mul .Values.workers .Values.gpus}}";
+            echo "Total parallelism: {{ mul .Values.workers .Values.gpus }}";
             /home/ray/workspace/run_model.sh \
               --model_path="/home/ray/cache/{{ .Values.modelId }}" \
               --model_id={{ .Values.modelId}} \

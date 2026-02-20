@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Release.Name }}-ui-secret
+type: Opaque
+stringData:
+  access-key: {{ .Values.watcherAdminKey }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-ui
+  labels:
+    app: {{ .Release.Name }}-ui
+    kalavai.job.name: {{ .Values.system.jobId}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-ui
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-ui
+        kalavai.job.name: {{ .Values.system.jobId}}
+    spec:
+      containers:
+        - name: kalavai-ui
+          image: ghcr.io/kalavai-net/kalavai-ui:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NEXT_PUBLIC_KALAVAI_API_URL
+              value: {{ .Release.Name}}-api-service:8000
+            - name: NEXT_PUBLIC_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-ui-secret
+                  key: access-key
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "512Mi"
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-ui-service
+  labels:
+    app: {{ .Release.Name }}-ui
+    kalavai.job.name: {{ .Values.system.jobId}}
+spec:
+  selector:
+    app: {{ .Release.Name }}-ui
+    kalavai.job.name: {{ .Values.system.jobId}}
+  ports:
+    - port: 80
+      targetPort: 3000
+  type: ClusterIP

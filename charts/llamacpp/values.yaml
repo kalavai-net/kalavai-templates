@@ -14,7 +14,7 @@ memory: 4
 modelFilename: null
 modelNameOverride: null
 nodeport: null
-parallel: 1
+parallel: -1
 repoId: null
 serverExtra: null
 system:

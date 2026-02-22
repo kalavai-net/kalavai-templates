@@ -19,7 +19,8 @@
       },
       "backend": {
          "description": "Backend to run workers. One of the following: cpu, cuda, rocm",
-         "type": "string"
+         "type": "string",
+         "enum": ["cpu", "cuda", "rocm"]
       },
       "repoId": {
          "description": "Huggingface model id to deploy",
@@ -31,7 +32,10 @@
       },
       "hfToken": {
          "description": "Huggingface access token, only required to load gated model weights",
-         "type": "string"
+         "type": [
+            "string",
+            "null"
+         ]
       },
       "cpus": {
          "description": "CPUs to be used per single worker (final one = cpus * workers). Workers should have these many CPUs available.",
@@ -43,10 +47,6 @@
       },
       "memory": {
          "description": "RAM memory to be used per single worker (final one = memory * workers). Workers should have these much RAM available.",
-         "type": "integer"
-      },
-      "cudaGpuMemPercentage": {
-         "description": "Maximum memory fraction allowed to be used from the GPU vRAM.",
          "type": "integer"
       },
       "serverExtra": {

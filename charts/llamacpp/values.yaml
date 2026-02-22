@@ -1,6 +1,5 @@
 backend: cpu
 cpus: 2
-cudaGpuMemPercentage: 100
 hfToken: null
 lagoApiKey: null
 lagoEventCode: null
@@ -19,7 +18,8 @@ parallel: 1
 repoId: null
 serverExtra: null
 system:
-  jobPriority: user-spot-priority
+  jobId: null
+  priorityClassName: user-spot-priority
   nodeSelectors: null
   nodeSelectorsOps: OR
 workers: 1

@@ -75,9 +75,9 @@ spec:
           - sh
           - -c
           - |
-          {{ if eq .Values.backend == "cuda" }}
+          {{ if eq .Values.backend  "cuda" }}
             /workspace/build.sh server_nvidia;
-          {{ else if eq .Values.backend == "rocm" }}
+          {{ else if eq .Values.backend "rocm" }}
             /workspace/build.sh server_amd; 
           {{ else }}
             /workspace/build.sh server_cpu;
@@ -111,22 +111,22 @@ spec:
             requests:
               cpu: {{ .Values.cpus}}
               memory: {{ .Values.memory}}Gi
-            {{ if eq .Values.gpuBackend "cuda" }}
-              nvidia.com/gpu: {{ .Values.gpus}}
-            {{ else }}
-              amd.com/gpu: {{ .Values.gpus}}
+            {{ if eq .Values.backend "cuda" }}
+              nvidia.com/gpu: 1
+            {{ else if eq .Values.backend "rocm" }}
+              amd.com/gpu: 1
             {{ end }}
               ephemeral-storage: {{ .Values.workingMemory}}Gi
             limits:
               cpu: {{ .Values.cpus}}
               memory: {{ .Values.memory}}Gi
-            {{ if eq .Values.gpuBackend "cuda" }}
-              nvidia.com/gpu: {{ .Values.gpus}}
+            {{ if eq .Values.backend "cuda" }}
+              nvidia.com/gpu: 1
               {{ if .Values.gpuMemory }}
               nvidia.com/gpumem: {{ .Values.gpuMemory}}
               {{ end }}
-            {{ else }}
-              amd.com/gpu: {{ .Values.gpus}}
+            {{ else if eq .Values.backend "rocm" }}
+              amd.com/gpu: 1
             {{ end }}
               ephemeral-storage: {{ .Values.workingMemory}}Gi
           volumeMounts:
@@ -153,7 +153,7 @@ spec:
           kalavai.job.name: {{ .Values.system.jobId}}
       spec:
         terminationGracePeriodSeconds: 60
-      {{ if eq .Values.gpuBackend "cuda" }}
+      {{ if eq .Values.backend "cuda" }}
         runtimeClassName: nvidia
       {{ end }}
       {{ if .Values.system.nodeSelectors }}
@@ -214,22 +214,22 @@ spec:
             requests:
               cpu: {{ .Values.cpus}}
               memory: {{ .Values.memory}}Gi
-            {{ if eq .Values.gpuBackend "cuda" }}
-              nvidia.com/gpu: {{ .Values.gpus}}
-            {{ else }}
-              amd.com/gpu: {{ .Values.gpus}}
+            {{ if eq .Values.backend "cuda" }}
+              nvidia.com/gpu: 1
+            {{ else if eq .Values.backend "rocm" }}
+              amd.com/gpu: 1
             {{ end }}
               ephemeral-storage: {{ .Values.workingMemory}}Gi
             limits:
               cpu: {{ .Values.cpus}}
               memory: {{ .Values.memory}}Gi
-            {{ if eq .Values.gpuBackend "cuda" }}
-              nvidia.com/gpu: {{ .Values.gpus}}
+            {{ if eq .Values.backend "cuda" }}
+              nvidia.com/gpu: 1
               {{ if .Values.gpuMemory }}
               nvidia.com/gpumem: {{ .Values.gpuMemory}}
               {{ end }}
-            {{ else }}
-              amd.com/gpu: {{ .Values.gpus}}
+            {{ else if eq .Values.backend "rocm" }}
+              amd.com/gpu: 1
             {{ end }}
               ephemeral-storage: {{ .Values.workingMemory}}Gi
         restartPolicy: OnFailure

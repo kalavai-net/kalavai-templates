@@ -107,7 +107,7 @@ spec:
       spec:
         #restartPolicy: Never # for testing
         terminationGracePeriodSeconds: 60
-        priorityClassName: {{ .Values.system.jobPriority }}
+        priorityClassName: {{ .Values.system.priorityClassName }}
         runtimeClassName: nvidia
       {{ if .Values.system.nodeSelectors }}
         affinity:

@@ -18,7 +18,7 @@ COPY common_requirements.txt .
 # reinstalling Ray after vllm so we pin the version and submodules (otherwise vllm brings its own)
 #RUN python3 -m venv /home/ray/workspace/env
 #RUN . /home/ray/workspace/env/bin/activate && \
-#RUN pip install -r common_requirements.txt --no-cache-dir
+RUN pip install -r common_requirements.txt --no-cache-dir
 RUN pip install vllm==$PIP_VLLM_VERSION --no-cache-dir
 #RUN pip install -U vllm --pre --extra-index-url https://wheels.vllm.ai/nightly
     #pip install ray[serve-grpc,default]==2.43.0 --no-cache-dir

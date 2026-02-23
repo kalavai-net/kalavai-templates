@@ -60,6 +60,10 @@
          "description": "RAM memory to be used per single worker (final one = memory * workers). Workers should have these much RAM available.",
          "type": "integer"
       },
+      "sharedMemory": {
+         "description": "Shared memory to be used per single worker (final one = sharedMemory * workers). Workers should have these much shared memory available.",
+         "type": "integer"
+      },
       "gpuMemory": {
          "description": "[NVIDIA only] Maximum memory allowed to be used from the GPU vRAM.",
          "type": ["integer", "null"]

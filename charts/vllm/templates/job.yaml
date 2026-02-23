@@ -128,7 +128,7 @@ spec:
           resources:
             requests:
               cpu: {{ .Values.cpus}}
-              memory: {{ .Values.memory}}Gi
+              memory: {{ .Values.memory }}Gi
             {{ if eq .Values.gpuBackend "cuda" }}
               nvidia.com/gpu: {{ .Values.gpus}}
             {{ else }}
@@ -137,7 +137,7 @@ spec:
               ephemeral-storage: {{ .Values.workingMemory}}Gi
             limits:
               cpu: {{ .Values.cpus}}
-              memory: {{ .Values.memory}}Gi
+              memory: {{ add .Values.memory .Values.sharedMemory }}Gi
             {{ if eq .Values.gpuBackend "cuda" }}
               nvidia.com/gpu: {{ .Values.gpus}}
               {{ if .Values.gpuMemory }}
@@ -158,7 +158,7 @@ spec:
         - name: dshm
           emptyDir:
             medium: Memory
-            sizeLimit: {{ div .Values.memory 2}}Gi
+            sizeLimit: {{ .Values.sharedMemory }}Gi
         restartPolicy: OnFailure
   - replicas: {{ sub .Values.workers 1}}
     name: worker
@@ -254,7 +254,7 @@ spec:
               ephemeral-storage: {{ .Values.workingMemory}}Gi
             limits:
               cpu: {{ .Values.cpus}}
-              memory: {{ .Values.memory}}Gi
+              memory: {{ add .Values.memory .Values.sharedMemory}}Gi
             {{ if eq .Values.gpuBackend "cuda" }}
               nvidia.com/gpu: {{ .Values.gpus}}
               {{ if .Values.gpuMemory }}
@@ -275,7 +275,7 @@ spec:
         - name: dshm
           emptyDir:
             medium: Memory
-            sizeLimit: {{ div .Values.memory 2}}Gi
+            sizeLimit: {{ .Values.sharedMemory}}Gi
         restartPolicy: OnFailure
   {{ if .Values.litellmKey }}
   - replicas: 1

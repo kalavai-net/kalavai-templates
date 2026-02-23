@@ -25,6 +25,7 @@ memory: 14
 modelId: null
 modelNameOverride: null
 nodeport: null
+sharedMemory: 6
 system:
   queue: default
   priorityClassName: user-spot-priority

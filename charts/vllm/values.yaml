@@ -1,4 +1,5 @@
-vllmVersion: v0.13.0
+imagePullPolicy: IfNotPresent
+vllmVersion: latest
 cpus: 2
 gpuMemory: null
 extra: --dtype float16 --enforce-eager

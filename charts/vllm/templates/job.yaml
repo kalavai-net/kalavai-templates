@@ -65,6 +65,7 @@ spec:
         containers:
         - name: vllm-leader
           image: ghcr.io/kalavai-net/vllm-{{ .Values.gpuBackend}}:{{ .Values.vllmVersion }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
           command:
           - sh
           - -c
@@ -210,6 +211,7 @@ spec:
         containers:
         - name: vllm-worker
           image: ghcr.io/kalavai-net/vllm-{{ .Values.gpuBackend}}:{{ .Values.vllmVersion }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
           command:
           - sh
           - -c

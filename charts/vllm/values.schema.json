@@ -2,10 +2,15 @@
    "$schema": "http://json-schema.org/draft-07/schema#",
    "type": "object",
    "properties": {
+      "imagePullPolicy": {
+         "description": "Image pull policy for the containers (Always, IfNotPresent, Never)",
+         "type": "string",
+         "enum": ["Always", "IfNotPresent", "Never"]
+      },
       "vllmVersion": {
          "description": "vLLM engine version to deploy (v0.12.0, v0.13.0)",
          "type": "string",
-         "enum": ["v0.12.0", "v0.13.0", "v0.15.0"]
+         "enum": ["latest", "v0.12.0", "v0.13.0", "v0.15.0"]
       },
       "gpuBackend": {
          "description": "Use 'cuda' (nvidia cards) or 'rocm' (AMD cards) backend",

@@ -15,16 +15,28 @@ spec:
         name: kalavai-repo-{{ .Release.Name }}
         namespace: {{ .Release.Namespace }}
   values:
-    image_tag: {{ .Values.watcherImageTag}}
+    imageTag: {{ .Values.watcherImageTag}}
     deployment:
       replicas: 1
-      static_workspace: {{ .Release.Namespace}}
-      is_shared_pool: False
-      in_cluster: True
-      admin_key: {{ .Values.watcherAdminKey}}
-      write_key: {{ .Values.watcherWriteKey}}
-      readonly_key: {{ .Values.watcherReadonlyKey}}
-      use_auth_key: True
+      staticWorkspace: {{ .Release.Namespace}}
+      isSharedPool: False
+      inCluster: True
+      adminKey:
+        valueFrom:
+          secretKeyRef:
+            name: {{ .Release.Name }}-secret
+            key: watcherAdminKey
+      writeKey:
+        valueFrom:
+          secretKeyRef:
+            name: {{ .Release.Name }}-secret
+            key: watcherWriteKey
+      readonlyKey:
+        valueFrom:
+          secretKeyRef:
+            name: {{ .Release.Name }}-secret
+            key: watcherReadonlyKey
+      useAuthKey: True
     service:
       type: ClusterIP
     labels:
@@ -49,11 +61,15 @@ spec:
   values:
     bridge:
       replicas: 1
-      image_tag: {{ .Values.kalavaiApiImageTag}}
+      imageTag: {{ .Values.kalavaiApiImageTag}}
       labels:
         kalavai.job.name: {{ .Values.system.jobId}}
       enabled: true
-      watcher_api_url: {{ .Release.Name}}-watcher-api-service:8000
-      watcher_api_key: {{ .Values.watcherAdminKey}}
+      watcherApiUrl: {{ .Release.Name}}-watcher-api-service:8000
+      watcherApiKey: {{ .Values.watcherAdminKey}}
+    {{- if and .Values.kalavaiApiRingfenceNodeLabel .Values.kalavaiApiRingfenceNodeLabelValue }}
+      ringfenceNodeLabel: {{ .Values.kalavaiApiRingfenceNodeLabel}}
+      ringfenceNodeLabelValue: {{ .Values.kalavaiApiRingfenceNodeLabelValue}}
+    {{- end }}
       # service:
       #   type: ClusterIP

@@ -1,0 +1,24 @@
+{{- if .Values.resourceQuota.enabled }}
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: compute-resources
+spec:
+  hard:
+  {{- if .Values.resourceQuota.cpu }}
+    requests.cpu: "1"
+    limits.cpu: "2"
+  {{- end }}
+  {{- if .Values.resourceQuota.memory }}
+    requests.memory: "1Gi"
+    limits.memory: "2Gi"
+  {{- end }}
+  {{- if .Values.resourceQuota.nvidia }}
+    requests.nvidia.com/gpu: 4
+    limits.nvidia.com/gpu: 4
+  {{- end }}
+  {{- if .Values.resourceQuota.amd }}
+    requests.amd.com/gpu: 4
+    limits.amd.com/gpu: 4
+  {{- end }}
+{{- end }}

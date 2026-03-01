@@ -5,12 +5,12 @@
       "watcherVersion": {
          "description": "Kube watcher version to install in the pool",
          "type": "string",
-         "enum": ["0.4.22"]
+         "enum": ["0.4.24"]
       },
       "watcherImageTag": {
          "description": "Kube watcher image tag to install in the pool",
          "type": "string",
-         "enum": ["2026.1.2", "latest"]
+         "enum": ["2026.2.6", "latest"]
       },
       "watcherAdminKey": {
          "description": "Kube watcher admin key (full privileges)",
@@ -27,12 +27,52 @@
       "kalavaiApiVersion": {
          "description": "Kalavai API service version to install in the pool",
          "type": "string",
-         "enum": ["0.1.14"]
+         "enum": ["0.1.16"]
+      },
+      "kalavaiApiRingfenceNodeLabel": {
+         "description": "Kalavai API service to ringfence nodes based on node label",
+         "type": ["string", "null"]
+      },
+      "kalavaiApiRingfenceNodeLabelValue": {
+         "description": "Kalavai API service to ringfence nodes based on node label value",
+         "type": ["string", "null"]
       },
       "kalavaiApiImageTag": {
          "description": "Kalavai API service image tag to install in the pool",
          "type": "string",
-         "enum": ["0.8.10", "latest"]
+         "enum": ["0.8.17", "latest"]
+      },
+      "resourceQuota": {
+         "properties": {
+            "enabled": {
+               "type": "boolean",
+               "description": "Enable resource quota"
+            },
+            "cpu": {
+               "type": "integer",
+               "description": "CPU requests and limits"
+            },
+            "memory": {
+               "type": "string",
+               "description": "Memory requests and limits"
+            },
+            "amd": {
+               "type": "integer",
+               "description": "AMD GPU requests and limits"
+            },
+            "nvidia": {
+               "type": "integer",
+               "description": "NVIDIA GPU requests and limits"
+            }
+         }
+      },
+      "ui": {
+         "properties": {
+            "enabled": {
+               "type": "boolean",
+               "description": "Enable UI"
+            }
+         }
       },
       "system": {
          "properties": {

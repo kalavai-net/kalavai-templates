@@ -1,12 +1,24 @@
-kalavaiApiImageTag: 0.8.14
-kalavaiApiVersion: 0.1.14
+kalavaiApiImageTag: 0.8.17
+kalavaiApiVersion: 0.1.16
+kalavaiApiRingfenceNodeLabel: null
+kalavaiApiRingfenceNodeLabelValue: null
   
 system:
   jobPriority: user-spot-priority
   nodeSelectors: null
   nodeSelectorsOps: OR
 watcherAdminKey: admin_key
-watcherImageTag: 2026.2.1
+watcherImageTag: 2026.2.6
 watcherReadonlyKey: readonly_key
-watcherVersion: 0.4.22
+watcherVersion: 0.4.24
 watcherWriteKey: write_key
+
+resourceQuota:
+  enabled: false
+  cpu: 4
+  memory: "8Gi"
+  nvidia: 0
+  amd: 0
+
+ui: 
+  enabled: true

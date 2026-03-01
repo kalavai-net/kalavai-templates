@@ -24,7 +24,7 @@ spec:
             - containerPort: 3000
           env:
             - name: NEXT_PUBLIC_KALAVAI_API_URL
-              value: {{ .Release.Name}}-api-service:8000
+              value: http://{{ .Release.Name}}-api-service:8000
             - name: NEXT_PUBLIC_ACCESS_KEY
               valueFrom:
                 secretKeyRef:

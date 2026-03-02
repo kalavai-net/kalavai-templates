@@ -50,7 +50,8 @@ spec:
     app: {{ .Release.Name }}-ui
     kalavai.job.name: {{ .Values.system.jobId}}
   ports:
-    - port: 80
+    - name: main
+      port: 80
       targetPort: 3000
   type: NodePort
 {{- end }}

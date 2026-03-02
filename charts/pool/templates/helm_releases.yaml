@@ -69,7 +69,11 @@ spec:
         kalavai.job.name: {{ .Values.system.jobId}}
       enabled: true
       watcherApiUrl: {{ .Release.Name}}-watcher-api-service:8000
-      watcherApiKey: {{ .Values.watcherAdminKey}}
+      watcherApiKey: 
+        valueFrom:
+          secretKeyRef:
+            name: {{ .Release.Name }}-secret
+            key: watcherAdminKey
     {{- if and .Values.kalavaiApiRingfenceNodeLabel .Values.kalavaiApiRingfenceNodeLabelValue }}
       ringfenceNodeLabel: {{ .Values.kalavaiApiRingfenceNodeLabel}}
       ringfenceNodeLabelValue: {{ .Values.kalavaiApiRingfenceNodeLabelValue}}

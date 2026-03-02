@@ -9,7 +9,7 @@ system:
   nodeSelectors: null
   nodeSelectorsOps: OR
 watcherImageTag: 2026.2.6
-watcherVersion: 0.4.24
+watcherVersion: 0.4.25
 watcherAdminKey: admin_key
 watcherReadonlyKey: readonly_key
 watcherWriteKey: write_key

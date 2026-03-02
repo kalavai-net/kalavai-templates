@@ -25,6 +25,7 @@ spec:
       writeKey: {{ .Values.watcherWriteKey }}
       readonlyKey: {{ .Values.watcherReadonlyKey }}
       useAuthKey: True
+      prometheusEndpoint: http://thanos-query-frontend.monitoring:9090
     service:
       type: ClusterIP
     labels:

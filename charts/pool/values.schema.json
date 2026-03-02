@@ -29,6 +29,10 @@
          "type": "string",
          "enum": ["0.1.16"]
       },
+      "kalavaiApiForcedNamespace": {
+         "description": "Whether to force the API to only have single namespace access",
+         "type": "boolean"
+      },
       "kalavaiApiRingfenceNodeLabel": {
          "description": "Kalavai API service to ringfence nodes based on node label",
          "type": ["string", "null"]

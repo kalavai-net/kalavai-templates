@@ -5,7 +5,7 @@
       "watcherVersion": {
          "description": "Kube watcher version to install in the pool",
          "type": "string",
-         "enum": ["0.4.24"]
+         "enum": ["0.4.25"]
       },
       "watcherImageTag": {
          "description": "Kube watcher image tag to install in the pool",

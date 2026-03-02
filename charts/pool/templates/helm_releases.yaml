@@ -59,9 +59,6 @@ spec:
         name: kalavai-repo-{{ .Release.Name }}
         namespace: {{ .Release.Namespace }}
   values:
-  {{- if .Values.kalavaiApiForcedNamespace }}
-    forcedNamespace: {{ .Release.Namespace | default "default" }}
-  {{- end }}
     bridge:
       replicas: 1
       imageTag: {{ .Values.kalavaiApiImageTag}}
@@ -77,6 +74,9 @@ spec:
     {{- if and .Values.kalavaiApiRingfenceNodeLabel .Values.kalavaiApiRingfenceNodeLabelValue }}
       ringfenceNodeLabel: {{ .Values.kalavaiApiRingfenceNodeLabel}}
       ringfenceNodeLabelValue: {{ .Values.kalavaiApiRingfenceNodeLabelValue}}
+    {{- end }}
+    {{- if .Values.kalavaiApiForcedNamespace }}
+      forcedNamespace: {{ .Release.Namespace | default "default" | quote }}
     {{- end }}
       # service:
       #   type: ClusterIP

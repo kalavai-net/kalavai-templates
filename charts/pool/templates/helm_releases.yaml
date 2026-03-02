@@ -21,21 +21,9 @@ spec:
       staticWorkspace: {{ .Release.Namespace}}
       isSharedPool: False
       inCluster: True
-      adminKey:
-        valueFrom:
-          secretKeyRef:
-            name: {{ .Release.Name }}-secret
-            key: watcherAdminKey
-      writeKey:
-        valueFrom:
-          secretKeyRef:
-            name: {{ .Release.Name }}-secret
-            key: watcherWriteKey
-      readonlyKey:
-        valueFrom:
-          secretKeyRef:
-            name: {{ .Release.Name }}-secret
-            key: watcherReadonlyKey
+      adminKey: {{ .Values.watcherAdminKey }}
+      writeKey: {{ .Values.watcherWriteKey }}
+      readonlyKey: {{ .Values.watcherReadonlyKey }}
       useAuthKey: True
     service:
       type: ClusterIP
@@ -66,11 +54,7 @@ spec:
         kalavai.job.name: {{ .Values.system.jobId}}
       enabled: true
       watcherApiUrl: {{ .Release.Name}}-watcher-api-service:8000
-      watcherApiKey: 
-        valueFrom:
-          secretKeyRef:
-            name: {{ .Release.Name }}-secret
-            key: watcherAdminKey
+      watcherApiKey: {{ .Values.watcherAdminKey }}
     {{- if and .Values.kalavaiApiRingfenceNodeLabel .Values.kalavaiApiRingfenceNodeLabelValue }}
       ringfenceNodeLabel: {{ .Values.kalavaiApiRingfenceNodeLabel}}
       ringfenceNodeLabelValue: {{ .Values.kalavaiApiRingfenceNodeLabelValue}}

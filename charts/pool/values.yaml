@@ -8,10 +8,10 @@ system:
   jobPriority: user-spot-priority
   nodeSelectors: null
   nodeSelectorsOps: OR
-watcherAdminKey: admin_key
 watcherImageTag: 2026.2.6
-watcherReadonlyKey: readonly_key
 watcherVersion: 0.4.24
+watcherAdminKey: admin_key
+watcherReadonlyKey: readonly_key
 watcherWriteKey: write_key
 
 resourceQuota:

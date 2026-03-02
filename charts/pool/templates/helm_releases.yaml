@@ -60,7 +60,7 @@ spec:
         namespace: {{ .Release.Namespace }}
   values:
   {{- if .Values.kalavaiApiForcedNamespace }}
-    forcedNamespace: {{ .Release.Namespace }}
+    forcedNamespace: {{ .Release.Namespace | default "default" }}
   {{- end }}
     bridge:
       replicas: 1

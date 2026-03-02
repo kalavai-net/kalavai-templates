@@ -2,6 +2,23 @@ apiVersion: v1
 entries:
   kalavai-pool:
   - apiVersion: v2
+    appVersion: 0.0.21
+    created: "2026-03-02T13:30:53.74202681Z"
+    description: A functional Kalavai pool to manage AI workloads at scale
+    digest: c6f5fcdfe8d3a3a99f9ff0aa9dbca908d337699ddc3112ffe1ce422a16c80fb6
+    icon: https://kalavai-net.github.io/kalavai-client/assets/icons/logo_no_background.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: kalavai-pool
+    sources:
+    - https://kalavai-net.github.io/kalavai-client/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/kalavai-pool-0.0.21/kalavai-pool-0.0.21.tgz
+    version: 0.0.21
+  - apiVersion: v2
     appVersion: 0.0.20
     created: "2026-03-02T12:30:18.12913078Z"
     description: A functional Kalavai pool to manage AI workloads at scale
@@ -1126,4 +1143,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-03-02T12:30:18.129368025Z"
+generated: "2026-03-02T13:30:53.742311656Z"

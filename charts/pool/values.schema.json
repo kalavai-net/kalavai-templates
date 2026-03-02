@@ -27,7 +27,7 @@
       "kalavaiApiVersion": {
          "description": "Kalavai API service version to install in the pool",
          "type": "string",
-         "enum": ["0.1.18"]
+         "enum": ["0.1.19"]
       },
       "kalavaiApiForcedNamespace": {
          "description": "Whether to force the API to only have single namespace access",

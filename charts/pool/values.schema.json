@@ -81,7 +81,6 @@
          }
       },
       "system": {
-         "type": "object",
          "properties": {
             "priorityClassName": {
                "type": "string",

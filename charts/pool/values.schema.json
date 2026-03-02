@@ -47,6 +47,7 @@
          "enum": ["0.8.17", "latest"]
       },
       "resourceQuota": {
+         "type": "object",
          "properties": {
             "enabled": {
                "type": "boolean",
@@ -71,6 +72,7 @@
          }
       },
       "ui": {
+         "type": "object",
          "properties": {
             "enabled": {
                "type": "boolean",
@@ -79,6 +81,7 @@
          }
       },
       "system": {
+         "type": "object",
          "properties": {
             "priorityClassName": {
                "type": "string",

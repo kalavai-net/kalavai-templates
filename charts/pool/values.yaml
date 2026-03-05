@@ -14,12 +14,5 @@ watcherAdminKey: admin_key
 watcherReadonlyKey: readonly_key
 watcherWriteKey: write_key
 
-resourceQuota:
-  enabled: false
-  cpu: 4
-  memory: "8Gi"
-  nvidia: 0
-  amd: 0
-
 ui: 
   enabled: true

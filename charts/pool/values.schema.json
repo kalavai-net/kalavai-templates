@@ -46,31 +46,6 @@
          "type": "string",
          "enum": ["0.8.17", "latest"]
       },
-      "resourceQuota": {
-         "type": "object",
-         "properties": {
-            "enabled": {
-               "type": "boolean",
-               "description": "Enable resource quota"
-            },
-            "cpu": {
-               "type": "integer",
-               "description": "CPU requests and limits"
-            },
-            "memory": {
-               "type": "string",
-               "description": "Memory requests and limits"
-            },
-            "amd": {
-               "type": "integer",
-               "description": "AMD GPU requests and limits"
-            },
-            "nvidia": {
-               "type": "integer",
-               "description": "NVIDIA GPU requests and limits"
-            }
-         }
-      },
       "ui": {
          "type": "object",
          "properties": {

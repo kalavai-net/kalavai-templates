@@ -7,10 +7,23 @@
          "type": "string",
          "enum": ["Always", "IfNotPresent", "Never"]
       },
-      "vllmVersion": {
-         "description": "vLLM engine version to deploy (v0.12.0, v0.13.0)",
+      "githubUsername": {
+         "description": "GitHub username used for registry image pulls",
+         "type": "string"
+      },
+      "githubToken": {
+         "description": "GitHub token used for registry image pulls",
+         "type": "string"
+      },
+      "debugLevel": {
+         "description": "Debug level for vLLM logging (DEBUG, INFO, WARNING, ERROR)",
          "type": "string",
-         "enum": ["latest", "v0.12.0", "v0.13.0", "v0.15.0"]
+         "enum": ["DEBUG", "INFO", "WARNING", "ERROR"]
+      },
+      "vllmVersion": {
+         "description": "vLLM engine version to deploy",
+         "type": "string",
+         "enum": ["latest", "v0.12.0", "v0.13.0", "v0.15.1"]
       },
       "gpuBackend": {
          "description": "Use 'cuda' (nvidia cards) or 'rocm' (AMD cards) backend",

@@ -23,7 +23,7 @@
       "vllmVersion": {
          "description": "vLLM engine version to deploy",
          "type": "string",
-         "enum": ["latest", "v0.12.0", "v0.13.0", "v0.15.1"]
+         "enum": ["latest", "v0.12.0", "v0.13.0", "v0.15.1", "v0.16.0"]
       },
       "gpuBackend": {
          "description": "Use 'cuda' (nvidia cards) or 'rocm' (AMD cards) backend",

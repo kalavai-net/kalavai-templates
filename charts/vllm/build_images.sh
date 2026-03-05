@@ -23,6 +23,9 @@ if [ "$PUSH_LATEST" = true ]; then
     docker push ghcr.io/kalavai-net/vllm-cuda:latest
 fi
 
+# free disk space
+docker system prune -af
+
 # ROCm
 # build base image first
 git clone https://github.com/vllm-project/vllm.git
@@ -36,6 +39,8 @@ if [ "$PUSH_LATEST" = true ]; then
 fi
 cd ..
 rm -rf vllm
+
+docker system prune -af
 
 docker build --build-arg VLLM_VERSION=v$PIP_VLLM_VERSION -t ghcr.io/kalavai-net/vllm-rocm:v$PIP_VLLM_VERSION -f src/Dockerfile_rocm src/
 docker push ghcr.io/kalavai-net/vllm-rocm:v$PIP_VLLM_VERSION

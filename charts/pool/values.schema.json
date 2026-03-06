@@ -2,54 +2,72 @@
    "$schema": "http://json-schema.org/draft-07/schema#",
    "type": "object",
    "properties": {
-      "watcherVersion": {
-         "description": "Kube watcher version to install in the pool",
-         "type": "string",
-         "enum": ["0.4.25"]
+      "watcher": {
+         "type": "object",
+         "properties": {
+            "enabled": {
+               "type": "boolean",
+               "description": "Enable Kube watcher"
+            },
+            "version": {
+               "description": "Kube watcher version to install in the pool",
+               "type": "string",
+               "enum": ["0.4.25"]
+            },
+            "imageTag": {
+               "description": "Kube watcher image tag to install in the pool",
+               "type": "string",
+               "enum": ["2026.3.1", "latest"]
+            },
+            "adminKey": {
+               "description": "Kube watcher admin key (full privileges)",
+               "type": "string"
+            },
+            "writeKey": {
+               "description": "Kube watcher write key (full namespace privileges)",
+               "type": "string"
+            },
+            "readonlyKey": {
+               "description": "Kube watcher readonly key (read only privileges)",
+               "type": "string"
+            }
+         }
       },
-      "watcherImageTag": {
-         "description": "Kube watcher image tag to install in the pool",
-         "type": "string",
-         "enum": ["2026.3.1", "latest"]
-      },
-      "watcherAdminKey": {
-         "description": "Kube watcher admin key (full privileges)",
-         "type": "string"
-      },
-      "watcherWriteKey": {
-         "description": "Kube watcher write key (full namespace privileges)",
-         "type": "string"
-      },
-      "watcherReadonlyKey": {
-         "description": "Kube watcher readonly key (read only privileges)",
-         "type": "string"
-      },
-      "kalavaiApiVersion": {
-         "description": "Kalavai API service version to install in the pool",
-         "type": "string",
-         "enum": ["0.1.20"]
-      },
-      "kalavaiApiForcedNamespace": {
-         "description": "Whether to force the API to only have single namespace access",
-         "type": "boolean"
-      },
-      "kalavaiApiRingfenceNodeLabel": {
-         "description": "Kalavai API service to ringfence nodes based on node label",
-         "type": ["string", "null"]
-      },
-      "kalavaiApiRingfenceNodeLabelValue": {
-         "description": "Kalavai API service to ringfence nodes based on node label value",
-         "type": ["string", "null"]
-      },
-      "kalavaiApiImageTag": {
-         "description": "Kalavai API service image tag to install in the pool",
-         "type": "string",
-         "enum": ["0.8.18", "latest"]
-      },
-      "kalavaiApiForcedPriority": {
-         "description": "Whether to force the API to deploy with a single priority class",
-         "type": "string",
-         "enum": ["kalavai-system-priority", "user-high-priority", "user-spot-priority", "test-low-priority", "test-high-priority"]
+      "kalavai-api": {
+         "type": "object",
+         "properties": {
+            "enabled": {
+               "type": "boolean",
+               "description": "Enable Kalavai API"
+            },
+            "version": {
+               "description": "Kalavai API service version to install in the pool",
+               "type": "string",
+               "enum": ["0.1.20"]
+            },
+            "imageTag": {
+               "description": "Kalavai API service image tag to install in the pool",
+               "type": "string",
+               "enum": ["0.8.18", "latest"]
+            },
+            "forcedNamespace": {
+               "description": "Whether to force the API to only have single namespace access",
+               "type": "boolean"
+            },
+            "ringfenceNodeLabel": {
+               "description": "Kalavai API service to ringfence nodes based on node label",
+               "type": ["string", "null"]
+            },
+            "ringfenceNodeLabelValue": {
+               "description": "Kalavai API service to ringfence nodes based on node label value",
+               "type": ["string", "null"]
+            },
+            "forcedPriority": {
+               "description": "Whether to force the API to deploy with a single priority class",
+               "type": "string",
+               "enum": ["kalavai-system-priority", "user-high-priority", "user-spot-priority", "test-low-priority", "test-high-priority"]
+            }
+         }
       },
       "ui": {
          "type": "object",
@@ -89,9 +107,7 @@
       }
    },
    "required": [
-      "watcherAdminKey",
-      "watcherWriteKey",
-      "watcherReadonlyKey",
-      "ui"
+      "watcher",
+      "kalavai-api"
    ]
 }

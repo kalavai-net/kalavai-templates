@@ -1,3 +1,4 @@
+{{- if .Values.watcher.enabled }}
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -9,28 +10,30 @@ spec:
   chart:
     spec:
       chart: kalavai-watcher
-      version: "{{ .Values.watcherVersion}}"
+      version: "{{ .Values.watcher.version}}"
       sourceRef:
         kind: HelmRepository
         name: kalavai-repo-{{ .Release.Name }}
         namespace: {{ .Release.Namespace }}
   values:
-    imageTag: {{ .Values.watcherImageTag}}
+    imageTag: {{ .Values.watcher.imageTag}}
     deployment:
       replicas: 1
       staticWorkspace: {{ .Release.Namespace}}
       isSharedPool: False
       inCluster: True
-      adminKey: {{ .Values.watcherAdminKey }}
-      writeKey: {{ .Values.watcherWriteKey }}
-      readonlyKey: {{ .Values.watcherReadonlyKey }}
+      adminKey: {{ .Values.watcher.adminKey }}
+      writeKey: {{ .Values.watcher.writeKey }}
+      readonlyKey: {{ .Values.watcher.readonlyKey }}
       useAuthKey: True
       prometheusEndpoint: http://thanos-query-frontend.monitoring:9090
     service:
       type: ClusterIP
     labels:
       kalavai.job.name: {{ .Values.system.jobId}}
+{{- end }}
 ---
+{{- if .Values.kalavai-api.enabled }}
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -42,7 +45,7 @@ spec:
   chart:
     spec:
       chart: kalavai-api
-      version: "{{ .Values.kalavaiApiVersion}}"
+      version: "{{ .Values.kalavai-api.version}}"
       sourceRef:
         kind: HelmRepository
         name: kalavai-repo-{{ .Release.Name }}
@@ -50,21 +53,22 @@ spec:
   values:
     bridge:
       replicas: 1
-      imageTag: {{ .Values.kalavaiApiImageTag}}
+      imageTag: {{ .Values.kalavai-api.imageTag}}
       labels:
         kalavai.job.name: {{ .Values.system.jobId}}
       enabled: true
       watcherApiUrl: {{ .Release.Name}}-watcher-api-service:8000
-      watcherApiKey: {{ .Values.watcherAdminKey }}
-    {{- if and .Values.kalavaiApiRingfenceNodeLabel .Values.kalavaiApiRingfenceNodeLabelValue }}
-      ringfenceNodeLabel: {{ .Values.kalavaiApiRingfenceNodeLabel}}
-      ringfenceNodeLabelValue: {{ .Values.kalavaiApiRingfenceNodeLabelValue}}
+      watcherApiKey: {{ .Values.watcher.adminKey }}
+    {{- if and .Values.kalavai-api.ringfenceNodeLabel .Values.kalavai-api.ringfenceNodeLabelValue }}
+      ringfenceNodeLabel: {{ .Values.kalavai-api.ringfenceNodeLabel}}
+      ringfenceNodeLabelValue: {{ .Values.kalavai-api.ringfenceNodeLabelValue}}
     {{- end }}
-    {{- if .Values.kalavaiApiForcedNamespace }}
+    {{- if .Values.kalavai-api.forcedNamespace }}
       forcedNamespace: {{ .Release.Namespace | default "default" | quote }}
     {{- end }}
-    {{- if .Values.kalavaiApiForcedPriority }}
-      forcedPriority: {{ .Values.kalavaiApiForcedPriority }}
+    {{- if .Values.kalavai-api.forcedPriority }}
+      forcedPriority: {{ .Values.kalavai-api.forcedPriority }}
     {{- end }}
       # service:
       #   type: ClusterIP
+{{- end }}

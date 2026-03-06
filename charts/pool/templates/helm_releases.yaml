@@ -63,5 +63,8 @@ spec:
     {{- if .Values.kalavaiApiForcedNamespace }}
       forcedNamespace: {{ .Release.Namespace | default "default" | quote }}
     {{- end }}
+    {{- if .Values.kalavaiApiForcedPriority }}
+      forcedPriority: {{ .Values.kalavaiApiForcedPriority }}
+    {{- end }}
       # service:
       #   type: ClusterIP

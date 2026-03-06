@@ -33,7 +33,7 @@
             }
          }
       },
-      "kalavai-api": {
+      "kalavaiApi": {
          "type": "object",
          "properties": {
             "enabled": {
@@ -108,6 +108,6 @@
    },
    "required": [
       "watcher",
-      "kalavai-api"
+      "kalavaiApi"
    ]
 }

@@ -33,7 +33,7 @@ spec:
       kalavai.job.name: {{ .Values.system.jobId}}
 {{- end }}
 ---
-{{- if .Values.kalavai-api.enabled }}
+{{- if .Values.kalavaiApi.enabled }}
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -45,7 +45,7 @@ spec:
   chart:
     spec:
       chart: kalavai-api
-      version: "{{ .Values.kalavai-api.version}}"
+      version: "{{ .Values.kalavaiApi.version}}"
       sourceRef:
         kind: HelmRepository
         name: kalavai-repo-{{ .Release.Name }}
@@ -53,21 +53,21 @@ spec:
   values:
     bridge:
       replicas: 1
-      imageTag: {{ .Values.kalavai-api.imageTag}}
+      imageTag: {{ .Values.kalavaiApi.imageTag}}
       labels:
         kalavai.job.name: {{ .Values.system.jobId}}
       enabled: true
       watcherApiUrl: {{ .Release.Name}}-watcher-api-service:8000
       watcherApiKey: {{ .Values.watcher.adminKey }}
-    {{- if and .Values.kalavai-api.ringfenceNodeLabel .Values.kalavai-api.ringfenceNodeLabelValue }}
-      ringfenceNodeLabel: {{ .Values.kalavai-api.ringfenceNodeLabel}}
-      ringfenceNodeLabelValue: {{ .Values.kalavai-api.ringfenceNodeLabelValue}}
+    {{- if and .Values.kalavaiApi.ringfenceNodeLabel .Values.kalavaiApi.ringfenceNodeLabelValue }}
+      ringfenceNodeLabel: {{ .Values.kalavaiApi.ringfenceNodeLabel}}
+      ringfenceNodeLabelValue: {{ .Values.kalavaiApi.ringfenceNodeLabelValue}}
     {{- end }}
-    {{- if .Values.kalavai-api.forcedNamespace }}
+    {{- if .Values.kalavaiApi.forcedNamespace }}
       forcedNamespace: {{ .Release.Namespace | default "default" | quote }}
     {{- end }}
-    {{- if .Values.kalavai-api.forcedPriority }}
-      forcedPriority: {{ .Values.kalavai-api.forcedPriority }}
+    {{- if .Values.kalavaiApi.forcedPriority }}
+      forcedPriority: {{ .Values.kalavaiApi.forcedPriority }}
     {{- end }}
       # service:
       #   type: ClusterIP

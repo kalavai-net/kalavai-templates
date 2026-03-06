@@ -48,7 +48,7 @@
       },
       "kalavaiApiForcedPriority": {
          "description": "Whether to force the API to deploy with a single priority class",
-         "type": "boolean",
+         "type": "string",
          "enum": ["kalavai-system-priority", "user-high-priority", "user-spot-priority", "test-low-priority", "test-high-priority"]
       },
       "ui": {

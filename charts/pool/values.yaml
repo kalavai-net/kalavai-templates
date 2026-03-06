@@ -1,6 +1,6 @@
 kalavai-api:
   enabled: true
-  imageTag: 0.8.17
+  imageTag: 0.8.18
   version: 0.1.20
   nodeSelector: null
   ringfenceNodeLabel: null
@@ -10,7 +10,7 @@ kalavai-api:
 
 watcher:
   enabled: true
-  imageTag: 2026.2.6
+  imageTag: 2026.3.1
   version: 0.4.25
   adminKey: admin_key
   readonlyKey: readonly_key

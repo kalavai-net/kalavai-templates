@@ -1,9 +1,10 @@
 kalavaiApiImageTag: 0.8.17
-kalavaiApiVersion: 0.1.19
+kalavaiApiVersion: 0.1.20
 kalavaiApiRingfenceNodeLabel: null
 kalavaiApiRingfenceNodeLabelValue: null
 kalavaiApiForcedNamespace: true
-  
+kalavaiApiForcedPriority: null
+
 system:
   jobPriority: user-spot-priority
   nodeSelectors: null

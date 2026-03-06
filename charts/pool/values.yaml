@@ -23,3 +23,5 @@ system:
 
 ui: 
   enabled: true
+  cpu: 2
+  memory: 2

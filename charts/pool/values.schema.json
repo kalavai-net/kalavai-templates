@@ -75,6 +75,14 @@
             "enabled": {
                "type": "boolean",
                "description": "Enable UI"
+            },
+            "cpu": {
+               "type": "integer",
+               "description": "CPU request for UI"
+            },
+            "memory": {
+               "type": "integer",
+               "description": "Memory request for UI"
             }
          }
       },

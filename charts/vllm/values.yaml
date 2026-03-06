@@ -2,42 +2,54 @@ modelId: null
 hfToken: null
 workers: 1
 
-vllmVersion: latest
-gpuBackend: cuda
-workingMemory: 16
-memory: 8
-sharedMemory: 6
-cpus: 2
-gpuMemory: null
-githubUsername: null
-githubToken: null
-imagePullPolicy: IfNotPresent
-extra: --dtype float16 --enforce-eager
-gpus: 1
-litellmAccessGroup: null
-litellmBaseUrl: http://litellm-service.default.svc.cluster.local:4000
-litellmKalavaiExtras: '{}'
-litellmKey: null
-modelNameOverride: null
-nodeport: null
-debugLevel: INFO
+vllm:
+  version: latest
+  extra: --dtype float16 --enforce-eager
+  loraModules: null
+  templateUrl: null
+  toolCallParser: llama3_json
+
+deployment:
+  gpuBackend: cuda
+  workingMemory: 16
+  memory: 8
+  sharedMemory: 6
+  cpus: 2
+  gpus: 1
+  gpuMemory: null
+  modelNameOverride: null
+  imagePullPolicy: IfNotPresent
+  nodeport: null
+  debugLevel: INFO
+  githubUsername: null
+  githubToken: null
+
+litellm:
+  enabled: false
+  accessGroup: null
+  baseUrl: http://litellm-service.default.svc.cluster.local:4000
+  key: null
+  kalavaiExtras: '{}'
+
+lmcache:
+  chunkSize: 256
+  localCpu: true
+  localDisk: null
+  maxLocalCpuSize: 5.0
+  maxLocalDiskSize: 0
+  remoteUrl: null
+
+lago:
+  enabled: false
+  apiKey: null
+  eventCode: null
+  eventInterval: null
+  externalSubscriptionId: null
+  url: null
+
 system:
   queue: default
   priorityClassName: user-spot-priority
   nodeSelectors: null
   nodeSelectorsOps: OR
   jobId: null
-templateUrl: null
-toolCallParser: llama3_json
-lmcacheChunkSize: 256
-lmcacheLocalCpu: true
-lmcacheLocalDisk: null
-lmcacheMaxLocalCpuSize: 5.0
-lmcacheMaxLocalDiskSize: 0
-lmcacheRemoteUrl: null
-loraModules: null
-lagoApiKey: null
-lagoEventCode: null
-lagoEventInterval: null
-lagoExternalSubscriptionId: null
-lagoUrl: null

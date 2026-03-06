@@ -1,5 +1,5 @@
 # deploy NodePort to expose model (if not using LiteLLM registration)
-{{- if not .Values.litellmKey }}
+{{- if not .Values.litellm.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -17,7 +17,7 @@ spec:
       port: 8080
       targetPort: 8080
       protocol: TCP
-    {{- if .Values.nodeport }}
-      nodePort: {{ .Values.nodeport }}
+    {{- if .Values.deployment.nodeport }}
+      nodePort: {{ .Values.deployment.nodeport }}
     {{- end }}
 {{- end }}

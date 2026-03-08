@@ -17,3 +17,7 @@ system:
   nodeSelectorsOps: OR
   jobId: null
 upscalingMode: Default
+
+auth:
+  enabled: false
+  token: changeme

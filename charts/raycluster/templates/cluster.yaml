@@ -25,6 +25,11 @@ spec:
     upscalingMode: {{ .Values.upscalingMode }}
     idleTimeoutSeconds: {{ .Values.idleTimeoutSeconds }}
   enableInTreeAutoscaling: true
+{{- if .Values.auth.enabled }}
+  authOptions:
+    mode: token
+    secretName: {{ .Release.Name }}-secret
+{{- end }}
   headGroupSpec:
     serviceType: ClusterIP
     rayStartParams:

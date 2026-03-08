@@ -66,6 +66,19 @@
             "null"
          ]
       },
+      "auth": {
+         "type": "object",
+         "properties": {
+            "enabled": {
+               "type": "boolean",
+               "description": "Enable authentication"
+            },
+            "token": {
+               "type": "string",
+               "description": "Authentication token to be used when interacting with the Ray Cluster"
+            }
+         }
+      },
       "system": {
          "properties": {
             "priorityClassName": {

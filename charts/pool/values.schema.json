@@ -17,7 +17,7 @@
             "imageTag": {
                "description": "Kube watcher image tag to install in the pool",
                "type": "string",
-               "enum": ["2026.3.1", "latest"]
+               "enum": ["2026.3.2", "latest"]
             },
             "adminKey": {
                "description": "Kube watcher admin key (full privileges)",
@@ -48,7 +48,7 @@
             "imageTag": {
                "description": "Kalavai API service image tag to install in the pool",
                "type": "string",
-               "enum": ["0.8.18", "latest"]
+               "enum": ["0.8.19", "latest"]
             },
             "forcedNamespace": {
                "description": "Whether to force the API to only have single namespace access",

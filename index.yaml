@@ -1,5 +1,23 @@
 apiVersion: v1
 entries:
+  inference:
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2026-03-11T12:34:12.591550378Z"
+    description: Scalable, flexible multi-node, multi-GPU LLM deployments
+    digest: 291e59c036ad37fbe4f9e7b6d4ad18701fadf71b2196098db738ff0a14575e03
+    icon: https://docs.vllm.ai/en/latest/assets/logos/vllm-logo-only-light.ico
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: inference
+    sources:
+    - https://docs.ray.io/en/latest/cluster/kubernetes/examples/rayserve-llm-example.html
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/inference-0.0.1/inference-0.0.1.tgz
+    version: 0.0.1
   kalavai-pool:
   - apiVersion: v2
     appVersion: 0.0.39
@@ -1036,6 +1054,24 @@ entries:
     version: 0.0.1
   vllm:
   - apiVersion: v2
+    appVersion: 0.1.1
+    created: "2026-03-11T12:34:12.740589899Z"
+    description: A high-throughput and memory-efficient inference and serving engine
+      for LLMs
+    digest: a6700fd98e8b46b04dbd104bb52a835161b6274bf61b33450fe3d5d85c8a33bb
+    icon: https://docs.vllm.ai/en/latest/assets/logos/vllm-logo-only-light.ico
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: vllm
+    sources:
+    - https://docs.vllm.ai/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.1.1/vllm-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
     appVersion: 0.1.0
     created: "2026-03-06T13:04:29.005271949Z"
     description: A high-throughput and memory-efficient inference and serving engine
@@ -1521,4 +1557,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-03-10T11:14:56.949906381Z"
+generated: "2026-03-11T12:34:12.74097995Z"

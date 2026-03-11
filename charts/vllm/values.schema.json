@@ -184,27 +184,6 @@
                   "string",
                   "null"
                ]
-            },
-            "key": {
-               "description": "Master key of the LiteLLM service (central model registry)",
-               "type": [
-                  "string",
-                  "null"
-               ]
-            },
-            "accessGroup": {
-               "description": "What access group to assign the model to (ringfencing)",
-               "type": [
-                  "string",
-                  "null"
-               ]
-            },
-            "kalavaiExtras": {
-               "description": "Extra information to store in the LiteLLM model registration (must be a dictionary)",
-               "type": [
-                  "string",
-                  "null"
-               ]
             }
          }
       },

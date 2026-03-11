@@ -309,7 +309,7 @@ spec:
             medium: Memory
             sizeLimit: {{ .Values.deployment.sharedMemory}}Gi
         restartPolicy: OnFailure
-  {{ if .Values.litellmKey }}
+  {{ if .Values.litellm.enabled }}
   - replicas: 1
     name: registrar
     policies:

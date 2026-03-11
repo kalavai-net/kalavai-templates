@@ -1,0 +1,13 @@
+apiVersion: v2
+appVersion: 0.0.1
+description: Scalable, flexible multi-node, multi-GPU LLM deployments
+icon: https://docs.vllm.ai/en/latest/assets/logos/vllm-logo-only-light.ico
+kubeVersion: '>= 1.25.0'
+maintainers:
+- email: carlos@kalavai.net
+  name: Carlos Fernandez Musoles
+  url: https://kalavai.net
+name: inference
+sources:
+- https://docs.ray.io/en/latest/cluster/kubernetes/examples/rayserve-llm-example.html
+version: 0.0.1

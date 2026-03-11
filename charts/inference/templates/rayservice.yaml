@@ -1,0 +1,202 @@
+apiVersion: ray.io/v1
+kind: RayService
+metadata:
+  name: {{ .Release.Name}}-rayservice
+  labels:
+    # must have this label
+    kalavai.job.name: {{ .Values.system.jobId}}
+spec:
+  serviceUnhealthySecondThreshold: 1800  # 30 minutes for service health (increased for model download)
+  deploymentUnhealthySecondThreshold: 900  # 15 minutes for deployment health (increased for model initialization)
+  serveConfigV2: | # autoscaling https://docs.ray.io/en/latest/serve/advanced-guides/advanced-autoscaling.html#serve-advanced-autoscaling
+    applications:
+    - import_path: ray.serve.llm:build_openai_app
+      name: llm_app
+      route_prefix: "/"
+      runtime_env:
+        env_vars:
+          #VLLM_USE_V1: "1"
+          HF_TOKEN: "{{ .Values.llmConfigs.modelLoadingConfig.hfToken }}"
+      args:
+        llm_configs:
+        - model_loading_config:
+          {{- if .Values.llmConfigs.modelLoadingConfig.modelNameOverride }}
+            model_id: "{{.Values.llmConfigs.modelLoadingConfig.modelNameOverride}}"
+          {{- else }}
+            model_id: "{{.Values.llmConfigs.modelLoadingConfig.modelId}}"
+          {{- end }}
+            model_source: "{{.Values.llmConfigs.modelLoadingConfig.modelId}}"
+          deployment_config:
+            # Autoscaling configuration for the LLM deployment
+            autoscaling_config: {{ .Values.llmConfigs.deploymentConfig.autoscalingConfig | toYaml | nindent 14 }}
+          engine_kwargs:
+          {{- if .Values.llmConfigs.engineKwargs }}
+            {{ .Values.llmConfigs.engineKwargs | toYaml | nindent 12}}
+          {{- end }}
+            pipeline_parallel_size: {{.Values.workers.gpus}}
+          runtime_env:
+            env_vars:
+              #VLLM_USE_V1: "1"
+              HF_TOKEN: "{{ .Values.llmConfigs.modelLoadingConfig.hfToken }}"
+              # Use deterministic model loading approach
+              VLLM_WORKER_MULTIPROC_METHOD: "spawn"
+  rayClusterConfig:
+    rayVersion: "{{.Values.ray.rayVersion}}"
+    autoscalerOptions: 
+      # https://ray-project.github.io/kuberay/reference/api/#autoscaleroptions
+      upscalingMode: {{.Values.ray.upscalingMode}}
+      idleTimeoutSeconds: {{.Values.ray.idleTimeoutSeconds}}
+    enableInTreeAutoscaling: true
+    headGroupSpec:
+      serviceType: ClusterIP
+      rayStartParams:
+        dashboard-host: "0.0.0.0"
+        num-cpus: "0" # avoid workload on head
+        num-gpus: "0"
+      template: # Pod template
+        metadata:
+          labels:
+            role: leader
+            kalavai.job.name: {{ .Values.system.jobId}}
+        spec: # Pod spec
+          priorityClassName: "kalavai-system-priority"
+        {{- if .Values.system.nodeSelectors }}
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+              {{- if eq .Values.system.nodeSelectorsOps "OR" }}
+                {{- range $k, $v := .Values.system.nodeSelectors }}
+                - matchExpressions:
+                  - key: {{$k}}
+                    operator: In
+                    values:
+                    {{- range $v }}
+                    - "{{ . }}"
+                    {{- end }}
+                {{- end }}
+              {{- else }}
+                - matchExpressions:
+                {{- range $k, $v := .Values.system.nodeSelectors }}
+                  {{- range $v }}
+                  - key: {{ $k }}
+                    operator: In
+                    values:
+                    - "{{ . }}"
+                  {{- end }}
+                {{- end }}
+              {{- end }}
+        {{- end }}
+          restartPolicy: Always
+          containers:
+          - name: ray-head
+            image: rayproject/ray-llm:{{ .Values.ray.rayVersion }}-py311-cu128
+            imagePullPolicy: IfNotPresent
+            resources:
+              limits:
+                cpu: {{.Values.head.cpus}}
+                memory: {{.Values.head.memory}}Gi
+              requests:
+                cpu: {{.Values.head.cpus}}
+                memory: {{.Values.head.memory}}Gi
+            lifecycle:
+              preStop:
+                exec:
+                  command: ["/bin/sh","-c","ray stop"]
+            ports:
+            - containerPort: 6379
+              name: gcs
+            - containerPort: 8265
+              name: dashboard
+            - containerPort: 10001
+              name: client
+            - containerPort: 8000
+              name: serve
+    workerGroupSpecs:
+    # NVIDIA group of GPUs
+    - groupName: gpu-group
+      replicas: {{ mul .Values.workers.gpus .Values.llmConfigs.deploymentConfig.autoscalingConfig.initial_replicas}}
+      minReplicas: {{ mul .Values.workers.gpus .Values.llmConfigs.deploymentConfig.autoscalingConfig.min_replicas}}
+      maxReplicas: {{ mul .Values.workers.gpus .Values.llmConfigs.deploymentConfig.autoscalingConfig.max_replicas}}
+      rayStartParams: 
+        num-gpus: "1"
+      template:
+        metadata:
+          labels:
+            kalavai.job.name: {{ .Values.system.jobId}}
+        spec:
+          priorityClassName: {{ .Values.system.priorityClassName }}
+          runtimeClassName: nvidia
+        {{- if .Values.system.nodeSelectors }}
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+              {{- if eq .Values.system.nodeSelectorsOps "OR" }}
+                {{- range $k, $v := .Values.system.nodeSelectors }}
+                - matchExpressions:
+                  - key: {{$k}}
+                    operator: In
+                    values:
+                    {{- range $v }}
+                    - "{{ . }}"
+                    {{- end }}
+                {{- end }}
+              {{- else }}
+                - matchExpressions:
+                {{- range $k, $v := .Values.system.nodeSelectors }}
+                  {{- range $v }}
+                  - key: {{ $k }}
+                    operator: In
+                    values:
+                    - "{{ . }}"
+                  {{- end }}
+                {{- end }}
+              {{- end }}
+        {{- end }}
+          containers:
+          - name: ml-work-group
+            image: rayproject/ray-llm:{{ .Values.ray.rayVersion }}-py311-cu128
+            imagePullPolicy: IfNotPresent
+            resources:
+              limits:
+                nvidia.com/gpu: 1
+                #nvidia.com/gpumem-percentage: {{.Values.workers.cudaGpuMemPercentage}}
+                cpu: {{ add .Values.workers.gpus 2 }}
+                memory: {{.Values.workers.memory}}Gi
+              requests:
+                nvidia.com/gpu: 1
+                cpu: {{ add .Values.workers.gpus 2 }}
+                memory: {{.Values.workers.memory}}Gi
+            lifecycle:
+              preStop:
+                exec:
+                  command: ["/bin/sh","-c","ray stop"]
+            # Custom health checks for LLM deployment
+            livenessProbe:
+              exec:
+                command:
+                  - bash
+                  - -c
+                  - "wget --tries 1 -T 2 -q -O- http://localhost:52365/api/local_raylet_healthz | grep success"
+              initialDelaySeconds: 180  # Give time for Ray to start
+              periodSeconds: 30
+              timeoutSeconds: 15
+              failureThreshold: 10
+            readinessProbe:
+              exec:
+                command:
+                  - bash
+                  - -c
+                  - "wget --tries 1 -T 2 -q -O- http://localhost:52365/api/local_raylet_healthz | grep success"
+              initialDelaySeconds: 300  # Wait for Ray to be ready
+              periodSeconds: 30
+              timeoutSeconds: 15
+              failureThreshold: 10
+            
+            # Environment variables
+            # env:
+            # - name: CUDA_VISIBLE_DEVICES
+            #   value: "0"
+            # - name: PYTHONPATH
+            #   value: "/opt/conda/lib/python3.11/site-packages:$PYTHONPATH"

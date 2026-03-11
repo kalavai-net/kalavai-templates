@@ -1,0 +1,61 @@
+llmConfigs:
+  deploymentConfig:
+    autoscalingConfig:
+      # https://docs.ray.io/en/latest/serve/api/doc/ray.serve.config.AutoscalingConfig.html#ray.serve.config.AutoscalingConfig
+      # Minimum number of model replicas to maintain
+      initial_replicas: 1
+      min_replicas: 1
+      # Maximum number of model replicas for scaling up
+      max_replicas: 1
+      # Target average ongoing requests per replica
+      # Scale up when average > 20, scale down when average < 20
+      target_ongoing_requests: 20
+      # Delay before scaling up (prevents rapid scaling)
+      upscale_delay_s: 30
+      # Delay before scaling down (provides stability)
+      downscale_delay_s: 300
+      # Delay before scaling to zero (when min_replicas = 0)
+      downscale_to_zero_delay_s: 600
+      # Scaling factors for more aggressive/conservative scaling
+      upscaling_factor: 1.5
+      downscaling_factor: 0.8
+      # Metrics collection interval
+      metrics_interval_s: 10
+      # Look back period for calculating averages
+      look_back_period_s: 60
+      # How to aggregate metrics over the look back period
+      # Options: "mean", "max", "min"
+      aggregation_function: "mean"
+  modelLoadingConfig:
+    hfToken: null
+    modelId: null
+    modelNameOverride: null
+  engineKwargs: {}
+
+workers:
+  # cpus have an impact on t/s (minimum of 2 + number of workers)
+  cpus: 2
+  cudaGpuMemPercentage: 100
+  gpus: 1
+  memory: 14
+
+litellm:
+  enabled: false
+  accessGroup: null
+  baseUrl: http://litellm-service.default.svc:4000
+  key: null
+  kalavaiExtras: '{}'
+
+head:
+  cpus: 2
+  memory: 8
+
+ray:
+  rayVersion: 2.54.0
+  idleTimeoutSeconds: 60
+  upscalingMode: Default
+
+system:
+  priorityClassName: user-spot-priority
+  nodeSelectors: null
+  nodeSelectorsOps: OR

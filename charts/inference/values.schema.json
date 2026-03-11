@@ -1,0 +1,212 @@
+{
+   "$schema": "http://json-schema.org/draft-07/schema#",
+   "type": "object",
+   "properties": {
+      "llmConfigs": {
+         "type": "object",
+         "properties": {
+            "modelLoadingConfig": {
+               "type": "object",
+               "properties": {
+                  "hfToken": {
+                     "type": "string",
+                     "description": "Hugging Face token for model loading"
+                  },
+                  "modelId": {
+                     "type": "string",
+                     "description": "Hugging Face model ID"
+                  },
+                  "modelNameOverride": {
+                     "type": "string",
+                     "description": "Override the model name for display purposes"
+                  }
+               }
+            },
+            "engineKwargs": {
+               "type": "object",
+               "properties": {}
+            },
+            "deploymentConfig": {
+               "type": "object",
+               "properties": {
+                  "autoscalingConfig": {
+                     "type": "object",
+                     "properties": {
+                        "initial_replicas": {
+                           "description": "Initial number of model replicas to deploy",
+                           "type": "integer"
+                        },
+                        "min_replicas": {
+                           "description": "Minimum model replicas to deploy at any given point (can be 0)",
+                           "type": "integer"
+                        },
+                        "max_replicas": {
+                           "description": "Maximum model replicas to deploy at any given point",
+                           "type": "integer"
+                        },
+                        "target_ongoing_requests": {
+                           "description": "Scale the number of replicas for a deployment up or down based on the average number of ongoing requests per replica.",
+                           "type": "integer"
+                        },
+                        "max_ongoing_requests": {
+                           "description": "There is also a maximum queue limit that proxies respect when assigning requests to replicas. Setting it too low can throttle throughput. Instead of being forwarded to replicas for concurrent execution, requests will tend to queue up at the proxy, waiting for replicas to finish processing existing requests.",
+                           "type": "integer"
+                        },
+                        "upscale_delay_s": {
+                           "description": "This defines how long Serve waits before scaling up the number of replicas in your deployment.",
+                           "type": "integer"
+                        },
+                        "downscale_delay_s": {
+                           "description": "This defines how long Serve waits before scaling down the number of replicas in your deployment.",
+                           "type": "integer"
+                        },
+                        "downscale_to_zero_delay_s": {
+                           "description": "This defines how long Serve waits before scaling from one replica down to zero (only applies when min_replicas = 0).",
+                           "type": "integer"
+                        },
+                        "upscaling_factor": {
+                           "description": "The multiplicative factor to amplify or moderate each upscaling decision. For example, when the application has high traffic volume in a short period of time, you can increase upscaling_factor to scale up the resource quickly.",
+                           "type": "number"
+                        },
+                        "downscaling_factor": {
+                           "description": "The multiplicative factor to amplify or moderate each downscaling decision. For example, if you want your application to be less sensitive to drops in traffic and scale down more conservatively, you can decrease downscaling_factor to slow down the pace of downscaling.",
+                           "type": "number"
+                        },
+                        "metrics_interval_s": {
+                           "description": "This controls how often each replica and handle sends reports on current ongoing requests to the autoscaler.",
+                           "type": "integer"
+                        },
+                        "look_back_period_s": {
+                           "description": "This is the window over which the average number of ongoing requests per replica is calculated.",
+                           "type": "integer"
+                        },
+                        "aggregation_function": {
+                           "description": "This controls how metrics are aggregated over the look_back_period_s time window. The aggregation function determines how Ray Serve combines multiple metric measurements into a single value for autoscaling decisions. Supported values: 'mean' (default): Uses time-weighted average of metrics. This provides smooth scaling behavior that responds to sustained traffic patterns. 'max': Uses the maximum metric value observed. This makes autoscaling more sensitive to spikes, scaling up quickly when any replica experiences high load. 'min': Uses the minimum metric value observed. This results in more conservative scaling behavior.",
+                           "type": "string",
+                           "enum": ["mean", "max", "min"]
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      },
+      "workers": {
+         "type": "object",
+         "properties": {
+            "cpus": {
+               "type": "integer",
+               "description": "Number of CPUs to allocate to each worker"
+            },
+            "cudaGpuMemPercentage": {
+               "type": "integer",
+               "description": "Percentage of GPU memory to allocate to each worker"
+            },
+            "gpus": {
+               "type": "integer",
+               "description": "Number of GPUs to allocate to each worker"
+            },
+            "memory": {
+               "type": "integer",
+               "description": "Memory in GB to allocate to each worker"
+            }
+         }
+      },
+      "head": {
+         "type": "object",
+         "properties": {
+            "cpus": {
+               "type": "integer",
+               "description": "Number of CPUs to allocate to the head node"
+            },
+            "memory": {
+               "type": "integer",
+               "description": "Memory in GB to allocate to the head node"
+            }
+         }
+      },
+      "ray": {
+         "type": "object",
+         "properties": {
+            "rayVersion": {
+               "type": "string",
+               "description": "Ray version to use",
+               "enum": ["2.52.0", "2.54.0"]
+            },
+            "idleTimeoutSeconds": {
+               "type": "integer",
+               "description": "Idle timeout in seconds"
+            },
+            "upscalingMode": {
+               "type": "string",
+               "description": "Upscaling mode"
+            }
+         }
+      },
+      "litellm": {
+         "type": "object",
+         "properties": {
+            "enabled": {
+               "type": "boolean",
+               "description": "Enable LiteLLM API Gateway"
+            },
+            "baseUrl": {
+               "description": "Base URL of the LiteLLM service (central model registry). This can be an external LiteLLM instance or an internal deployment in the pool (default)",
+               "type": [
+                  "string",
+                  "null"
+               ]
+            },
+            "key": {
+               "description": "Master key of the LiteLLM service (central model registry)",
+               "type": [
+                  "string",
+                  "null"
+               ]
+            },
+            "accessGroup": {
+               "description": "What access group to assign the model to (ringfencing)",
+               "type": [
+                  "string",
+                  "null"
+               ]
+            },
+            "kalavaiExtras": {
+               "description": "Extra information to store in the LiteLLM model registration (must be a dictionary)",
+               "type": [
+                  "string",
+                  "null"
+               ]
+            }
+         }
+      },
+      "system": {
+         "properties": {
+            "priorityClassName": {
+               "type": "string",
+               "description": "PriorityClassName to use for the deployment"
+            },
+            "nodeSelectors": {
+               "type": [
+                  "object",
+                  "null"
+               ],
+               "description": "target specific devices. Expected format -> key: value pairs, where 'value' is a list of elements"
+            },
+            "nodeSelectorsOps": {
+               "type": "string",
+               "enum": [
+                  "OR",
+                  "AND"
+               ],
+               "description": "Logical operation to use to apply to nodeSelectors. Accepted values: 'OR', 'AND'"
+            },
+            "jobId": {
+               "type": "string",
+               "description": "Id to tag spawned objects."
+            }
+         }
+      }
+   },
+   "required": []
+}

@@ -1,0 +1,102 @@
+{{- if .Values.litellm.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-registrar
+  labels:
+    kalavai.job.name: {{ .Values.system.jobId }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      kalavai.job.name: {{ .Values.system.jobId }}
+  template:
+    metadata:
+      labels:
+        kalavai.job.name: {{ .Values.system.jobId }}
+    spec:
+      terminationGracePeriodSeconds: 60
+      {{- if .Values.system.nodeSelectors }}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            {{- if eq .Values.system.nodeSelectorsOps "OR" }}
+              {{- range $k, $v := .Values.system.nodeSelectors }}
+              - matchExpressions:
+                - key: {{$k}}
+                  operator: In
+                  values:
+                  {{- range $v }}
+                  - "{{ . }}"
+                  {{- end }}
+              {{- end }}
+            {{- else }}
+              - matchExpressions:
+              {{- range $k, $v := .Values.system.nodeSelectors }}
+                {{- range $v }}
+                - key: {{ $k }}
+                  operator: In
+                  values:
+                  - "{{ . }}"
+                {{- end }}
+              {{- end }}
+            {{- end }}
+      {{- end }}
+      containers:
+      - name: registrar-leader
+        image: ghcr.io/kalavai-net/kalavai-utils:latest
+        command:
+        - sh
+        - -c
+        - |
+          echo "Waiting for model to be served..."
+          echo "Namespace: "$VC_NAMESPACE;
+          # TODO: wait for service succeeds as soon as the RayService endpoint is ready (which is not when the model has been deployed)
+          PS_HOST={{ .Release.Name }}-service;
+          /workspace/wait_for_service.sh --servers="$PS_HOST" --port=8000
+          export MODEL_API_BASE="http://"$PS_HOST"."$VC_NAMESPACE":8000/v1";
+          /workspace/start_point.sh \
+            --litellm_kalavai_extras='{{ .Values.litellm.kalavaiExtras }}' \
+            --litellm_access_group={{ .Values.litellm.accessGroup }}
+        env:
+        - name: VC_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: LITELLM_MODEL_NAME
+        {{- if .Values.llmConfigs.modelLoadingConfig.modelNameOverride }}
+          value: "{{ .Values.llmConfigs.modelLoadingConfig.modelNameOverride }}"
+        {{- else }}
+          value: "{{ .Values.llmConfigs.modelLoadingConfig.modelId }}"
+        {{- end }}
+        - name: LITELLM_BASE_URL
+          value: {{ .Values.litellm.baseUrl }}
+        - name: LITELLM_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secret
+              key: litellm_key
+        - name: MODEL_ID
+          value: {{ .Values.llmConfigs.modelLoadingConfig.modelId }}
+        - name: DEPLOYMENT_ID
+          value: {{ .Release.Name }}
+        - name: PROVIDER
+          value: hosted_vllm
+        lifecycle:
+          preStop:
+            exec:
+              command: 
+              - sh
+              - -c
+              - |
+                /workspace/cleanup.sh
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 100m
+            memory: 128Mi
+      restartPolicy: Always
+{{- end }}

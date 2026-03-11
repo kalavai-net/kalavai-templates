@@ -102,12 +102,12 @@ spec:
               secretKeyRef:
                 name: {{ .Release.Name}}-secret
                 key: hf_token
-          # - name: VLLM_ENGINE_READY_TIMEOUT_S
-          #   value: "1200"
-          # - name: VLLM_ENGINE_ITERATION_TIMEOUT_S
-          #   value: "1200"
-          # - name: VLLM_USE_RAY_COMPILED_DAG_CHANNEL_TYPE
-          #   value: "auto"
+          - name: VLLM_ENGINE_READY_TIMEOUT_S
+            value: "1200"
+          - name: VLLM_ENGINE_ITERATION_TIMEOUT_S
+            value: "1200"
+          - name: VLLM_USE_RAY_COMPILED_DAG_CHANNEL_TYPE
+            value: "auto"
           - name: NCCL_DEBUG
             value: "{{ .Values.deployment.debugLevel }}"
           - name: VLLM_LOGGING_LEVEL
@@ -250,12 +250,12 @@ spec:
               secretKeyRef:
                 name: {{ .Release.Name}}-secret
                 key: hf_token
-          # - name: VLLM_ENGINE_READY_TIMEOUT_S
-          #   value: "1200"
-          # - name: VLLM_ENGINE_ITERATION_TIMEOUT_S
-          #   value: "1200"
-          # - name: VLLM_USE_RAY_COMPILED_DAG_CHANNEL_TYPE
-          #   value: "auto"
+          - name: VLLM_ENGINE_READY_TIMEOUT_S
+            value: "1200"
+          - name: VLLM_ENGINE_ITERATION_TIMEOUT_S
+            value: "1200"
+          - name: VLLM_USE_RAY_COMPILED_DAG_CHANNEL_TYPE
+            value: "auto"
           - name: NCCL_DEBUG
             value: "{{ .Values.deployment.debugLevel }}"
           - name: VLLM_LOGGING_LEVEL

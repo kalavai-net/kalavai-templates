@@ -16,6 +16,7 @@ deployment:
   sharedMemory: 6
   cpus: 2
   gpus: 1
+  tensorParallelismOnly: false
   gpuMemory: null
   modelNameOverride: null
   imagePullPolicy: IfNotPresent

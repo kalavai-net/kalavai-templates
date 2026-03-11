@@ -91,8 +91,13 @@ spec:
               --model_name={{ .Values.deployment.modelNameOverride }} \
               --extra='{{ .Values.vllm.extra }}' \
               --template_url='{{ .Values.vllm.templateUrl }}' \
+            {{- if .Values.deployment.tensorParallelismOnly}}
+              --tensor_parallel_size={{ mul .Values.deployment.gpus .Values.workers }} \
+              --pipeline_parallel_size=1 \
+            {{- else }}
               --tensor_parallel_size={{ .Values.deployment.gpus }} \
               --pipeline_parallel_size={{ .Values.workers }} \
+            {{- end}}
               --tool_call_parser={{ .Values.vllm.toolCallParser }} \
               --lora_modules="{{ .Values.vllm.loraModules }}";
             exit 1

@@ -48,10 +48,6 @@
                            "description": "Scale the number of replicas for a deployment up or down based on the average number of ongoing requests per replica.",
                            "type": "integer"
                         },
-                        "max_ongoing_requests": {
-                           "description": "There is also a maximum queue limit that proxies respect when assigning requests to replicas. Setting it too low can throttle throughput. Instead of being forwarded to replicas for concurrent execution, requests will tend to queue up at the proxy, waiting for replicas to finish processing existing requests.",
-                           "type": "integer"
-                        },
                         "upscale_delay_s": {
                            "description": "This defines how long Serve waits before scaling up the number of replicas in your deployment.",
                            "type": "integer"

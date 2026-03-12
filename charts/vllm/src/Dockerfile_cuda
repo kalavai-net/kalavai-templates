@@ -1,6 +1,6 @@
 FROM ghcr.io/kalavai-net/ray-base:latest AS base
 
-FROM rayproject/ray:2.51.0.2f4360-extra-py312-cu124
+FROM rayproject/ray:2.54.0-py312-cu124
 
 ARG PIP_VLLM_VERSION=0.14.0
 WORKDIR /home/ray/workspace
@@ -19,7 +19,7 @@ COPY common_requirements.txt .
 #RUN python3 -m venv /home/ray/workspace/env
 #RUN . /home/ray/workspace/env/bin/activate && \
 #RUN pip install -r common_requirements.txt --no-cache-dir
-RUN pip install vllm==$PIP_VLLM_VERSION --no-cache-dir && \
+RUN pip install --timeout 300 --retries 3 vllm==$PIP_VLLM_VERSION --no-cache-dir && \
     pip install -U scipy --no-cache-dir
 #RUN pip install -U vllm --pre --extra-index-url https://wheels.vllm.ai/nightly
     #pip install ray[serve-grpc,default]==2.43.0 --no-cache-dir

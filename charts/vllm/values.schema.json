@@ -69,6 +69,10 @@
             "gpus": {
                "description": "GPUs to be used per single worker (final one = gpus * workers). Workers should have these many GPUs available.",
                "type": "integer"
+            },
+            "tensorParallelismOnly": {
+               "type": "boolean",
+               "description": "Use tensor parallelism only (no pipeline parallelism)"
             }
          }
       },

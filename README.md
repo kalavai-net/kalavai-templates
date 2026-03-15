@@ -21,13 +21,14 @@ To deploy a template in your Kubernetes cluster:
 helm install my-release kalavai-templates/<template_name> --values values.yaml
 ```
 
-See the list of available templates [here](#available-templates).
 
 
 ## Available templates
 
 List of templates, by name:
 
+- [autoscalable LLM inference](./charts/inference/)
+- [llama.cpp](./charts/llamacpp/)
 - [vllm](./charts/vllm/)
 - [ray-cluster](./charts/raycluster/)
 

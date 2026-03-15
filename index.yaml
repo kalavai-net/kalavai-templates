@@ -35,6 +35,24 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/inference-0.0.1/inference-0.0.1.tgz
     version: 0.0.1
+  jupyterhub:
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2026-03-15T08:43:26.909190877Z"
+    description: Access to JupyterHub instance for terminal and jupyter notebooks
+    digest: 204627f97b1c66e718dd06abe59f3ef7a626a90a6d178ed20c4513ccdb2e272e
+    icon: https://jupyter.org/assets/homepage/hublogo.svg
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: jupyterhub
+    sources:
+    - https://jupyter.org/hub
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/jupyterhub-0.0.1/jupyterhub-0.0.1.tgz
+    version: 0.0.1
   kalavai-pool:
   - apiVersion: v2
     appVersion: 0.0.39
@@ -1646,4 +1664,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-03-12T11:34:02.70355401Z"
+generated: "2026-03-15T08:43:26.909356424Z"

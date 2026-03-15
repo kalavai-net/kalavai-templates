@@ -1,0 +1,111 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: {{ .Release.Name}}-api
+  labels:
+    kalavai.job.name: {{ .Values.system.jobId}}
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: jupyterhub
+      version: "{{ .Values.version}}"
+      sourceRef:
+        kind: HelmRepository
+        name: jupyterhub-repo-{{ .Release.Name }}
+        namespace: {{ .Release.Namespace }}
+  values:
+    proxy:
+      service:
+        type: NodePort
+    hub:
+      config:
+        Authenticator:
+          admin_users:
+            - admin
+          Jupyterhub:
+            admin_access: true
+      image:
+        name: jupyterhub/k8s-hub
+        tag: "4.3.1"
+    singleuser:
+      startTimeout: 3600
+      # Allocate GPU resources
+      profileList:
+        - display_name: "GPU Server"
+          default: true
+          description: "Spawns a notebook server with access to a GPU"
+          kubespawner_override:
+          {{- if .Values.singleuser.image.imagePullSecrets }}
+            imagePullSecrets:
+            {{- range .Values.singleuser.image.imagePullSecrets }}
+              - {{ . }}
+            {{- end }}
+          {{- end }}
+            image: {{ .Values.singleuser.image }}
+            extra_resource_limits:
+              nvidia.com/gpu: "{{ .Values.singleuser.gpuCount }}"
+            # Allow sudo access
+            environment:
+              GRANT_SUDO: "yes"
+            args:
+            - "--allow-root"
+            uid: 0
+            privileged: false # error allowPrivilegeEscalation: false
+        # - display_name: "CPU only"
+        #   description: "Spawns a notebook server (CPU only)"
+      # establish resource limits
+      memory:
+        limit: {{ .Values.singleuser.memory }}
+        guarantee: {{ .Values.singleuser.memory }}
+      cpu:
+        limit: {{ .Values.singleuser.cpu }}
+        guarantee: {{ .Values.singleuser.cpu }}
+      # define persistent storage
+      storage:
+        capacity: "{{ .Values.singleuser.storageCapacity }}Gi"
+        dynamic:
+          storageClass: {{ .Values.singleuser.storageClass }}
+        homeMountPath: /home/user
+      # auto culling inactive servers https://z2jh.jupyter.org/en/latest/jupyterhub/customizing/user-management.html#culling-user-pods
+      extraFiles:
+        init-script:
+          mountPath: /usr/local/bin/before-notebook.d/init-script.sh
+          mode: 0755
+          stringData: {{ .Values.singleuser.initScript | quote }}
+        # jupyter_notebook_config reference: https://jupyter-notebook.readthedocs.io/en/stable/config.html
+        jupyter_notebook_config.json:
+          mountPath: /etc/jupyter/jupyter_notebook_config.json
+          # data is a YAML structure here but will be rendered to JSON file as our
+          # file extension is ".json".
+          data:
+            MappingKernelManager:
+              # cull_idle_timeout: timeout (in seconds) after which an idle kernel is
+              # considered ready to be culled
+              cull_idle_timeout: 1200 # default: 0
+              # cull_interval: the interval (in seconds) on which to check for idle
+              # kernels exceeding the cull timeout value
+              cull_interval: 120 # default: 300
+              # cull_connected: whether to consider culling kernels which have one
+              # or more connections
+              cull_connected: true # default: false
+              # cull_busy: whether to consider culling kernels which are currently
+              # busy running some code
+              cull_busy: false # default: false
+    scheduling:
+      # Enable the user scheduler, to pack users tight on some nodes and let other nodes become empty and scaled down.
+      userScheduler:
+        enabled: false
+      # Enable pod priority and add user placeholders, to scale up nodes ahead of real users’ arrivals 
+      userPlaceholder:
+        enabled: true
+        replicas: 1
+      podPriority:
+        enabled: true
+    #Enable the continuous image puller, to prepare added nodes for arriving users.
+    prePuller:
+      hook:
+        enabled: false
+      continuous:
+        # NOTE: if used with a Cluster Autoscaler, also add user-placeholders
+        enabled: false

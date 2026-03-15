@@ -1,0 +1,34 @@
+{
+   "$schema": "http://json-schema.org/draft-07/schema#",
+   "type": "object",
+   "properties": {
+      "system": {
+         "properties": {
+            "priorityClassName": {
+               "type": "string",
+               "description": "PriorityClassName to use for the deployment"
+            },
+            "nodeSelectors": {
+               "type": [
+                  "object",
+                  "null"
+               ],
+               "description": "target specific devices. Expected format -> key: value pairs, where 'value' is a list of elements"
+            },
+            "nodeSelectorsOps": {
+               "type": "string",
+               "enum": [
+                  "OR",
+                  "AND"
+               ],
+               "description": "Logical operation to use to apply to nodeSelectors. Accepted values: 'OR', 'AND'"
+            },
+            "jobId": {
+               "type": "string",
+               "description": "Id to tag spawned objects."
+            }
+         }
+      }
+   },
+   "required": []
+}

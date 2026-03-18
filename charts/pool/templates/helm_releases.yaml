@@ -52,6 +52,9 @@ spec:
         namespace: {{ .Release.Namespace }}
   values:
     bridge:
+    {{- if .Values.kalavaiApi.forceCutoffMetricsDate }}
+      cutoffMetricsDate: {{ now | date "2006-01-02T15:04:05" }}
+    {{- end }}
       replicas: 1
       imageTag: {{ .Values.kalavaiApi.imageTag}}
       labels:

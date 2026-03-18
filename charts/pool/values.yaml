@@ -1,5 +1,6 @@
 kalavaiApi:
   enabled: true
+  forceCutoffMetricsDate: false
   imageTag: latest
   version: 0.1.20
   nodeSelector: null

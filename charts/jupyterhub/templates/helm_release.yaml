@@ -67,8 +67,8 @@ spec:
         limit: {{ .Values.singleuser.memory }}Gi
         guarantee: {{ .Values.singleuser.memory }}Gi
       cpu:
-        limit: {{ .Values.singleuser.cpu }}Gi
-        guarantee: {{ .Values.singleuser.cpu }}Gi
+        limit: {{ .Values.singleuser.cpu }}
+        guarantee: {{ .Values.singleuser.cpu }}
       # define persistent storage
       storage:
         capacity: "{{ .Values.singleuser.storageCapacity }}Gi"

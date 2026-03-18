@@ -64,11 +64,11 @@ spec:
         #   description: "Spawns a notebook server (CPU only)"
       # establish resource limits
       memory:
-        limit: {{ .Values.singleuser.memory }}
-        guarantee: {{ .Values.singleuser.memory }}
+        limit: {{ .Values.singleuser.memory }}Gi
+        guarantee: {{ .Values.singleuser.memory }}Gi
       cpu:
-        limit: {{ .Values.singleuser.cpu }}
-        guarantee: {{ .Values.singleuser.cpu }}
+        limit: {{ .Values.singleuser.cpu }}Gi
+        guarantee: {{ .Values.singleuser.cpu }}Gi
       # define persistent storage
       storage:
         capacity: "{{ .Values.singleuser.storageCapacity }}Gi"

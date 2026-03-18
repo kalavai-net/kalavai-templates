@@ -2,6 +2,55 @@
    "$schema": "http://json-schema.org/draft-07/schema#",
    "type": "object",
    "properties": {
+      "version": {
+         "type": "string",
+         "description": "JupyterHub version to install"
+      },
+      "singleuser": {
+         "type": "object",
+         "properties": {
+            "image": {
+               "type": "object",
+               "properties": {
+                  "name": {
+                     "type": "string",
+                     "description": "JupyterHub image name"
+                  },
+                  "imagePullSecrets": {
+                     "type": [
+                        "object",
+                        "null"
+                     ],
+                     "description": "Image pull secrets"
+                  }
+               }
+            },
+            "gpuCount": {
+               "type": "integer",
+               "description": "GPU count"
+            },
+            "memory": {
+               "type": "number",
+               "description": "Memory"
+            },
+            "cpu": {
+               "type": "number",
+               "description": "CPU"
+            },
+            "storageCapacity": {
+               "type": "number",
+               "description": "Storage capacity"
+            },
+            "storageClass": {
+               "type": "string",
+               "description": "Storage class"
+            },
+            "initScript": {
+               "type": "string",
+               "description": "Initialization script"
+            }
+         }
+      },
       "system": {
          "properties": {
             "priorityClassName": {

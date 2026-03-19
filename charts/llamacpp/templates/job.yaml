@@ -65,7 +65,7 @@ spec:
         containers:
         - name: llamacpp-leader
         {{ if eq .Values.backend "cuda" }}
-          image: ghcr.io/kalavai-net/llamacpp-cuda-built:latest
+          image: ghcr.io/kalavai-net/llamacpp-cuda:latest
         {{ else if eq .Values.backend "rocm" }}
           image: ghcr.io/kalavai-net/llamacpp-rocm:latest
         {{ else }}
@@ -76,8 +76,7 @@ spec:
           - -c
           - |
           {{ if eq .Values.backend  "cuda" }}
-            echo "nothing"
-            #/workspace/build.sh server_nvidia;
+            /workspace/build.sh server_nvidia;
           {{ else if eq .Values.backend "rocm" }}
             /workspace/build.sh server_amd; 
           {{ else }}
@@ -187,7 +186,7 @@ spec:
         containers:
         - name: llamacpp-worker
         {{ if eq .Values.backend "cuda" }}
-          image: ghcr.io/kalavai-net/llamacpp-cuda-built:latest
+          image: ghcr.io/kalavai-net/llamacpp-cuda:latest
         {{ else if eq .Values.backend "rocm" }}
           image: ghcr.io/kalavai-net/llamacpp-rocm:latest
         {{ else }}
@@ -198,8 +197,7 @@ spec:
           - -c
           - |
           {{ if eq .Values.backend "cuda" }}
-            echo "nothing"
-            # /workspace/build.sh nvidia;
+            /workspace/build.sh nvidia;
           {{ else if eq .Values.backend "rocm" }}
             /workspace/build.sh amd; 
           {{ else }}

@@ -50,7 +50,7 @@ spec:
               - {{ . }}
             {{- end }}
           {{- end }}
-            image: {{ .Values.singleuser.image }}
+            image: {{ .Values.singleuser.image.name }}
             extra_resource_limits:
               nvidia.com/gpu: "{{ .Values.singleuser.gpuCount }}"
             # Allow sudo access

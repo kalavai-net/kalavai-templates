@@ -29,7 +29,13 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ .Release.Name }}-secret
+                {{- if eq .Values.ui.accessKeyType "admin" }}
                   key: watcherAdminKey
+                {{- else if eq .Values.ui.accessKeyType "write" }}
+                  key: watcherWriteKey
+                {{- else }}
+                  key: watcherReadonlyKey
+                {{- end }}
           resources:
             requests:
               cpu: {{ .Values.ui.cpu }}

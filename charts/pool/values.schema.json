@@ -80,6 +80,11 @@
                "type": "boolean",
                "description": "Enable UI"
             },
+            "accessKeyType": {
+               "type": "string",
+               "description": "Access key type for UI",
+               "enum": ["admin", "write", "read"]
+            },
             "cpu": {
                "type": "number",
                "description": "CPU request for UI"

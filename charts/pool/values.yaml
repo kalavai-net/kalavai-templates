@@ -24,5 +24,6 @@ system:
 
 ui: 
   enabled: true
+  accessKeyType: admin
   cpu: 1
   memory: 1.5

@@ -53,7 +53,7 @@ spec:
   values:
     bridge:
     {{- if .Values.kalavaiApi.forceCutoffMetricsDate }}
-      cutoffMetricsDate: {{ now | date "2006-01-02T15:04:05Z" }}
+      cutoffMetricsDate: {{ .Values.kalavaiApi.forceCutoffMetricsDate }} #{{ now | date "2006-01-02T15:04:05Z" }}
     {{- end }}
       replicas: 1
       imageTag: {{ .Values.kalavaiApi.imageTag}}

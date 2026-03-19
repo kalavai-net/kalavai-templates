@@ -41,8 +41,8 @@
                "description": "Enable Kalavai API"
             },
             "forceCutoffMetricsDate": {
-               "type": "boolean",
-               "description": "Force cutoff metrics date"
+               "type": ["string", "null"],
+               "description": "Force cutoff metrics date, format: YYYY-MM-DDTHH:MM:SSZ"
             },
             "version": {
                "description": "Kalavai API service version to install in the pool",

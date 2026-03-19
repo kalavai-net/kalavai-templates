@@ -1,0 +1,15 @@
+apiVersion: v2
+appVersion: 0.0.1
+description: highly available PostgreSQL database cluster with a primary/standby architecture
+icon: https://cloudnative-pg.io/logo/large_logo.svg
+kubeVersion: '>= 1.25.0'
+maintainers:
+- email: carlos@kalavai.net
+  name: Carlos Fernandez Musoles
+  url: https://kalavai.net
+name: postgresql
+sources:
+- https://cloudnative-pg.io/docs/1.28/
+- https://www.pgadmin.org/
+- https://cloudnative-pg.io/
+version: 0.0.1

@@ -155,6 +155,25 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/jupyterhub-0.0.1/jupyterhub-0.0.1.tgz
     version: 0.0.1
+  kalavai-personaplex:
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2026-03-21T22:11:27.361351877Z"
+    description: Voice and Role Control for Full Duplex Conversational Speech Models
+    digest: 8ef7d0fa6460eb6464a138518a3e5f1a7c6e7ea3e267b3aa4cdc5554c9e7967a
+    icon: https://www.nvidia.com/content/nvidiaGDC/us/en_US/about-nvidia/legal-info/logo-brand-usage/_jcr_content/root/responsivegrid/nv_container_392921705/nv_container/nv_image.coreimg.100.1070.png/1703060329053/nvidia-logo-vert.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: kalavai-personaplex
+    sources:
+    - https://huggingface.co/brianmatzelle/personaplex-7b-v1-bnb-4bit
+    - https://huggingface.co/nvidia/personaplex-7b-v1
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/kalavai-personaplex-0.0.1/kalavai-personaplex-0.0.1.tgz
+    version: 0.0.1
   kalavai-pool:
   - apiVersion: v2
     appVersion: 0.0.43
@@ -1906,4 +1925,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-03-20T09:50:19.488111832Z"
+generated: "2026-03-21T22:11:27.361627201Z"

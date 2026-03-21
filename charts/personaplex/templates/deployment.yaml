@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Release.Name}}-personaplex
+    kalavai.job.name: {{ .Values.system.jobId }}
+  name: {{ .Release.Name }}-personaplex
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name}}-personaplex
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name}}-personaplex
+        kalavai.job.name: {{ .Values.system.jobId }}
+    spec:
+      runtimeClassName: nvidia
+    {{- if .Values.system.nodeSelectors }}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+          {{- if eq .Values.system.nodeSelectorsOps "OR" }}
+            {{- range $k, $v := .Values.system.nodeSelectors }}
+            - matchExpressions:
+              - key: {{$k}}
+                operator: In
+                values:
+                {{- range $v }}
+                - "{{ . }}"
+                {{- end }}
+            {{- end }}
+          {{- else }}
+            - matchExpressions:
+            {{- range $k, $v := .Values.system.nodeSelectors }}
+              {{- range $v }}
+              - key: {{ $k }}
+                operator: In
+                values:
+                - "{{ . }}"
+              {{- end }}
+            {{- end }}
+          {{- end }}
+      {{- end }}
+      containers:
+      - name: personaplex
+        image: ghcr.io/kalavai-net/kalavai-personaplex:latest
+        command:
+        - sh
+        - -c
+        - |
+          echo "Starting personaplex..."
+          python -m moshi.server --quantize-4bit --host 0.0.0.0 --port 8998
+        imagePullPolicy: {{ .Values.resources.imagePullPolicy }}
+        env:
+        - name: HF_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-personaplex-secret
+              key: hf_token
+        ports:
+        - containerPort: 8998
+          name: ui
+        resources:
+          requests:
+            cpu: {{ .Values.resources.cpus}}
+            memory: {{ .Values.resources.memory }}Gi
+            nvidia.com/gpu: {{ .Values.resources.gpus}}
+            ephemeral-storage: 32Gi
+          limits:
+            cpu: {{ .Values.resources.cpus}}
+            memory: {{ add .Values.resources.memory .Values.resources.sharedMemory }}Gi
+            nvidia.com/gpu: {{ .Values.resources.gpus}}
+          {{- if .Values.resources.gpuMemory }}
+            nvidia.com/gpumem: {{ .Values.resources.gpuMemory}}
+          {{- end }}
+            ephemeral-storage: 32Gi
+      restartPolicy: Always

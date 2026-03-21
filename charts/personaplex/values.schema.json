@@ -1,0 +1,66 @@
+{
+   "$schema": "http://json-schema.org/draft-07/schema#",
+   "type": "object",
+   "properties": {
+      "hfToken": {
+         "description": "Huggingface access token, only required to load gated model weights",
+         "type": [
+            "string",
+            "null"
+         ]
+      },
+      "resources": {
+         "type": "object",
+         "properties": {
+            "imagePullPolicy": {
+               "description": "Image pull policy for the containers (Always, IfNotPresent, Never)",
+               "type": "string",
+               "enum": ["Always", "IfNotPresent", "Never"]
+            },
+            "memory": {
+               "description": "Memory to be used per single worker (final one = memory * workers). Workers should have these many GB of memory available.",
+               "type": "integer"
+            },
+            "cpus": {
+               "description": "CPUs to be used per single worker (final one = cpus * workers). Workers should have these many CPUs available.",
+               "type": "integer"
+            },
+            "gpuMemory": {
+               "description": "GPU memory to be used per single worker (final one = gpu_memory * workers). Workers should have these many GB of GPU memory available.",
+               "type": "integer"
+            },
+            "gpus": {
+               "description": "GPUs to be used per single worker (final one = gpus * workers). Workers should have these many GPUs available.",
+               "type": "integer"
+            }
+         }
+      },
+      "system": {
+         "properties": {
+            "priorityClassName": {
+                "type": "string",
+                "description": "PriorityClassName to use for the deployment"
+            },
+            "jobId": {
+                "type": "string",
+                "description": "Job ID to label spawned objects."
+            },
+            "nodeSelectors": {
+               "type": [
+                  "object",
+                  "null"
+               ],
+               "description": "target specific devices. Expected format -> key: value pairs, where 'value' is a list of elements"
+            },
+            "nodeSelectorsOps": {
+               "type": "string",
+               "enum": ["OR", "AND"],
+               "description": "Logical operation to use to apply to nodeSelectors. Accepted values: 'OR', 'AND'"
+            }
+         }
+      }
+   },
+   "required": [
+      "hfToken"
+   ]
+}

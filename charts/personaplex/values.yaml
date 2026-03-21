@@ -1,0 +1,14 @@
+hfToken: null
+
+resources:
+  memory: 8
+  cpus: 2
+  gpus: 1
+  gpuMemory: null
+  imagePullPolicy: IfNotPresent
+
+system:
+  priorityClassName: user-spot-priority
+  nodeSelectors: null
+  nodeSelectorsOps: OR
+  jobId: null

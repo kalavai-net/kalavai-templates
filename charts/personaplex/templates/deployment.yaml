@@ -68,13 +68,13 @@ spec:
             cpu: {{ .Values.resources.cpus}}
             memory: {{ .Values.resources.memory }}Gi
             nvidia.com/gpu: {{ .Values.resources.gpus}}
-            ephemeral-storage: 32Gi
+            ephemeral-storage: 64Gi
           limits:
             cpu: {{ .Values.resources.cpus}}
-            memory: {{ add .Values.resources.memory .Values.resources.sharedMemory }}Gi
+            memory: {{ .Values.resources.memory }}Gi
             nvidia.com/gpu: {{ .Values.resources.gpus}}
           {{- if .Values.resources.gpuMemory }}
             nvidia.com/gpumem: {{ .Values.resources.gpuMemory}}
           {{- end }}
-            ephemeral-storage: 32Gi
+            ephemeral-storage: 64Gi
       restartPolicy: Always

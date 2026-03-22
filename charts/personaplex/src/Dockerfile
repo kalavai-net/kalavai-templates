@@ -1,6 +1,6 @@
 FROM python:3.12-slim
 
-RUN apt update && apt install -y git libopus-dev
+RUN apt update && apt install -y git libopus-dev build-essential gcc g++
 
 WORKDIR /app
 

@@ -1,0 +1,226 @@
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+  name: {{ .Release.Name}}
+  labels:
+    # must have this label
+    kalavai.job.name: {{ .Values.system.jobId}}
+spec:
+  queue: default
+  priorityClassName: {{ .Values.system.priorityClassName}}
+  schedulerName: volcano
+  plugins:
+    env: []
+    svc: ["--disable-network-policy=true"]
+  maxRetry: 100000
+  tasks:
+  - replicas: 1   # One server pod specified
+    name: server
+    policies:
+    - event: PodEvicted
+      action: RestartJob
+    - event: PodFailed
+      action: RestartJob
+    - event: TaskCompleted
+      action: RestartJob
+    - event: Unknown
+      action: RestartJob
+    template: # Definition of the server pod
+      metadata:
+        labels:
+          role: leader
+          kalavai.job.name: {{ .Values.system.jobId}}
+      spec:
+        terminationGracePeriodSeconds: 60
+      {{- if eq .Values.deployment.gpuBackend "cuda" }}
+        runtimeClassName: nvidia
+      {{- end }}
+      {{- if .Values.system.nodeSelectors }}
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+            {{- if eq .Values.system.nodeSelectorsOps "OR" }}
+              {{- range $k, $v := .Values.system.nodeSelectors }}
+              - matchExpressions:
+                - key: {{$k}}
+                  operator: In
+                  values:
+                  {{- range $v }}
+                  - "{{ . }}"
+                  {{- end }}
+              {{- end }}
+            {{- else }}
+              - matchExpressions:
+              {{- range $k, $v := .Values.system.nodeSelectors }}
+                {{- range $v }}
+                - key: {{ $k }}
+                  operator: In
+                  values:
+                  - "{{ . }}"
+                {{- end }}
+              {{- end }}
+            {{- end }}
+        {{- end }}
+        containers:
+        - name: speaches-leader
+        {{- if .Values.deployment.gpus > 0 }}
+          image: ghcr.io/speaches-ai/speaches:latest-cuda
+        {{- else }}
+          image: ghcr.io/speaches-ai/speaches:latest-cpu
+        {{- end }}
+          imagePullPolicy: IfNotPresent
+          command:
+          - sh
+          - -c
+          - |
+            ## FOR GPU IMAGES ##
+          {{- if .Values.deployment.gpus > 0 }}
+            export KOKORO_REVISION=c97b7bbc3e60f447383c79b2f94fee861ff156ac
+            # Download the ONNX model (~346 MBs)
+            huggingface-cli download hexgrad/Kokoro-82M --include 'kokoro-v0_19.onnx' --revision $KOKORO_REVISION
+            # Download the voices.bin (~5.5 MBs) file
+            curl --location --output /home/ubuntu/.cache/huggingface/hub/models--hexgrad--Kokoro-82M/snapshots/$KOKORO_REVISION/voices.bin https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files/voices.bin
+            # Download all English voices (~4.5 minutes) - too much, rate limited
+            #huggingface-cli download rhasspy/piper-voices --include 'en/**/*' 'voices.json'
+            # Download specific voices
+            huggingface-cli download rhasspy/piper-voices --include 'en/en_US/af/**/*' 'voices.json'
+            huggingface-cli download rhasspy/piper-voices --include 'en/en_US/bm_george/**/*' 'voices.json'
+          {{- else }}
+            ## FOR CPU IMAGES ##
+            . /workspace/speaches/.venv/bin/activate
+          {{- end }}
+            ## FOR ALL ##
+            # run server
+            uvicorn --factory --host 0.0.0.0 --port 8000 speaches.main:create_app
+          ports:
+          - containerPort: 8000
+            name: model-port
+          resources:
+            requests:
+              cpu: {{ .Values.deployment.cpus}}
+              memory: {{ .Values.deployment.memory }}Gi
+            {{- if eq .Values.deployment.gpuBackend "cuda" }}
+              nvidia.com/gpu: {{ .Values.deployment.gpus}}
+            {{- else }}
+              amd.com/gpu: {{ .Values.deployment.gpus}}
+            {{- end }}
+            limits:
+              cpu: {{ .Values.deployment.cpus}}
+              memory: {{ add .Values.deployment.memory .Values.deployment.sharedMemory }}Gi
+            {{- if eq .Values.deployment.gpuBackend "cuda" }}
+              nvidia.com/gpu: {{ .Values.deployment.gpus}}
+              {{- if .Values.deployment.gpuMemory }}
+              nvidia.com/gpumem: {{ .Values.deployment.gpuMemory}}
+              {{- end }}
+            {{- else }}
+              amd.com/gpu: {{ .Values.deployment.gpus}}
+            {{- end }}
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+        restartPolicy: OnFailure
+  {{ if .Values.litellm.enabled }}
+  - replicas: 1
+    name: registrar
+    policies:
+    - event: PodEvicted
+      action: RestartJob
+    - event: PodFailed
+      action: RestartJob
+    - event: TaskCompleted
+      action: RestartJob
+    - event: Unknown
+      action: RestartJob
+    template: # Definition of registrar pod
+      metadata:
+        labels:
+          kalavai.job.name: {{ .Values.system.jobId}}
+      spec:
+        terminationGracePeriodSeconds: 60
+      {{- if .Values.system.nodeSelectors }}
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+            {{- if eq .Values.system.nodeSelectorsOps "OR" }}
+              {{- range $k, $v := .Values.system.nodeSelectors }}
+              - matchExpressions:
+                - key: {{$k}}
+                  operator: In
+                  values:
+                  {{- range $v }}
+                  - "{{ . }}"
+                  {{- end }}
+              {{- end }}
+            {{- else }}
+              - matchExpressions:
+              {{- range $k, $v := .Values.system.nodeSelectors }}
+                {{- range $v }}
+                - key: {{ $k }}
+                  operator: In
+                  values:
+                  - "{{ . }}"
+                {{- end }}
+              {{- end }}
+            {{- end }}
+        {{- end }}
+        containers:
+        - name: registrar-leader
+          image: ghcr.io/kalavai-net/kalavai-utils:latest
+          command:
+          - sh
+          - -c
+          - |
+            echo "Waiting for model to be served..."
+            echo "Namespace: "$VC_NAMESPACE;
+            PS_HOST=`cat /etc/volcano/server.host`;
+            /workspace/wait_for_service.sh --servers="$PS_HOST" --port=8080
+            export MODEL_API_BASE="http://"$PS_HOST"."$VC_NAMESPACE":8080/v1";
+            /workspace/start_point.sh \
+              --litellm_kalavai_extras='{{ .Values.litellm.kalavaiExtras }}' \
+              --litellm_access_group={{ .Values.litellm.accessGroup }}
+          env:
+          - name: VC_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: LITELLM_MODEL_NAME
+          {{ if .Values.deployment.modelNameOverride }}
+            value: "{{ .Values.deployment.modelNameOverride }}"
+          {{ else }}
+            value: "{{ .Values.fishspeech.modelPath }}"
+          {{ end }}
+          - name: LITELLM_BASE_URL
+            value: {{ .Values.litellm.baseUrl }}
+          - name: LITELLM_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name }}-secret
+                key: litellm_key
+          - name: MODEL_ID
+            value: {{ .Values.fishspeech.modelPath }}
+          - name: DEPLOYMENT_ID
+            value: {{ .Release.Name }}
+          - name: PROVIDER
+            value: hosted_fishspeech
+          lifecycle:
+            preStop:
+              exec:
+                command: 
+                - sh
+                - -c
+                - |
+                  /workspace/cleanup.sh
+          resources:
+            requests:
+              cpu: 0.05
+              memory: 0.05Gi
+            limits:
+              cpu: 0.05
+              memory: 0.05Gi
+        restartPolicy: Always
+  {{- end }}

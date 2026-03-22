@@ -1,0 +1,20 @@
+cpus: 2
+cudaGpuMemPercentage: 100
+gpus: 1
+lagoApiKey: null
+lagoEventCode: null
+lagoEventInterval: null
+lagoExternalSubscriptionId: null
+lagoUrl: null
+litellmAccessGroup: null
+litellmBaseUrl: http://litellm.default.svc.cluster.local:4000
+litellmKalavaiExtras: '{}'
+litellmKey: null
+memory: 4
+mode: audio_speech
+modelId: hexgrad/Kokoro-82M
+nodeport: null
+system:
+  jobPriority: user-spot-priority
+  nodeSelectors: null
+  nodeSelectorsOps: OR

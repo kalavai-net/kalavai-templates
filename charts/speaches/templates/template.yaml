@@ -1,0 +1,252 @@
+apiVersion: v1
+stringData:
+  litellm_key: {{litellm_key}}
+kind: Secret
+metadata:
+  name: {{deployment_id}}-secret
+  labels:
+    kalavai.job.name: {{deployment_id}}
+type: Opaque
+immutable: true
+---
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+  name: {{deployment_id}}
+  labels:
+    # must have this label
+    kalavai.job.name: {{deployment_id}}
+spec:
+  schedulerName: volcano
+  priorityClassName: {{JOB_PRIORITY|default("user-spot-priority", true)}}
+  plugins:
+    env: []
+    svc: ["--disable-network-policy=true"]
+  maxRetry: 100000
+  tasks:
+{% if litellm_key != "" %}
+  - replicas: 1   # One ps pod specified
+    name: registrar
+    maxRetry: 100000
+    policies:
+    - event: PodEvicted
+      action: RestartTask
+    - event: PodFailed
+      action: RestartTask
+    - event: TaskCompleted
+      action: RestartTask
+    - event: Unknown
+      action: RestartTask
+    template: # Definition of the ps pod
+      metadata:
+        labels:
+          kalavai.job.name: {{deployment_id}}
+      spec:
+        terminationGracePeriodSeconds: 60
+        {% if NODE_SELECTORS %}
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+            {% if NODE_SELECTORS_OPS == "OR" %}
+              {% for selector in NODE_SELECTORS %}
+              - matchExpressions:
+                - key: {{selector.name}}
+                  operator: In
+                  values:
+                  {% for vals in selector.value %}
+                  - "{{vals}}"
+                  {% endfor %}
+              {% endfor %}
+            {% else %}
+              - matchExpressions:
+              {% for selector in NODE_SELECTORS %}
+                {% for vals in selector.value %}
+                - key: {{selector.name}}
+                  operator: In
+                  values:
+                  - "{{vals}}"
+                {% endfor %}
+              {% endfor %}
+            {% endif %}
+        {% endif %}
+        containers:
+        - name: registrar-leader
+          image: docker.io/kalavai/kalavai-utils:latest
+          command:
+          - sh
+          - -c
+          - |
+            echo "Waiting for model to be served..."
+            PS_HOST=`cat /etc/volcano/server.host`;
+            /workspace/wait_for_service.sh --servers="$PS_HOST" --port=8080
+            export MODEL_API_BASE="http://"$PS_HOST"."$VC_NAMESPACE":8080/v1";
+            /workspace/start_point.sh \
+              --litellm_kalavai_extras='{{litellm_kalavai_extras}}' \
+              --litellm_access_group={{litellm_access_group}}
+          env:
+          - name: VC_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: LITELLM_MODEL_NAME
+          {% if model_name_override != "" %}
+            value: "{{model_name_override}}"
+          {% else %}
+            value: "{{model_id}}"
+          {% endif %}
+          - name: LITELLM_BASE_URL
+            value: {{litellm_base_url}}
+          - name: LITELLM_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{deployment_id}}-secret
+                key: litellm_key
+          - name: MODEL_ID
+            value: {{model_id}}
+          - name: DEPLOYMENT_ID
+            value: {{deployment_id}}
+          - name: PROVIDER
+            value: openai
+          lifecycle:
+            preStop:
+              exec:
+                command: 
+                - sh
+                - -c
+                - |
+                  /workspace/cleanup.sh
+          resources:
+            requests:
+              cpu: 0.05
+              memory: 0.05Gi
+            limits:
+              cpu: 0.05
+              memory: 0.05Gi
+        restartPolicy: OnFailure
+{% endif %}
+  - replicas: 1   # One ps pod specified
+    name: server
+    maxRetry: 100000
+    policies:
+    - event: PodEvicted
+      action: RestartJob
+    - event: PodFailed
+      action: RestartJob
+    - event: TaskCompleted
+      action: RestartJob
+    - event: Unknown
+      action: RestartJob
+    template: # Definition of the ps pod
+      metadata:
+        labels:
+          kalavai.job.name: {{deployment_id}}
+          role: leader
+      spec:
+        terminationGracePeriodSeconds: 60
+        runtimeClassName: nvidia
+        {% if NODE_SELECTORS %}
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+            {% if NODE_SELECTORS_OPS == "OR" %}
+              {% for selector in NODE_SELECTORS %}
+              - matchExpressions:
+                - key: {{selector.name}}
+                  operator: In
+                  values:
+                  {% for vals in selector.value %}
+                  - "{{vals}}"
+                  {% endfor %}
+              {% endfor %}
+            {% else %}
+              - matchExpressions:
+              {% for selector in NODE_SELECTORS %}
+                {% for vals in selector.value %}
+                - key: {{selector.name}}
+                  operator: In
+                  values:
+                  - "{{vals}}"
+                {% endfor %}
+              {% endfor %}
+            {% endif %}
+        {% endif %}
+        containers:
+        - name: container
+        {% if gpus > 0 %}
+          image: ghcr.io/speaches-ai/speaches:0.7-cuda-12.4.1
+        {% else %}
+          image: ghcr.io/speaches-ai/speaches:latest-cpu
+        {% endif %}
+          imagePullPolicy: Always
+          command:
+          - sh
+          - -c
+          - |
+            ## FOR GPU IMAGES ##
+          {% if gpus > 0 %}
+            export KOKORO_REVISION=c97b7bbc3e60f447383c79b2f94fee861ff156ac
+            # Download the ONNX model (~346 MBs)
+            huggingface-cli download hexgrad/Kokoro-82M --include 'kokoro-v0_19.onnx' --revision $KOKORO_REVISION
+            # Download the voices.bin (~5.5 MBs) file
+            curl --location --output /home/ubuntu/.cache/huggingface/hub/models--hexgrad--Kokoro-82M/snapshots/$KOKORO_REVISION/voices.bin https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files/voices.bin
+            # Download all English voices (~4.5 minutes) - too much, rate limited
+            #huggingface-cli download rhasspy/piper-voices --include 'en/**/*' 'voices.json'
+            # Download specific voices
+            huggingface-cli download rhasspy/piper-voices --include 'en/en_US/af/**/*' 'voices.json'
+            huggingface-cli download rhasspy/piper-voices --include 'en/en_US/bm_george/**/*' 'voices.json'
+          {% else %}
+            ## FOR CPU IMAGES ##
+            . /workspace/speaches/.venv/bin/activate
+          {% endif %}
+            ## FOR ALL ##
+            # run server
+            uvicorn --factory --host 0.0.0.0 --port 8000 speaches.main:create_app
+          ports:
+          - containerPort: 8000
+            name: container-port
+          resources:
+            requests:
+              cpu: {{cpus}}
+              memory: {{memory}}Gi
+            {% if gpus and gpus > 0 %}
+              nvidia.com/gpu: {{gpus}}
+            {% endif %}
+            limits:
+              cpu: {{cpus}}
+              memory: {{memory}}Gi
+            {% if gpus > 0 %}
+              nvidia.com/gpu: {{gpus}}
+              nvidia.com/gpumem-percentage: {{cuda_gpu_mem_percentage}}
+            {% endif %}
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+        restartPolicy: OnFailure
+---
+# deploy NodePort to expose model (if not using LiteLLM registration)
+{% if litellm_key == "" %}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{deployment_id}}-service
+  labels:
+    # must have this!
+    kalavai.job.name: {{deployment_id}}
+spec:
+  type: NodePort
+  selector:
+    role: leader
+    kalavai.job.name: {{deployment_id}}
+  ports:
+    - port: 8000
+      targetPort: 8000
+      protocol: TCP
+    {% if nodeport != "" %}
+      nodePort: {{nodeport}}
+    {% endif %}
+{% endif %}

@@ -23,11 +23,11 @@ kind: Ingress
 metadata:
   annotations:
     traefik.ingress.kubernetes.io/router.middlewares: "{{ .Release.Namespace }}-{{ .Release.Name }}-large-body@kubernetescrd"
-  name: {{ .Release.name }}-ingress
+  name: {{ .Release.Name }}-ingress
 spec:
   ingressClassName: traefik
   rules:
-  - host: {{ .Release.Name }}-{{ .Release.namespace }}-personaplex.{{ .Values.ingress.subdomain }}
+  - host: {{ .Release.Name }}-{{ .Release.Namespace }}-personaplex.{{ .Values.ingress.subdomain }}
     http:
       paths:
       - backend:

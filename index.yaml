@@ -1112,6 +1112,25 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/llama.cpp-0.0.1/llama.cpp-0.0.1.tgz
     version: 0.0.1
+  personaplex:
+  - apiVersion: v2
+    appVersion: 0.0.5
+    created: "2026-03-23T12:54:44.55303008Z"
+    description: Voice and Role Control for Full Duplex Conversational Speech Models
+    digest: 8561d6d71cf13697c842703ee359a31dbffe92a01571ec6f637969e24b92895d
+    icon: https://www.nvidia.com/content/nvidiaGDC/us/en_US/about-nvidia/legal-info/logo-brand-usage/_jcr_content/root/responsivegrid/nv_container_392921705/nv_container/nv_image.coreimg.100.1070.png/1703060329053/nvidia-logo-vert.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: personaplex
+    sources:
+    - https://huggingface.co/brianmatzelle/personaplex-7b-v1-bnb-4bit
+    - https://huggingface.co/nvidia/personaplex-7b-v1
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/personaplex-0.0.5/personaplex-0.0.5.tgz
+    version: 0.0.5
   postgresql:
   - apiVersion: v2
     appVersion: 0.0.1
@@ -1365,6 +1384,24 @@ entries:
     - ""
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/serverless-0.0.1/serverless-0.0.1.tgz
+    version: 0.0.1
+  speaches:
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2026-03-23T12:54:44.727377952Z"
+    description: speaches is an OpenAI API-compatible server supporting streaming
+      transcription, translation, and speech generation
+    digest: b0147e0f098af8b811a07238982700a91573a8eddb393d7810ff186f441925df
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: speaches
+    sources:
+    - https://speaches.ai/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/speaches-0.0.1/speaches-0.0.1.tgz
     version: 0.0.1
   vllm:
   - apiVersion: v2
@@ -1943,4 +1980,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-03-22T14:53:14.885063227Z"
+generated: "2026-03-23T12:54:44.727637928Z"

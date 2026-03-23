@@ -1,14 +1,14 @@
-# apiVersion: v2
-# appVersion: 0.0.1
-# description: speaches is an OpenAI API-compatible server supporting streaming transcription,
-#   translation, and speech generation
-# icon: ''
-# kubeVersion: '>= 1.25.0'
-# maintainers:
-# - email: carlos@kalavai.net
-#   name: Carlos Fernandez Musoles
-#   url: https://kalavai.net
-# name: speaches
-# sources:
-# - https://speaches.ai/
-# version: 0.0.1
+apiVersion: v2
+appVersion: 0.0.1
+description: speaches is an OpenAI API-compatible server supporting streaming transcription,
+  translation, and speech generation
+icon: ''
+kubeVersion: '>= 1.25.0'
+maintainers:
+- email: carlos@kalavai.net
+  name: Carlos Fernandez Musoles
+  url: https://kalavai.net
+name: speaches
+sources:
+- https://speaches.ai/
+version: 0.0.1

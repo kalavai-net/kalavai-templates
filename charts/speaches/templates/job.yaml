@@ -70,29 +70,12 @@ spec:
           image: ghcr.io/speaches-ai/speaches:latest-cpu
         {{- end }}
           imagePullPolicy: IfNotPresent
-          command:
-          - sh
-          - -c
-          - |
-            ## FOR GPU IMAGES ##
-          {{- if .Values.deployment.gpus > 0 }}
-            export KOKORO_REVISION=c97b7bbc3e60f447383c79b2f94fee861ff156ac
-            # Download the ONNX model (~346 MBs)
-            huggingface-cli download hexgrad/Kokoro-82M --include 'kokoro-v0_19.onnx' --revision $KOKORO_REVISION
-            # Download the voices.bin (~5.5 MBs) file
-            curl --location --output /home/ubuntu/.cache/huggingface/hub/models--hexgrad--Kokoro-82M/snapshots/$KOKORO_REVISION/voices.bin https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files/voices.bin
-            # Download all English voices (~4.5 minutes) - too much, rate limited
-            #huggingface-cli download rhasspy/piper-voices --include 'en/**/*' 'voices.json'
-            # Download specific voices
-            huggingface-cli download rhasspy/piper-voices --include 'en/en_US/af/**/*' 'voices.json'
-            huggingface-cli download rhasspy/piper-voices --include 'en/en_US/bm_george/**/*' 'voices.json'
-          {{- else }}
-            ## FOR CPU IMAGES ##
-            . /workspace/speaches/.venv/bin/activate
-          {{- end }}
-            ## FOR ALL ##
-            # run server
-            uvicorn --factory --host 0.0.0.0 --port 8000 speaches.main:create_app
+          # command:
+          # - sh
+          # - -c
+          # - |
+          #   # run server
+          #   uvicorn --factory --host 0.0.0.0 --port 8000 speaches.main:create_app
           ports:
           - containerPort: 8000
             name: model-port
@@ -105,9 +88,10 @@ spec:
             {{- else }}
               amd.com/gpu: {{ .Values.deployment.gpus}}
             {{- end }}
+              ephemeral-storage: 24Gi
             limits:
               cpu: {{ .Values.deployment.cpus}}
-              memory: {{ add .Values.deployment.memory .Values.deployment.sharedMemory }}Gi
+              memory: {{ .Values.deployment.memory }}Gi
             {{- if eq .Values.deployment.gpuBackend "cuda" }}
               nvidia.com/gpu: {{ .Values.deployment.gpus}}
               {{- if .Values.deployment.gpuMemory }}
@@ -116,12 +100,47 @@ spec:
             {{- else }}
               amd.com/gpu: {{ .Values.deployment.gpus}}
             {{- end }}
+              ephemeral-storage: 24Gi
           readinessProbe:
             httpGet:
               path: /health
               port: 8000
             initialDelaySeconds: 5
             periodSeconds: 10
+        restartPolicy: OnFailure
+  - replicas: 1  
+    name: downloader
+    template:
+      metadata:
+        labels:
+          kalavai.job.name: {{ .Values.system.jobId}}
+      spec:
+        terminationGracePeriodSeconds: 60
+        containers:
+        - name: speaches-downloader
+          image: docker.io/curlimages/curl:latest
+          imagePullPolicy: IfNotPresent
+          command:
+          - sh
+          - -c
+          - |
+            PS_HOST=`cat /etc/volcano/server.host`;
+            echo "Waiting for server to be ready..."
+            while ! curl -f -s "$PS_HOST:8000/health" > /dev/null; do
+              echo "Server not ready, waiting 5 seconds..."
+              sleep 5
+            done
+            echo "Server is ready!"
+
+            # download model
+            curl "$PS_HOST:8000/v1/models/{{ .Values.speaches.model }}" -X POST
+          resources:
+            requests:
+              cpu: 0.25
+              memory: 0.5Gi
+            limits:
+              cpu: 0.25
+              memory: 0.5Gi
         restartPolicy: OnFailure
   {{ if .Values.litellm.enabled }}
   - replicas: 1
@@ -192,7 +211,7 @@ spec:
           {{ if .Values.deployment.modelNameOverride }}
             value: "{{ .Values.deployment.modelNameOverride }}"
           {{ else }}
-            value: "{{ .Values.fishspeech.modelPath }}"
+            value: "{{ .Values.speaches.model }}"
           {{ end }}
           - name: LITELLM_BASE_URL
             value: {{ .Values.litellm.baseUrl }}
@@ -202,11 +221,11 @@ spec:
                 name: {{ .Release.Name }}-secret
                 key: litellm_key
           - name: MODEL_ID
-            value: {{ .Values.fishspeech.modelPath }}
+            value: {{ .Values.speaches.model }}
           - name: DEPLOYMENT_ID
             value: {{ .Release.Name }}
           - name: PROVIDER
-            value: hosted_fishspeech
+            value: hosted_vllm
           lifecycle:
             preStop:
               exec:

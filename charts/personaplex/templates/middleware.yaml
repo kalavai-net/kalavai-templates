@@ -1,11 +1,11 @@
-{{ if .Values.ingress.enabled }}
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: {{ .Release.Name }}-large-body
-spec:
-  buffering:
-    maxRequestBodyBytes: 0  # 0 means unlimited, equivalent to nginx "0"
-    memRequestBodyBytes: -1  # -1 means unlimited memory buffering
-    retryExpression: "isNetworkError() && Attempts(2)"
-{{ end }}
+# {{ if .Values.ingress.enabled }}
+# apiVersion: traefik.containo.us/v1alpha1
+# kind: Middleware
+# metadata:
+#   name: {{ .Release.Name }}-large-body
+# spec:
+#   buffering:
+#     maxRequestBodyBytes: 0  # 0 means unlimited, equivalent to nginx "0"
+#     memRequestBodyBytes: -1  # -1 means unlimited memory buffering
+#     retryExpression: "isNetworkError() && Attempts(2)"
+# {{ end }}

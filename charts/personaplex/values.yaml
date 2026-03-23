@@ -12,3 +12,7 @@ system:
   nodeSelectors: null
   nodeSelectorsOps: OR
   jobId: null
+
+ingress:
+  enabled: false
+  subdomain: spaces.kalavai.net

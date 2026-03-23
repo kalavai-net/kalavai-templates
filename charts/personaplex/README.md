@@ -140,15 +140,15 @@ kind: Ingress
 metadata:
   name: moshi-ingress
   annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    #cert-manager.io/cluster-issuer: "letsencrypt-dns-prod"
     nginx.ingress.kubernetes.io/proxy-body-size: "0" # Crucial for audio streaming
 spec:
   tls:
   - hosts:
-    - personaplex.kalavai.net
+    - personaplex-shadow.spaces.kalavai.net
     secretName: moshi-tls-certs
   rules:
-  - host: personaplex.kalavai.net
+  - host: personaplex-shadow.spaces.kalavai.net
     http:
       paths:
       - path: /

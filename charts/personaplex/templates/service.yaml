@@ -11,4 +11,30 @@ spec:
     protocol: TCP
   selector:
     app: {{ .Release.Name }}-personaplex
+{{ if .Values.ingress.enabled }}
+  type: ClusterIP
+{{ else }}
   type: NodePort
+{{ end }}
+---
+{{ if .Values.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: "{{ .Release.Namespace }}-{{ .Release.Name }}-large-body@kubernetescrd"
+  name: {{ .Release.name }}-ingress
+spec:
+  ingressClassName: traefik
+  rules:
+  - host: {{ .Release.Name }}-{{ .Release.namespace }}-personaplex.{{ .Values.ingress.subdomain }}
+    http:
+      paths:
+      - backend:
+          service:
+            name: {{ .Release.Name }}-personaplex-service
+            port:
+              number: 8998 # match internal port
+        path: /
+        pathType: Prefix
+{{ end }}

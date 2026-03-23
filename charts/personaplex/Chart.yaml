@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: 0.0.6
+appVersion: 0.0.7
 description: Voice and Role Control for Full Duplex Conversational Speech Models
 icon: https://www.nvidia.com/content/nvidiaGDC/us/en_US/about-nvidia/legal-info/logo-brand-usage/_jcr_content/root/responsivegrid/nv_container_392921705/nv_container/nv_image.coreimg.100.1070.png/1703060329053/nvidia-logo-vert.png
 kubeVersion: '>= 1.25.0'
@@ -11,4 +11,4 @@ name: personaplex
 sources:
 - https://huggingface.co/brianmatzelle/personaplex-7b-v1-bnb-4bit
 - https://huggingface.co/nvidia/personaplex-7b-v1
-version: 0.0.6
+version: 0.0.7

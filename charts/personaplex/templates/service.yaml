@@ -23,6 +23,8 @@ kind: Ingress
 metadata:
   # annotations:
   #   traefik.ingress.kubernetes.io/router.middlewares: "{{ .Release.Namespace }}-{{ .Release.Name }}-large-body@kubernetescrd"
+  labels:
+    kalavai.job.name: {{ .Values.system.jobId }}
   name: {{ .Release.Name }}-ingress
 spec:
   ingressClassName: traefik

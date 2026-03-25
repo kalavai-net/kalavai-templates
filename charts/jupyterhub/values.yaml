@@ -13,6 +13,10 @@ singleuser:
   initScript: |
     #!/bin/bash
 
+ingress:
+  enabled: false
+  subdomain: spaces.kalavai.net
+
 system:
   priorityClassName: user-spot-priority
   nodeSelectors: null

@@ -41,7 +41,7 @@ spec:
     singleuser:
       extraLabels:
         kalavai.job.name: {{ .Values.system.jobId}}
-      startTimeout: 3600
+      startTimeout: 7200
       # Allocate GPU resources
       profileList:
         - display_name: "GPU Server"

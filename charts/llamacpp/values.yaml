@@ -1,26 +1,40 @@
-backend: cpu
-cpus: 2
-hfToken: null
-lagoApiKey: null
-lagoEventCode: null
-lagoEventInterval: null
-lagoExternalSubscriptionId: null
-lagoUrl: null
-litellmAccessGroup: null
-litellmBaseUrl: http://litellm.default.svc.cluster.local:4000
-litellmKalavaiExtras: '{}'
-litellmKey: null
-memory: 4
-modelFilename: null
-modelNameOverride: null
-nodeport: null
-parallel: -1
-repoId: null
-serverExtra: null
+llamacpp:
+  modelFilename: null
+  hfToken: null
+  parallel: -1
+  repoId: null
+  serverExtra: null
+
+deployment:
+  backend: cpu
+  workers: 1
+  workingMemory: 5
+  cpus: 2
+  memory: 4
+  
+
+lago:
+  enabled: false
+  apiKey: null
+  eventCode: null
+  eventInterval: null
+  externalSubscriptionId: null
+  url: null
+
+litellm:
+  enabled: false
+  modelNameOverride: null
+  accessGroup: null
+  baseUrl: http://litellm.default.svc.cluster.local:4000
+  kalavaiExtras: '{}'
+  key: null
+
 system:
   jobId: null
   priorityClassName: user-spot-priority
   nodeSelectors: null
   nodeSelectorsOps: OR
-workers: 1
-workingMemory: 5
+
+ingress:
+  enabled: false
+  subdomain: spaces.kalavai.net

@@ -39,6 +39,10 @@ workers:
   gpus: 1
   memory: 14
 
+ingress:
+  enabled: false
+  subdomain: spaces.kalavai.net
+
 litellm:
   enabled: false
   accessGroup: null

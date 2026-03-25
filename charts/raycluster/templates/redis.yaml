@@ -1,10 +1,10 @@
-{{ if .Values.externalRedisUrl }}
+{{- if .Values.externalRedisUrl }}
 apiVersion: v1
 stringData:
-  redis_password: {{ .Values.redisPassword}}
+  redis_password: {{ .Values.ray.redisPassword}}
 kind: Secret
 metadata:
-  name: {{ .Release.Name }}-secret
+  name: {{ .Release.Name }}-redis-secret
   labels:
     kalavai.job.name: {{ .Values.system.jobId }}
 type: Opaque
@@ -58,6 +58,6 @@ spec:
         - name: REDIS_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ .Release.Name }}-secret
+                name: {{ .Release.Name }}-redis-secret
                 key: redis_password
-{{ end }}
+{{- end }}

@@ -23,9 +23,6 @@
       "deployment": {
          "type": "object",
          "properties": {
-            "nodeport": {
-               "type": "integer"
-            },
             "debugLevel": {
                "type": "string",
                "enum": ["DEBUG", "INFO", "WARNING", "ERROR"]
@@ -112,6 +109,19 @@
             "toolCallParser": {
                "description": "Tool call parser to use for the model",
                "type": "string"
+            }
+         }
+      },
+      "ingress": {
+         "type": "object",
+         "properties": {
+            "enabled": {
+               "type": "boolean",
+               "description": "Enable ingress for the vLLM service"
+            },
+            "subdomain": {
+               "type": "string",
+               "description": "Subdomain for the ingress"
             }
          }
       },

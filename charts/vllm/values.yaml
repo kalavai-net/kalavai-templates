@@ -20,10 +20,13 @@ deployment:
   gpuMemory: null
   modelNameOverride: null
   imagePullPolicy: IfNotPresent
-  nodeport: null
   debugLevel: INFO
   githubUsername: null
   githubToken: null
+
+ingress:
+  enabled: false
+  subdomain: spaces.kalavai.net
 
 litellm:
   enabled: false

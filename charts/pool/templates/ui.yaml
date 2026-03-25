@@ -56,5 +56,33 @@ spec:
     - name: ui
       port: 80
       targetPort: 3000
+  {{- if .Values.ingress.enabled }}
+  type: ClusterIP
+  {{- else }}
   type: NodePort
+  {{- end }}
+{{- end }}
+---
+{{- if .Values.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  # annotations:
+  #   traefik.ingress.kubernetes.io/router.middlewares: "{{ .Release.Namespace }}-{{ .Release.Name }}-large-body@kubernetescrd"
+  labels:
+    kalavai.job.name: {{ .Values.system.jobId }}
+  name: {{ .Release.Name }}-pool-ingress
+spec:
+  ingressClassName: traefik
+  rules:
+  - host: {{ .Release.Name }}-{{ .Release.Namespace }}-pool.{{ .Values.ingress.subdomain }}
+    http:
+      paths:
+      - backend:
+          service:
+            name: {{ .Release.Name }}-ui-service
+            port:
+              number: 80 # match internal port
+        path: /
+        pathType: Prefix
 {{- end }}

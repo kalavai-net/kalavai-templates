@@ -61,6 +61,8 @@ download() {
 #################
 # download model #
 #################
+source /opt/venv/bin/activate
+
 echo "Downloading: "$model_filename
 model=$(download $model_filename)
 echo "-----> This is the model: "$model

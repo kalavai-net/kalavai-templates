@@ -19,7 +19,11 @@ spec:
     nameOverride: {{ .Release.Name }}
     proxy:
       service:
+        {{- if .Values.ingress.enabled }}
+        type: ClusterIP
+        {{- else }}
         type: NodePort
+        {{- end }}
         labels:
           kalavai.job.name: {{ .Values.system.jobId}}
     hub:

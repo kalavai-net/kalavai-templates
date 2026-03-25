@@ -26,7 +26,7 @@ def get_type(value):
 if __name__ == "__main__":
     values = {
         "system": {
-            "jobPriority": "user-spot-priority",
+            "priorityClassName": "user-spot-priority",
             "nodeSelectors": None,
             "nodeSelectorsOps": "OR"
         }

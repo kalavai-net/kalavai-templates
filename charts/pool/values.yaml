@@ -27,3 +27,7 @@ ui:
   accessKeyType: admin
   cpu: 1
   memory: 1.5
+
+ingress:
+  enabled: false
+  subdomain: spaces.kalavai.net

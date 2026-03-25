@@ -64,9 +64,9 @@ spec:
         {{ end }}
         containers:
         - name: llamacpp-leader
-        {{ if eq .Values.backend "cuda" }}
+        {{ if eq .Values.deployment.backend "cuda" }}
           image: ghcr.io/kalavai-net/llamacpp-cuda:latest
-        {{ else if eq .Values.backend "rocm" }}
+        {{ else if eq .Values.deployment.backend "rocm" }}
           image: ghcr.io/kalavai-net/llamacpp-rocm:latest
         {{ else }}
           image: ghcr.io/kalavai-net/llamacpp-cpu:latest
@@ -75,9 +75,9 @@ spec:
           - sh
           - -c
           - |
-          {{ if eq .Values.backend  "cuda" }}
+          {{ if eq .Values.deployment.backend  "cuda" }}
             /workspace/build.sh nvidia;
-          {{ else if eq .Values.backend "rocm" }}
+          {{ else if eq .Values.deployment.backend "rocm" }}
             /workspace/build.sh amd; 
           {{ else }}
             /workspace/build.sh cpu;
@@ -85,18 +85,18 @@ spec:
             HOSTS=`cat /etc/volcano/worker.host`;
             export WORKERS=$(/workspace/get_workers_address.sh --rpc_port=50052 --rpc_servers="${HOSTS}")
             /workspace/run_api_server.sh \
-              --repo_id={{ .Values.repoId }} \
-              --model_filename={{ .Values.modelFilename }} \
+              --repo_id={{ .Values.llamacpp.repoId }} \
+              --model_filename={{ .Values.llamacpp.modelFilename }} \
               --local_dir=/cache \
               --port=8080 \
               --rpc_servers=$WORKERS \
-              --parallel={{ .Values.parallel }} \
-              --extra='{{ .Values.serverExtra}}'
+              --parallel={{ .Values.llamacpp.parallel }} \
+              --extra='{{ .Values.llamacpp.serverExtra}}'
           env:
           - name: HF_TOKEN
             valueFrom:
               secretKeyRef:
-                name: {{ .Release.Name}}-secret
+                name: {{ .Release.Name}}-llamacpp-secret
                 key: hf_token
           ports:
           - containerPort: 8080
@@ -109,26 +109,26 @@ spec:
             periodSeconds: 10
           resources:
             requests:
-              cpu: {{ .Values.cpus}}
-              memory: {{ .Values.memory}}Gi
-            {{ if eq .Values.backend "cuda" }}
+              cpu: {{ .Values.deployment.cpus}}
+              memory: {{ .Values.deployment.memory}}Gi
+            {{ if eq .Values.deployment.backend "cuda" }}
               nvidia.com/gpu: 1
-            {{ else if eq .Values.backend "rocm" }}
+            {{ else if eq .Values.deployment.backend "rocm" }}
               amd.com/gpu: 1
             {{ end }}
-              ephemeral-storage: {{ .Values.workingMemory}}Gi
+              ephemeral-storage: {{ .Values.deployment.workingMemory}}Gi
             limits:
-              cpu: {{ .Values.cpus}}
-              memory: {{ .Values.memory}}Gi
-            {{ if eq .Values.backend "cuda" }}
+              cpu: {{ .Values.deployment.cpus}}
+              memory: {{ .Values.deployment.memory}}Gi
+            {{ if eq .Values.deployment.backend "cuda" }}
               nvidia.com/gpu: 1
-              {{ if .Values.gpuMemory }}
-              nvidia.com/gpumem: {{ .Values.gpuMemory}}
+              {{ if .Values.deployment.gpuMemory }}
+              nvidia.com/gpumem: {{ .Values.deployment.gpuMemory}}
               {{ end }}
-            {{ else if eq .Values.backend "rocm" }}
+            {{ else if eq .Values.deployment.backend "rocm" }}
               amd.com/gpu: 1
             {{ end }}
-              ephemeral-storage: {{ .Values.workingMemory}}Gi
+              ephemeral-storage: {{ .Values.deployment.workingMemory}}Gi
           volumeMounts:
             - name: cache
               mountPath: /cache
@@ -136,7 +136,7 @@ spec:
         - name: cache
           emptyDir: {}
         restartPolicy: OnFailure
-  - replicas: {{ sub .Values.workers 1}}
+  - replicas: {{ sub .Values.deployment.workers 1}}
     name: worker
     policies:
     - event: PodEvicted
@@ -153,7 +153,7 @@ spec:
           kalavai.job.name: {{ .Values.system.jobId}}
       spec:
         terminationGracePeriodSeconds: 60
-      {{ if eq .Values.backend "cuda" }}
+      {{ if eq .Values.deployment.backend "cuda" }}
         runtimeClassName: nvidia
       {{ end }}
       {{ if .Values.system.nodeSelectors }}
@@ -185,9 +185,9 @@ spec:
         {{ end }}
         containers:
         - name: llamacpp-worker
-        {{ if eq .Values.backend "cuda" }}
+        {{ if eq .Values.deployment.backend "cuda" }}
           image: ghcr.io/kalavai-net/llamacpp-cuda:latest
-        {{ else if eq .Values.backend "rocm" }}
+        {{ else if eq .Values.deployment.backend "rocm" }}
           image: ghcr.io/kalavai-net/llamacpp-rocm:latest
         {{ else }}
           image: ghcr.io/kalavai-net/llamacpp-cpu:latest
@@ -196,9 +196,9 @@ spec:
           - sh
           - -c
           - |
-          {{ if eq .Values.backend "cuda" }}
+          {{ if eq .Values.deployment.backend "cuda" }}
             /workspace/build.sh nvidia;
-          {{ else if eq .Values.backend "rocm" }}
+          {{ else if eq .Values.deployment.backend "rocm" }}
             /workspace/build.sh amd; 
           {{ else }}
             /workspace/build.sh cpu;
@@ -212,28 +212,28 @@ spec:
                 key: hf_token
           resources:
             requests:
-              cpu: {{ .Values.cpus}}
-              memory: {{ .Values.memory}}Gi
-            {{ if eq .Values.backend "cuda" }}
+              cpu: {{ .Values.deployment.cpus}}
+              memory: {{ .Values.deployment.memory}}Gi
+            {{ if eq .Values.deployment.backend "cuda" }}
               nvidia.com/gpu: 1
-            {{ else if eq .Values.backend "rocm" }}
+            {{ else if eq .Values.deployment.backend "rocm" }}
               amd.com/gpu: 1
             {{ end }}
-              ephemeral-storage: {{ .Values.workingMemory}}Gi
+              ephemeral-storage: {{ .Values.deployment.workingMemory}}Gi
             limits:
-              cpu: {{ .Values.cpus}}
-              memory: {{ .Values.memory}}Gi
-            {{ if eq .Values.backend "cuda" }}
+              cpu: {{ .Values.deployment.cpus}}
+              memory: {{ .Values.deployment.memory}}Gi
+            {{ if eq .Values.deployment.backend "cuda" }}
               nvidia.com/gpu: 1
-              {{ if .Values.gpuMemory }}
-              nvidia.com/gpumem: {{ .Values.gpuMemory}}
+              {{ if .Values.deployment.gpuMemory }}
+              nvidia.com/gpumem: {{ .Values.deployment.gpuMemory}}
               {{ end }}
-            {{ else if eq .Values.backend "rocm" }}
+            {{ else if eq .Values.deployment.backend "rocm" }}
               amd.com/gpu: 1
             {{ end }}
-              ephemeral-storage: {{ .Values.workingMemory}}Gi
+              ephemeral-storage: {{ .Values.deployment.workingMemory}}Gi
         restartPolicy: OnFailure
-  {{ if .Values.litellmKey }}
+  {{ if .Values.litellm.enabled }}
   - replicas: 1
     name: registrar
     policies:
@@ -291,28 +291,28 @@ spec:
             /workspace/wait_for_service.sh --servers="$PS_HOST" --port=8080
             export MODEL_API_BASE="http://"$PS_HOST"."$VC_NAMESPACE":8080/v1";
             /workspace/start_point.sh \
-              --litellm_kalavai_extras='{{ .Values.litellmKalavaiExtras }}' \
-              --litellm_access_group={{ .Values.litellmAccessGroup }}
+              --litellm_kalavai_extras='{{ .Values.litellm.kalavaiExtras }}' \
+              --litellm_access_group={{ .Values.litellm.accessGroup }}
           env:
           - name: VC_NAMESPACE
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
           - name: LITELLM_MODEL_NAME
-          {{ if .Values.modelNameOverride }}
-            value: "{{ .Values.modelNameOverride }}"
-          {{ else }}
-            value: "{{ .Values.modelFilename }}"
-          {{ end }}
+          {{- if .Values.litellm.modelNameOverride }}
+            value: "{{ .Values.litellm.modelNameOverride }}"
+          {{- else }}
+            value: "{{ .Values.llamacpp.modelFilename }}"
+          {{- end }}
           - name: LITELLM_BASE_URL
-            value: {{ .Values.litellmBaseUrl }}
+            value: {{ .Values.litellm.baseUrl }}
           - name: LITELLM_KEY
             valueFrom:
               secretKeyRef:
-                name: {{ .Release.Name }}-secret
+                name: {{ .Release.Name }}-llamacpp-secret
                 key: litellm_key
           - name: MODEL_ID
-            value: {{ .Values.modelFilename }}
+            value: {{ .Values.llamacpp.modelFilename }}
           - name: DEPLOYMENT_ID
             value: {{ .Release.Name }}
           - name: PROVIDER

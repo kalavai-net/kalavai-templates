@@ -87,6 +87,19 @@
             }
          }
       },
+      "ingress": {
+         "type": "object",
+         "properties": {
+            "enabled": {
+               "type": "boolean",
+               "description": "Enable ingress for all ray endpoints"
+            },
+            "subdomain": {
+               "type": "string",
+               "description": "Subdomain for ingress"
+            }
+         }
+      },
       "workers": {
          "type": "object",
          "properties": {

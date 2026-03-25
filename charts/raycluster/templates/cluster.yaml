@@ -20,10 +20,10 @@ spec:
   #       secretKeyRef:
   #         name: {{ .Release.Name }}-secret
   #         key: redis_password
-  rayVersion: "{{ .Values.rayVersion }}"
+  rayVersion: "{{ .Values.ray.rayVersion }}"
   autoscalerOptions:
-    upscalingMode: {{ .Values.upscalingMode }}
-    idleTimeoutSeconds: {{ .Values.idleTimeoutSeconds }}
+    upscalingMode: {{ .Values.ray.upscalingMode }}
+    idleTimeoutSeconds: {{ .Values.ray.idleTimeoutSeconds }}
   enableInTreeAutoscaling: true
 {{- if .Values.auth.enabled }}
   authOptions:
@@ -74,7 +74,7 @@ spec:
         restartPolicy: Always
         containers:
         - name: ray-head
-          image: docker.io/rayproject/ray:{{ .Values.rayVersion }}-py{{ .Values.pythonVersion }}-cu{{ .Values.cudaVersion }}
+          image: docker.io/rayproject/ray:{{ .Values.ray.rayVersion }}-py{{ .Values.ray.pythonVersion }}-cu{{ .Values.ray.cudaVersion }}
           imagePullPolicy: IfNotPresent
           resources:
             # proportional to the size of the cluster (recommended 8CPU / 32GB RAM)
@@ -100,9 +100,9 @@ spec:
   workerGroupSpecs:
   # NVIDIA group of GPUs
   - groupName: nvidia-group
-    replicas: {{ .Values.minNvidiaWorkers}}
-    minReplicas: {{ .Values.minNvidiaWorkers}}
-    maxReplicas: {{ .Values.maxNvidiaWorkers}}
+    replicas: {{ .Values.ray.minNvidiaWorkers}}
+    minReplicas: {{ .Values.ray.minNvidiaWorkers}}
+    maxReplicas: {{ .Values.ray.maxNvidiaWorkers}}
     rayStartParams: 
       num-gpus: "1"
     template:
@@ -143,29 +143,29 @@ spec:
         {{ end }}
         containers:
         - name: ml-work-group
-          image: docker.io/rayproject/ray:{{ .Values.rayVersion }}-py{{ .Values.pythonVersion }}-cu{{ .Values.cudaVersion }}
+          image: docker.io/rayproject/ray:{{ .Values.ray.rayVersion }}-py{{ .Values.ray.pythonVersion }}-cu{{ .Values.ray.cudaVersion }}
           imagePullPolicy: IfNotPresent
           resources:
             limits:
               nvidia.com/gpu: 1
-              {{ if .Values.gpuMemory }}
-              nvidia.com/gpumem: {{ .Values.gpuMemory}}
+              {{ if .Values.deployment.gpuMemory }}
+              nvidia.com/gpumem: {{ .Values.deployment.gpuMemory}}
               {{ end }}
-              cpu: {{ .Values.cpus }}
-              memory: {{ .Values.memory }}Gi
+              cpu: {{ .Values.deployment.cpus }}
+              memory: {{ .Values.deployment.memory }}Gi
             requests:
               nvidia.com/gpu: 1
-              cpu: {{ .Values.cpus }}
-              memory: {{ .Values.memory }}Gi
+              cpu: {{ .Values.deployment.cpus }}
+              memory: {{ .Values.deployment.memory }}Gi
           lifecycle:
             preStop:
               exec:
                 command: ["/bin/sh","-c","ray stop"]
   # AMD group of GPUs
   - groupName: amd-group
-    replicas: {{ .Values.minAmdWorkers }}
-    minReplicas: {{ .Values.minAmdWorkers }}
-    maxReplicas: {{ .Values.maxAmdWorkers }}
+    replicas: {{ .Values.ray.minAmdWorkers }}
+    minReplicas: {{ .Values.ray.minAmdWorkers }}
+    maxReplicas: {{ .Values.ray.maxAmdWorkers }}
     rayStartParams: 
       num-gpus: "1"
     template:
@@ -202,17 +202,17 @@ spec:
         {{ end }}
         containers:
         - name: ml-work-group
-          image: docker.io/rayproject/ray:{{ .Values.rayVersion}}-py{{ .Values.pythonVersion }}-{{ .Values.cudaVersion}}
+          image: docker.io/rayproject/ray:{{ .Values.ray.rayVersion }}-py{{ .Values.ray.pythonVersion }}-{{ .Values.ray.cudaVersion}}
           imagePullPolicy: IfNotPresent
           resources:
             limits:
               amd.com/gpu: 1
-              cpu: {{ .Values.cpus }}
-              memory: {{ .Values.memory }}Gi
+              cpu: {{ .Values.deployment.cpus }}
+              memory: {{ .Values.deployment.memory }}Gi
             requests:
               amd.com/gpu: 1
-              cpu: {{ .Values.cpus }}
-              memory: {{ .Values.memory }}Gi
+              cpu: {{ .Values.deployment.cpus }}
+              memory: {{ .Values.deployment.memory }}Gi
           lifecycle:
             preStop:
               exec:

@@ -2,6 +2,23 @@ apiVersion: v1
 entries:
   inference:
   - apiVersion: v2
+    appVersion: 0.0.5
+    created: "2026-03-25T22:50:23.933819612Z"
+    description: Scalable, flexible multi-node, multi-GPU LLM deployments
+    digest: 510c905d09d1fa2e3c4fa60d6b4616c6d3bcb8c43206a4e43782ea5dd30da4ce
+    icon: https://docs.vllm.ai/en/latest/assets/logos/vllm-logo-only-light.ico
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: inference
+    sources:
+    - https://docs.ray.io/en/latest/cluster/kubernetes/examples/rayserve-llm-example.html
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/inference-0.0.5/inference-0.0.5.tgz
+    version: 0.0.5
+  - apiVersion: v2
     appVersion: 0.0.4
     created: "2026-03-25T14:26:31.176121278Z"
     description: Scalable, flexible multi-node, multi-GPU LLM deployments
@@ -1272,6 +1289,24 @@ entries:
     version: 0.0.1
   ray-cluster:
   - apiVersion: v2
+    appVersion: 0.1.4
+    created: "2026-03-25T22:50:24.050371036Z"
+    description: An open source framework to build and scale your ML and Python applications
+      easily
+    digest: fb993af86272b1de267be89cf7d7701db65b618ce1528eed560cce4c3403fb32
+    icon: https://github.com/ray-project/ray/raw/master/doc/source/images/ray_header_logo.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: ray-cluster
+    sources:
+    - https://docs.ray.io/en/latest
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/ray-cluster-0.1.4/ray-cluster-0.1.4.tgz
+    version: 0.1.4
+  - apiVersion: v2
     appVersion: 0.1.3
     created: "2026-03-25T15:23:20.251338095Z"
     description: An open source framework to build and scale your ML and Python applications
@@ -2188,4 +2223,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-03-25T15:23:20.251725348Z"
+generated: "2026-03-25T22:50:24.050596678Z"

@@ -36,8 +36,8 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  # annotations:
-  #   traefik.ingress.kubernetes.io/router.middlewares: "{{ .Release.Namespace }}-{{ .Release.Name }}-large-body@kubernetescrd"
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: "{{ .Release.Namespace }}-{{ .Release.Name }}-strip-prefix@kubernetescrd"
   labels:
     kalavai.job.name: {{ .Values.system.jobId }}
   name: {{ .Release.Name }}-raycluster-ingress

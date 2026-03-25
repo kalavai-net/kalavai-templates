@@ -15,17 +15,19 @@ spec:
     role: leader
     kalavai.job.name: {{ .Values.system.jobId }}
   ports:
+    # TODO: this ports need gRPC access, traefik does not work, see: https://github.com/ray-project/kuberay/blob/master/ray-operator/config/samples/ingress-rayclient-tls.yaml
+    {{- if not .Values.ingress.enabled }}
     - name: gcs
       port: 6379
       targetPort: 6379
       protocol: TCP
-    - name: dashboard
-      port: 8265
-      targetPort: 8265
-      protocol: TCP
     - name: client
       port: 10001
       targetPort: 10001
+    {{- end }}
+    - name: dashboard
+      port: 8265
+      targetPort: 8265
       protocol: TCP
     - name: serve
       port: 8000
@@ -37,13 +39,18 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
-    traefik.ingress.kubernetes.io/router.middlewares: "{{ .Release.Namespace }}-{{ .Release.Name }}-strip-prefix@kubernetescrd"
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/enable-cors: "true"
+    traefik.ingress.kubernetes.io/cors-allow-origin: "*"
+    traefik.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, DELETE, OPTIONS"
+    traefik.ingress.kubernetes.io/cors-allow-headers: "*"
   labels:
     kalavai.job.name: {{ .Values.system.jobId }}
   name: {{ .Release.Name }}-raycluster-ingress
 spec:
   ingressClassName: traefik
   rules:
+  # Dashboard (HTTP)
   - host: {{ .Release.Name }}-{{ .Release.Namespace }}-raycluster.{{ .Values.ingress.subdomain }}
     http:
       paths:
@@ -51,28 +58,18 @@ spec:
           service:
             name: {{ .Release.Name }}-raycluster-service
             port:
-              number: 6379 # GCS port
-        path: /gcs
-        pathType: Prefix
-      - backend:
-          service:
-            name: {{ .Release.Name }}-raycluster-service
-            port:
               number: 8265 # Dashboard port
-        path: /dashboard
+        path: /
         pathType: Prefix
-      - backend:
-          service:
-            name: {{ .Release.Name }}-raycluster-service
-            port:
-              number: 10001 # Client port
-        path: /client
-        pathType: Prefix
+  # Serve (HTTP)
+  - host: {{ .Release.Name }}-{{ .Release.Namespace }}-raycluster-serve.{{ .Values.ingress.subdomain }}
+    http:
+      paths:
       - backend:
           service:
             name: {{ .Release.Name }}-raycluster-service
             port:
               number: 8000 # Serve port
-        path: /serve
+        path: /
         pathType: Prefix
 {{- end }}

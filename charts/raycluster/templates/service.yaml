@@ -44,44 +44,35 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-  - host: {{ .Release.Name }}-{{ .Release.Namespace }}-raycluster-gcs.{{ .Values.ingress.subdomain }}
+  - host: {{ .Release.Name }}-{{ .Release.Namespace }}-raycluster.{{ .Values.ingress.subdomain }}
     http:
       paths:
       - backend:
           service:
             name: {{ .Release.Name }}-raycluster-service
             port:
-              number: 6379 # match internal port
-        path: /
+              number: 6379 # GCS port
+        path: /gcs
         pathType: Prefix
-  - host: {{ .Release.Name }}-{{ .Release.Namespace }}-raycluster-dashboard.{{ .Values.ingress.subdomain }}
-    http:
-      paths:
       - backend:
           service:
             name: {{ .Release.Name }}-raycluster-service
             port:
-              number: 8265 # match internal port
-        path: /
+              number: 8265 # Dashboard port
+        path: /dashboard
         pathType: Prefix
-  - host: {{ .Release.Name }}-{{ .Release.Namespace }}-raycluster-client.{{ .Values.ingress.subdomain }}
-    http:
-      paths:
       - backend:
           service:
             name: {{ .Release.Name }}-raycluster-service
             port:
-              number: 10001 # match internal port
-        path: /
+              number: 10001 # Client port
+        path: /client
         pathType: Prefix
-  - host: {{ .Release.Name }}-{{ .Release.Namespace }}-raycluster-serve.{{ .Values.ingress.subdomain }}
-    http:
-      paths:
       - backend:
           service:
             name: {{ .Release.Name }}-raycluster-service
             port:
-              number: 8000 # match internal port
-        path: /
+              number: 8000 # Serve port
+        path: /serve
         pathType: Prefix
 {{- end }}

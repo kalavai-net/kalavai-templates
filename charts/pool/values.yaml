@@ -2,7 +2,7 @@ kalavaiApi:
   enabled: true
   forceCutoffMetricsDate: null
   imageTag: latest
-  version: 0.1.21
+  version: null
   nodeSelector: null
   ringfenceNodeLabel: null
   ringfenceNodeLabelValue: null
@@ -12,7 +12,7 @@ kalavaiApi:
 watcher:
   enabled: true
   imageTag: latest
-  version: 0.4.25
+  version: null
   adminKey: admin_key
   readonlyKey: readonly_key
   writeKey: write_key

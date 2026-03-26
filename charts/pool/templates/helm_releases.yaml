@@ -10,7 +10,9 @@ spec:
   chart:
     spec:
       chart: kalavai-watcher
+    {{- if .Values.watcher.version }}
       version: "{{ .Values.watcher.version}}"
+    {{- end }}
       sourceRef:
         kind: HelmRepository
         name: kalavai-repo-{{ .Release.Name }}
@@ -45,7 +47,9 @@ spec:
   chart:
     spec:
       chart: kalavai-api
+    {{- if .Values.kalavaiApi.version }}
       version: "{{ .Values.kalavaiApi.version}}"
+    {{- end }}
       sourceRef:
         kind: HelmRepository
         name: kalavai-repo-{{ .Release.Name }}

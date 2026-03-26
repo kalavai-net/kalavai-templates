@@ -39,6 +39,21 @@ spec:
         name: jupyterhub/k8s-hub
         tag: "4.3.1"
     singleuser:
+      networkPolicy:
+        enabled: true
+        egress:
+        # 1. Allow DNS resolution (Crucial!)
+        - to:
+          - ports:
+              - port: 53
+                protocol: UDP
+              - port: 53
+                protocol: TCP
+        # 2. Allow traffic to everything within the SAME namespace
+        - to:
+          - namespaceSelector:
+              matchLabels:
+                kubernetes.io/metadata.name: {{ .Release.Namespace }}
       extraLabels:
         kalavai.job.name: {{ .Values.system.jobId}}
       startTimeout: 7200

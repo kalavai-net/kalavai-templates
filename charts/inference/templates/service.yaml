@@ -15,17 +15,10 @@ spec:
     role: leader
     kalavai.job.name: {{ .Values.system.jobId}}
   ports:
-    # TODO: this ports need gRPC access, traefik does not work, see: https://github.com/ray-project/kuberay/blob/master/ray-operator/config/samples/ingress-rayclient-tls.yaml
-    {{- if not .Values.ingress.enabled }}
-    - name: gcs
-      port: 6379
-      targetPort: 6379
-      protocol: TCP
     - name: client
       port: 10001
       targetPort: 10001
       protocol: TCP
-    {{- end }}
     - name: dashboard
       port: 8265
       targetPort: 8265

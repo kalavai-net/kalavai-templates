@@ -7,7 +7,7 @@ ray:
   minAmdWorkers: 0
   minNvidiaWorkers: 0
   pythonVersion: '312'
-  rayVersion: 2.49.0
+  rayVersion: 2.52.0
   redisPassword: changeme
   upscalingMode: Default
 

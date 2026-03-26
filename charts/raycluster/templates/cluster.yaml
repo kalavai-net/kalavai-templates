@@ -25,11 +25,6 @@ spec:
     upscalingMode: {{ .Values.ray.upscalingMode }}
     idleTimeoutSeconds: {{ .Values.ray.idleTimeoutSeconds }}
   enableInTreeAutoscaling: true
-{{- if .Values.auth.enabled }}
-  authOptions:
-    mode: token
-    secretName: {{ .Release.Name }}-secret
-{{- end }}
   headGroupSpec:
     serviceType: ClusterIP
     rayStartParams:
@@ -76,6 +71,16 @@ spec:
         - name: ray-head
           image: docker.io/rayproject/ray:{{ .Values.ray.rayVersion }}-py{{ .Values.ray.pythonVersion }}-cu{{ .Values.ray.cudaVersion }}
           imagePullPolicy: IfNotPresent
+          {{- if .Values.auth.enabled }}
+          env:
+          - name: RAY_AUTH_MODE
+            value: token
+          - name: RAY_AUTH_TOKEN
+            valueFrom:
+              secretKeyRef:
+                key: auth_token
+                name: {{ .Release.Name }}-raycluster-secret
+          {{- end }}
           resources:
             # proportional to the size of the cluster (recommended 8CPU / 32GB RAM)
             limits:

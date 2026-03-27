@@ -1,0 +1,31 @@
+ray:
+  cudaVersion: '128'
+  externalRedisUrl: null
+  idleTimeoutSeconds: 60
+  maxAmdWorkers: 0
+  maxNvidiaWorkers: 1
+  minAmdWorkers: 0
+  minNvidiaWorkers: 0
+  pythonVersion: '312'
+  rayVersion: 2.52.0
+  redisPassword: changeme
+  upscalingMode: Default
+
+deployment:
+  cpus: 2
+  gpuMemory: null
+  memory: 8
+
+system:
+  priorityClassName: user-spot-priority
+  nodeSelectors: null
+  nodeSelectorsOps: OR
+  jobId: test-1
+
+ingress:
+  enabled: true
+  subdomain: spaces.kalavai.net
+
+auth:
+  enabled: false
+  token: changeme

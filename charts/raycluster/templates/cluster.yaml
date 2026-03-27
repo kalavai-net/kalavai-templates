@@ -31,6 +31,7 @@ spec:
       dashboard-host: "0.0.0.0"
       num-cpus: "0" # avoid workload on head
       num-gpus: "0"
+      node-ip-address: "$(MY_POD_IP)"
     template: # Pod template
       metadata:
         labels:
@@ -89,6 +90,11 @@ spec:
             requests:
               cpu: 2
               memory: 4Gi
+          env:
+          - name: MY_POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
           lifecycle:
             preStop:
               exec:

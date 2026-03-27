@@ -1,0 +1,19 @@
+
+version: "4.3.2"
+
+singleuser:
+  username: user
+  adminUsername: admin
+  password: password
+  
+  gpuCount: 1
+  memory: 8
+  cpu: 4
+  storageCapacity: 4
+
+ingress:
+  enabled: true
+  subdomain: spaces.kalavai.net
+
+system:
+  jobId: jupyterhub-example

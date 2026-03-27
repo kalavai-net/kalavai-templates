@@ -9,6 +9,18 @@
       "singleuser": {
          "type": "object",
          "properties": {
+            "username": {
+               "type": "string",
+               "description": "Username for the single user (non-admin)"
+            },
+            "adminUsername": {
+               "type": "string",
+               "description": "Admin username for the hub"
+            },
+            "password": {
+               "type": "string",
+               "description": "Password shared with user and admin accounts"
+            },
             "image": {
                "type": "object",
                "properties": {

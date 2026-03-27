@@ -32,12 +32,25 @@ spec:
       config:
         Authenticator:
           admin_users:
-            - admin
+            - {{ .Values.singleuser.adminUsername }}
+          allowed_users:
+            - {{ .Values.singleuser.username }}
+          DummyAuthenticator:
+            password: "{{ .Values.singleuser.password }}"
           Jupyterhub:
+            authenticator_class: dummy
             admin_access: true
+            # give users a subdomain <user>.spaces.kalavai.net
+            #ssubdomain_host: {{ .Values.ingress.subdomain }}
       image:
         name: jupyterhub/k8s-hub
         tag: "4.3.1"
+    #https://z2jh.jupyter.org/en/stable/administrator/security.html#host-user-servers-on-a-subdomain
+    ingress:
+      enabled: {{ .Values.ingress.enabled }}
+      hosts:
+      - {{ .Values.ingress.subdomain }}
+      - "*.{{ .Values.ingress.subdomain }}"
     singleuser:
       networkPolicy:
         enabled: true

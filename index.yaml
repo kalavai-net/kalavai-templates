@@ -2,6 +2,23 @@ apiVersion: v1
 entries:
   inference:
   - apiVersion: v2
+    appVersion: 0.0.7
+    created: "2026-03-31T13:06:27.259461591Z"
+    description: Scalable, flexible multi-node, multi-GPU LLM deployments
+    digest: e6013004822dbc11cf64c7ea4fba10132f6120ab1912f00196cea418a68e1be5
+    icon: https://docs.vllm.ai/en/latest/assets/logos/vllm-logo-only-light.ico
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: inference
+    sources:
+    - https://docs.ray.io/en/latest/cluster/kubernetes/examples/rayserve-llm-example.html
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/inference-0.0.7/inference-0.0.7.tgz
+    version: 0.0.7
+  - apiVersion: v2
     appVersion: 0.0.6
     created: "2026-03-26T22:29:07.046051523Z"
     description: Scalable, flexible multi-node, multi-GPU LLM deployments
@@ -2361,4 +2378,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-03-27T12:58:37.780535359Z"
+generated: "2026-03-31T13:06:27.259842704Z"

@@ -62,8 +62,16 @@
       "distributed": {
          "type": "object",
          "properties": {
+            "enabled": {
+               "type": "boolean",
+               "description": "Enable distributed mode"
+            },
             "minGpus": {
                "description": "Minimum GPU workers to always have running (can be 0). 1 worker == 1 GPU",
+               "type": "integer"
+            },
+            "maxGpus": {
+               "description": "Maximum GPU workers to allow scaling up to.",
                "type": "integer"
             },
             "rayVersion": {

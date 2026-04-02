@@ -60,7 +60,7 @@ spec:
               matchLabels:
                 kubernetes.io/metadata.name: {{ .Release.Namespace }}
       extraEnv:
-      {{- if gt (.Values.singleuser.gpuCount | int) 1 }}
+      {{- if .Values.distributed.enabled }}
         JH_ENV: "distributed"
         RAY_ENDPOINT: {{ .Release.Name }}-jh-ray-raycluster-service:10001
       {{- else }}
@@ -71,6 +71,10 @@ spec:
       startTimeout: 7200
       # Allocate GPU resources
       profileList:
+      {{- if .Values.distributed.enabled }}
+        - display_name: "CPU only"
+          description: "Spawns a notebook server (connect to Ray to access GPUs)"
+      {{- else }}
         - display_name: "GPU Server"
           default: true
           description: "Spawns a notebook server with access to a GPU"
@@ -91,8 +95,7 @@ spec:
             - "--allow-root"
             uid: 0
             privileged: false # error allowPrivilegeEscalation: false
-        - display_name: "CPU only"
-          description: "Spawns a notebook server (CPU only)"
+      {{- end }}
       # establish resource limits
       memory:
         limit: {{ .Values.singleuser.memory }}G
@@ -149,7 +152,7 @@ spec:
         # NOTE: if used with a Cluster Autoscaler, also add user-placeholders
         enabled: false
 ---
-{{- if gt (.Values.singleuser.gpuCount | int) 1 }}
+{{- if .Values.distributed.enabled }}
 # distributed environment
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -171,7 +174,7 @@ spec:
     ray:
       cudaVersion: {{ .Values.distributed.cudaVersion }}
       idleTimeoutSeconds: {{ .Values.distributed.idleTimeoutSeconds }}
-      maxNvidiaWorkers: {{ .Values.singleuser.gpuCount }}
+      maxNvidiaWorkers: {{ .Values.distributed.maxGpus }}
       minNvidiaWorkers: {{ .Values.distributed.minGpus }}
       pythonVersion: {{ .Values.distributed.pythonVersion }}
       rayVersion: {{ .Values.distributed.rayVersion }}

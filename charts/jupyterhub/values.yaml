@@ -18,10 +18,9 @@ distributed:
   rayVersion: 2.52.0
   idleTimeoutSeconds: 60
   minGpus: 0
+  maxGpus: 2
   pythonVersion: "312"
   cudaVersion: "128"
-
-
 
 ingress:
   enabled: false

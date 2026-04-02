@@ -172,7 +172,7 @@ spec:
         namespace: {{ .Release.Namespace }}
   values:
     ray:
-      cudaVersion: {{ .Values.distributed.cudaVersion }}
+      cudaVersion: "{{ .Values.distributed.cudaVersion }}"
       idleTimeoutSeconds: {{ .Values.distributed.idleTimeoutSeconds }}
       maxNvidiaWorkers: {{ .Values.distributed.maxGpus }}
       minNvidiaWorkers: {{ .Values.distributed.minGpus }}

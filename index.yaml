@@ -122,6 +122,23 @@ entries:
     version: 0.0.1
   jupyterhub:
   - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2026-04-02T16:06:30.791132959Z"
+    description: Access to JupyterHub instance for terminal and jupyter notebooks
+    digest: c463e833dd71fc4b81563261764cd73952e1807ba113090c30df374814aa6357
+    icon: https://jupyter.org/assets/homepage/hublogo.svg
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: jupyterhub
+    sources:
+    - https://jupyter.org/hub
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/jupyterhub-0.1.0/jupyterhub-0.1.0.tgz
+    version: 0.1.0
+  - apiVersion: v2
     appVersion: 0.0.13
     created: "2026-03-27T12:58:37.643152883Z"
     description: Access to JupyterHub instance for terminal and jupyter notebooks
@@ -2378,4 +2395,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-03-31T13:06:27.259842704Z"
+generated: "2026-04-02T16:06:30.791543498Z"

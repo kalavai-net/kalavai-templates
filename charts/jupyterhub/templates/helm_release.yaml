@@ -62,7 +62,7 @@ spec:
       extraEnv:
       {{- if .Values.distributed.enabled }}
         JH_ENV: "distributed"
-        RAY_ENDPOINT: ray://{{ .Release.Name }}-jh-ray-raycluster-head-svc:10001
+        RAY_ADDRESS: ray://{{ .Release.Name }}-jh-ray-raycluster-head-svc:10001
       {{- else }}
         JH_ENV: "local"
       {{- end }}

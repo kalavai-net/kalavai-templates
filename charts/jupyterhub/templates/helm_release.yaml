@@ -161,7 +161,7 @@ spec:
   interval: 10m
   chart:
     spec:
-      chart: raycluster
+      chart: ray-cluster
       version: "0.1.6"
       sourceRef:
         kind: HelmRepository

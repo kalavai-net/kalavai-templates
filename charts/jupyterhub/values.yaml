@@ -1,6 +1,3 @@
-
-version: "4.3.2" # chart version, not jupyterhub! corresponding version is 5.4.3
-
 singleuser:
   username: user
   adminUsername: admin
@@ -15,6 +12,16 @@ singleuser:
   storageClass: "local-path"
   initScript: |
     #!/bin/bash
+
+distributed:
+  enabled: true
+  rayVersion: 2.52.0
+  idleTimeoutSeconds: 60
+  minGpus: 0
+  pythonVersion: "312"
+  cudaVersion: "128"
+
+
 
 ingress:
   enabled: false

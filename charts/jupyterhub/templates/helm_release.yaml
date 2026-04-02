@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: jupyterhub
-      version: "{{ .Values.version}}"
+      version: "4.3.2"
       sourceRef:
         kind: HelmRepository
         name: jupyterhub-repo-{{ .Release.Name }}
@@ -59,6 +59,13 @@ spec:
           - namespaceSelector:
               matchLabels:
                 kubernetes.io/metadata.name: {{ .Release.Namespace }}
+      extraEnv:
+      {{- if gt (.Values.singleuser.gpuCount | int) 1 }}
+        JH_ENV: "distributed"
+        RAY_ENDPOINT: {{ .Release.Name }}-jh-ray-raycluster-service:10001
+      {{- else }}
+        JH_ENV: "local"
+      {{- end }}
       extraLabels:
         kalavai.job.name: {{ .Values.system.jobId}}
       startTimeout: 7200
@@ -76,7 +83,7 @@ spec:
           {{- end }}
             image: {{ .Values.singleuser.image.name }}
             extra_resource_limits:
-              nvidia.com/gpu: "{{ .Values.singleuser.gpuCount }}"
+              nvidia.com/gpu: "1"
             # Allow sudo access
             environment:
               GRANT_SUDO: "yes"
@@ -84,8 +91,8 @@ spec:
             - "--allow-root"
             uid: 0
             privileged: false # error allowPrivilegeEscalation: false
-        # - display_name: "CPU only"
-        #   description: "Spawns a notebook server (CPU only)"
+        - display_name: "CPU only"
+          description: "Spawns a notebook server (CPU only)"
       # establish resource limits
       memory:
         limit: {{ .Values.singleuser.memory }}G
@@ -141,3 +148,47 @@ spec:
       continuous:
         # NOTE: if used with a Cluster Autoscaler, also add user-placeholders
         enabled: false
+---
+{{- if gt .Values.singleuser.gpuCount 1 }}
+# distributed environment
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: {{ .Release.Name}}-jh-ray
+  labels:
+    kalavai.job.name: {{ .Values.system.jobId}}
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: raycluster
+      version: "0.1.6"
+      sourceRef:
+        kind: HelmRepository
+        name: jupyterhub-ray-repo-{{ .Release.Name }}
+        namespace: {{ .Release.Namespace }}
+  values:
+    ray:
+      cudaVersion: {{ .Values.distributed.cudaVersion }}
+      idleTimeoutSeconds: {{ .Values.distributed.idleTimeoutSeconds }}
+      maxNvidiaWorkers: {{ .Values.singleuser.gpuCount }}
+      minNvidiaWorkers: {{ .Values.distributed.minGpus }}
+      pythonVersion: {{ .Values.distributed.pythonVersion }}
+      rayVersion: {{ .Values.distributed.rayVersion }}
+      upscalingMode: Default
+    deployment:
+      cpus: {{ .Values.singleuser.cpu }}
+      gpuMemory: null
+      memory: {{ .Values.singleuser.memory }}
+    system:
+      priorityClassName: {{ .Values.system.priorityClassName }}
+      nodeSelectors: {{ .Values.system.nodeSelectors | toYaml }}
+      nodeSelectorsOps: {{ .Values.system.nodeSelectorsOps }}
+      jobId: null
+    ingress:
+      enabled: false
+    auth:
+      enabled: false
+
+
+{{- end }}

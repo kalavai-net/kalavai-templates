@@ -122,6 +122,23 @@ entries:
     version: 0.0.1
   jupyterhub:
   - apiVersion: v2
+    appVersion: 0.1.10
+    created: "2026-04-02T18:53:10.870814939Z"
+    description: Access to JupyterHub instance for terminal and jupyter notebooks
+    digest: e51b8e930f1228fe4b418b0e2fd4a6e291a5138c56975cd3e1fe5c44f70a365e
+    icon: https://jupyter.org/assets/homepage/hublogo.svg
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: jupyterhub
+    sources:
+    - https://jupyter.org/hub
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/jupyterhub-0.1.10/jupyterhub-0.1.10.tgz
+    version: 0.1.10
+  - apiVersion: v2
     appVersion: 0.1.9
     created: "2026-04-02T18:16:20.126200979Z"
     description: Access to JupyterHub instance for terminal and jupyter notebooks
@@ -1578,6 +1595,24 @@ entries:
     version: 0.0.1
   ray-cluster:
   - apiVersion: v2
+    appVersion: 0.1.7
+    created: "2026-04-02T18:53:11.071679853Z"
+    description: An open source framework to build and scale your ML and Python applications
+      easily
+    digest: 962b6b6838c8ecbea5fea8a31448517577ccd2235b1c8ad46e23e35ceb2f5dc4
+    icon: https://github.com/ray-project/ray/raw/master/doc/source/images/ray_header_logo.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: ray-cluster
+    sources:
+    - https://docs.ray.io/en/latest
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/ray-cluster-0.1.7/ray-cluster-0.1.7.tgz
+    version: 0.1.7
+  - apiVersion: v2
     appVersion: 0.1.6
     created: "2026-03-26T22:26:49.127222949Z"
     description: An open source framework to build and scale your ML and Python applications
@@ -2548,4 +2583,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-04-02T18:16:20.126559239Z"
+generated: "2026-04-02T18:53:11.072385631Z"

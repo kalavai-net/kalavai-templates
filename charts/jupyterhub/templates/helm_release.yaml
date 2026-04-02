@@ -187,7 +187,7 @@ spec:
       priorityClassName: {{ .Values.system.priorityClassName }}
       nodeSelectors: {{ .Values.system.nodeSelectors | toYaml }}
       nodeSelectorsOps: {{ .Values.system.nodeSelectorsOps }}
-      jobId: null
+      jobId: {{ .Values.system.jobId | quote }}
     ingress:
       enabled: false
     auth:

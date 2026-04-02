@@ -3,6 +3,7 @@ FROM python:3.12-slim
 RUN apt update --yes && \
     apt install --yes --no-install-recommends \
     # Common useful utilities
+    build-essential \
     curl \
     git \
     nano-tiny \
@@ -27,6 +28,13 @@ RUN apt update --yes && \
 RUN pip install --no-cache-dir jupyterhub==5.4.3
 
 # install additional package...
+# Install miniconda
+ENV CONDA_DIR /opt/conda
+RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
+    /bin/bash ~/miniconda.sh -b -p /opt/conda
+
+# Put conda in path so we can use conda activate
+ENV PATH=$CONDA_DIR/bin:$PATH
 
 # set the default command of the image,
 # if you want to launch more complex startup than the default `juptyerhub-singleuser`.

@@ -20,9 +20,23 @@
             "image": {
                "type": "object",
                "properties": {
-                  "name": {
-                     "type": "string",
-                     "description": "JupyterHub image name"
+                  "cpu": {
+                     "type": "object",
+                     "properties": {
+                        "name": {
+                           "type": "string",
+                           "description": "JupyterHub CPU image name"
+                        }
+                     }
+                  },
+                  "gpu": {
+                     "type": "object",
+                     "properties": {
+                        "name": {
+                           "type": "string",
+                           "description": "JupyterHub GPU image name"
+                        }
+                     }
                   },
                   "imagePullSecrets": {
                      "type": [

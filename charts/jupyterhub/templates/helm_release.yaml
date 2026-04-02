@@ -74,6 +74,14 @@ spec:
       {{- if .Values.distributed.enabled }}
         - display_name: "CPU only"
           description: "Spawns a notebook server (connect to Ray to access GPUs)"
+          kubespawner_override:
+          {{- if .Values.singleuser.image.imagePullSecrets }}
+            imagePullSecrets:
+            {{- range .Values.singleuser.image.imagePullSecrets }}
+              - {{ . }}
+            {{- end }}
+          {{- end }}
+            image: {{ .Values.singleuser.image.cpu.name }}
       {{- else }}
         - display_name: "GPU Server"
           default: true
@@ -85,7 +93,7 @@ spec:
               - {{ . }}
             {{- end }}
           {{- end }}
-            image: {{ .Values.singleuser.image.name }}
+            image: {{ .Values.singleuser.image.gpu.name }}
             extra_resource_limits:
               nvidia.com/gpu: "1"
             # Allow sudo access
@@ -165,7 +173,7 @@ spec:
   chart:
     spec:
       chart: ray-cluster
-      version: "0.1.6"
+      version: "0.1.7"
       sourceRef:
         kind: HelmRepository
         name: kalavai-templates

@@ -48,12 +48,12 @@ spec:
         enabled: true
         egress:
         # 1. Allow DNS resolution (Crucial!)
-        - to:
-          - ports:
-              - port: 53
-                protocol: UDP
-              - port: 53
-                protocol: TCP
+        - to: []
+          ports:
+          - port: 53
+            protocol: UDP
+          - port: 53
+            protocol: TCP
         # 2. Allow traffic to everything within the SAME namespace
         - to:
           - namespaceSelector:

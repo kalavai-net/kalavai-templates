@@ -176,8 +176,8 @@ spec:
       idleTimeoutSeconds: {{ .Values.distributed.idleTimeoutSeconds }}
       maxNvidiaWorkers: {{ .Values.distributed.maxGpus }}
       minNvidiaWorkers: {{ .Values.distributed.minGpus }}
-      pythonVersion: {{ .Values.distributed.pythonVersion }}
-      rayVersion: {{ .Values.distributed.rayVersion }}
+      pythonVersion: "{{ .Values.distributed.pythonVersion }}"
+      rayVersion: "{{ .Values.distributed.rayVersion }}"
       upscalingMode: Default
     deployment:
       cpus: {{ .Values.singleuser.cpu }}

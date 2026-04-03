@@ -3,6 +3,8 @@ hfToken: null
 workers: 1
 
 vllm:
+  image:
+    tag: v0.18.1
   forceVersion: null
   extra: --dtype float16 --enforce-eager
   toolCallParser: llama3_json

@@ -71,6 +71,7 @@ spec:
         {{ else }}
           image: ghcr.io/kalavai-net/llamacpp-cpu:latest
         {{ end }}
+          imagePullPolicy: {{ .Values.deployment.imagePullPolicy }}
           command:
           - sh
           - -c
@@ -192,6 +193,7 @@ spec:
         {{ else }}
           image: ghcr.io/kalavai-net/llamacpp-cpu:latest
         {{ end }}
+          imagePullPolicy: {{ .Values.deployment.imagePullPolicy }}
           command:
           - sh
           - -c

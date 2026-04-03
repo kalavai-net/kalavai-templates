@@ -57,6 +57,11 @@
             "memory": {
                "description": "RAM memory to be used per single worker (final one = memory * workers). Workers should have these much RAM available.",
                "type": "integer"
+            },
+            "imagePullPolicy": {
+               "description": "Image pull policy for the workers",
+               "type": "string",
+               "enum": ["Always", "IfNotPresent", "Never"]
             }
          }
       },

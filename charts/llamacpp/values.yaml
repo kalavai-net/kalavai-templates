@@ -11,7 +11,7 @@ deployment:
   workingMemory: 5
   cpus: 2
   memory: 4
-  
+  imagePullPolicy: IfNotPresent
 
 lago:
   enabled: false

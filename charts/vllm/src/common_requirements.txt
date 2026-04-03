@@ -1,4 +1,4 @@
-huggingface-hub==0.36.0
-bitsandbytes==0.49.1
-llmcompressor==0.9.0
-autoawq==0.2.9
+huggingface-hub
+bitsandbytes
+llmcompressor
+autoawq

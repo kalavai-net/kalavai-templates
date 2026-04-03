@@ -3,18 +3,18 @@ hfToken: null
 workers: 1
 
 vllm:
-  version: latest
+  forceVersion: null
   extra: --dtype float16 --enforce-eager
+  toolCallParser: llama3_json
   loraModules: null
   templateUrl: null
-  toolCallParser: llama3_json
 
 deployment:
   gpuBackend: cuda
   workingMemory: 16
   memory: 8
   sharedMemory: 6
-  cpus: 2
+  cpus: 4
   gpus: 1
   tensorParallelismOnly: false
   gpuMemory: null

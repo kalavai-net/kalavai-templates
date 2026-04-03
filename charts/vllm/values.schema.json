@@ -27,17 +27,6 @@
                "type": "string",
                "enum": ["DEBUG", "INFO", "WARNING", "ERROR"]
             },
-            "githubUsername": {
-               "type": "string"
-            },
-            "githubToken": {
-               "type": "string"
-            },
-            "imagePullPolicy": {
-               "description": "Image pull policy for the containers (Always, IfNotPresent, Never)",
-               "type": "string",
-               "enum": ["Always", "IfNotPresent", "Never"]
-            },
             "gpuBackend": {
                "description": "Use 'cuda' (nvidia cards) or 'rocm' (AMD cards) backend",
                "type": "string",
@@ -59,31 +48,49 @@
                "description": "CPUs to be used per single worker (final one = cpus * workers). Workers should have these many CPUs available.",
                "type": "integer"
             },
-            "gpuMemory": {
-               "description": "GPU memory to be used per single worker (final one = gpu_memory * workers). Workers should have these many GB of GPU memory available.",
-               "type": "integer"
-            },
             "gpus": {
                "description": "GPUs to be used per single worker (final one = gpus * workers). Workers should have these many GPUs available.",
+               "type": "integer"
+            },
+            "gpuMemory": {
+               "description": "GPU memory to be used per single worker (final one = gpu_memory * workers). Workers should have these many GB of GPU memory available.",
                "type": "integer"
             },
             "tensorParallelismOnly": {
                "type": "boolean",
                "description": "Use tensor parallelism only (no pipeline parallelism)"
+            },
+            "githubUsername": {
+               "type": "string"
+            },
+            "githubToken": {
+               "type": "string"
+            },
+            "imagePullPolicy": {
+               "description": "Image pull policy for the containers (Always, IfNotPresent, Never)",
+               "type": "string",
+               "enum": ["Always", "IfNotPresent", "Never"]
             }
          }
       },
       "vllm": {
          "type": "object",
          "properties": {
-            "version": {
-               "description": "vLLM engine version to deploy",
-               "type": "string",
-               "enum": ["latest", "v0.12.0", "v0.13.0", "v0.15.1", "v0.16.0", "v0.17.1"]
+            "forceVersion": {
+               "description": "Force a specific PyPI vLLM engine version to deploy (overrides auto-detection). Eg. 0.17.1",
+               "type": [
+                  "string",
+                  "null"
+               ]
             },
             "extra": {
                "description": "Extra arguments to pass to the vLLM engine",
                "type": "string"
+            },
+            "toolCallParser": {
+               "description": "Tool call parser to use for the model",
+               "type": "string",
+               "enum": ["hermes", "mistral", "llama3_json", "granite4", "granite", "granite-20b-fc", "internlm", "jamba", "xlam", "minimax_m1", "deepseek_v3", "deepseek_v31", "openai", "hunyuan_a13b", "longcat", "glm45", "glm47", "functiongemma", "qwen3_xml", "olmo3", "gigachat3", "pythonic"]
             },
             "modelNameOverride": {
                "description": "Model name to use (defaults to model_id) during inference",
@@ -105,10 +112,6 @@
                   "string",
                   "null"
                ]
-            },
-            "toolCallParser": {
-               "description": "Tool call parser to use for the model",
-               "type": "string"
             }
          }
       },

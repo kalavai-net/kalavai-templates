@@ -68,12 +68,19 @@ spec:
         {{- end }}
         containers:
         - name: vllm-leader
-          image: ghcr.io/kalavai-net/vllm-{{ .Values.deployment.gpuBackend}}:{{ .Values.vllm.version }}
+          image: ghcr.io/kalavai-net/vllm-{{ .Values.deployment.gpuBackend}}:latest
           imagePullPolicy: {{ .Values.deployment.imagePullPolicy }}
           command:
           - sh
           - -c
           - |
+          {{- if .Values.vllm.forceVersion }}
+            echo "Forcing vllm version to {{ .Values.vllm.forceVersion }}";
+            pip install vllm=={{ .Values.vllm.forceVersion }} --no-cache-dir;
+          {{- else }}
+            echo "Using auto-detected vllm version";
+            pip show vllm;
+          {{- end }}
             RAY_BACKEND_LOG_LEVEL=error /home/ray/workspace/ray_init.sh leader --ray_cluster_size={{ .Values.workers}} --ray_object_store_memory={{ .Values.deployment.sharedMemory}};
             sleep 30;
           {{- if eq .Values.deployment.gpuBackend "cuda" }}
@@ -235,12 +242,19 @@ spec:
         {{- end }}
         containers:
         - name: vllm-worker
-          image: ghcr.io/kalavai-net/vllm-{{ .Values.deployment.gpuBackend}}:{{ .Values.vllm.version }}
+          image: ghcr.io/kalavai-net/vllm-{{ .Values.deployment.gpuBackend}}:latest
           imagePullPolicy: {{ .Values.deployment.imagePullPolicy }}
           command:
           - sh
           - -c
           - |
+          {{- if .Values.vllm.forceVersion }}
+            echo "Forcing vllm version to {{ .Values.vllm.forceVersion }}";
+            pip install vllm=={{ .Values.vllm.forceVersion }} --no-cache-dir;
+          {{- else }}
+            echo "Using auto-detected vllm version";
+            pip show vllm;
+          {{- end }}
             PS_HOST=`cat /etc/volcano/server.host`;
           {{- if eq .Values.deployment.gpuBackend "cuda" }}
             nvidia-smi;

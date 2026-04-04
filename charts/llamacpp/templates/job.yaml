@@ -136,7 +136,7 @@ spec:
         volumes:
         - name: cache
           emptyDir: {}
-        restartPolicy: OnFailure
+        restartPolicy: {{ .Values.deployment.restartPolicy }}
   - replicas: {{ sub .Values.deployment.workers 1}}
     name: worker
     policies:
@@ -234,7 +234,7 @@ spec:
               amd.com/gpu: 1
             {{ end }}
               ephemeral-storage: {{ .Values.deployment.workingMemory}}Gi
-        restartPolicy: OnFailure
+        restartPolicy: {{ .Values.deployment.restartPolicy }}
   {{ if .Values.litellm.enabled }}
   - replicas: 1
     name: registrar

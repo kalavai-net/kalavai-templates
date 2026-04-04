@@ -12,6 +12,7 @@ deployment:
   cpus: 2
   memory: 4
   imagePullPolicy: IfNotPresent
+  restartPolicy: OnFailure
 
 lago:
   enabled: false

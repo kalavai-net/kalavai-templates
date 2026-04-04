@@ -188,7 +188,7 @@ spec:
           emptyDir:
             medium: Memory
             sizeLimit: {{ .Values.deployment.sharedMemory }}Gi
-        restartPolicy: OnFailure
+        restartPolicy: {{ .Values.deployment.restartPolicy }}
   - replicas: {{ sub .Values.workers 1}}
     name: worker
     policies:
@@ -327,7 +327,7 @@ spec:
           emptyDir:
             medium: Memory
             sizeLimit: {{ .Values.deployment.sharedMemory}}Gi
-        restartPolicy: OnFailure
+        restartPolicy: {{ .Values.deployment.restartPolicy }}
   {{ if .Values.litellm.enabled }}
   - replicas: 1
     name: registrar

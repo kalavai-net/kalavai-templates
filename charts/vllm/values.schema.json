@@ -70,6 +70,11 @@
                "description": "Image pull policy for the containers (Always, IfNotPresent, Never)",
                "type": "string",
                "enum": ["Always", "IfNotPresent", "Never"]
+            },
+            "restartPolicy": {
+               "description": "Restart policy for the containers (Always, OnFailure, Never)",
+               "type": "string",
+               "enum": ["Always", "OnFailure", "Never"]
             }
          }
       },

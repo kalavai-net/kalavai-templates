@@ -62,6 +62,11 @@
                "description": "Image pull policy for the workers",
                "type": "string",
                "enum": ["Always", "IfNotPresent", "Never"]
+            },
+            "restartPolicy": {
+               "description": "Restart policy for the workers",
+               "type": "string",
+               "enum": ["Always", "OnFailure", "Never"]
             }
          }
       },

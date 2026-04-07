@@ -36,6 +36,12 @@ spec:
                 {{- else }}
                   key: watcherReadonlyKey
                 {{- end }}
+            - name: SHOW_RESOURCES
+              value: "{{ .Values.ui.showResources }}"
+            - name: SHOW_MONITORING
+              value: "{{ .Values.ui.showMonitoring }}"
+            - name: SHOW_USER_SPACES
+              value: "{{ .Values.ui.showUserSpaces }}"
           resources:
             requests:
               cpu: {{ .Values.ui.cpu }}

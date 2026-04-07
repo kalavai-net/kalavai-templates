@@ -90,6 +90,18 @@
             "memory": {
                "type": "number",
                "description": "Memory request for UI"
+            },
+            "showResources": {
+               "type": "boolean",
+               "description": "Show resources page in UI (providers only)"
+            },
+            "showMonitoring": {
+               "type": "boolean",
+               "description": "Show monitoring page in UI (providers only)"
+            },
+            "showUserSpaces": {
+               "type": "boolean",
+               "description": "Show user spaces page in UI (providers only)"
             }
          }
       },

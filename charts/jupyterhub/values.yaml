@@ -6,7 +6,7 @@ singleuser:
     cpu:
       name: ghcr.io/kalavai-net/jupyterhub-cpu:latest
     gpu:
-      name: docker.io/cschranz/gpu-jupyter:v1.10_cuda-12.9_ubuntu-24.04_slim:latest
+      name: docker.io/cschranz/gpu-jupyter:v1.10_cuda-12.9_ubuntu-24.04_slim
     imagePullSecrets: null
   gpuCount: 1
   memory: 8

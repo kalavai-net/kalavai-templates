@@ -1,0 +1,263 @@
+{{- if .Values.localai.distributed }}
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+  name: {{ .Release.Name}}-localai
+  labels:
+    # must have this label
+    kalavai.job.name: {{ .Values.system.jobId}}
+spec:
+  queue: default
+  priorityClassName: {{ .Values.system.priorityClassName}}
+  schedulerName: volcano
+  plugins:
+    env: []
+    svc: ["--disable-network-policy=true"]
+  maxRetry: 100000
+  tasks:
+  - replicas: 1   # One ps pod specified
+    name: server
+    policies:
+    - event: PodEvicted
+      action: RestartJob
+    - event: PodFailed
+      action: RestartJob
+    - event: TaskCompleted
+      action: RestartJob
+    - event: Unknown
+      action: RestartJob
+    template: # Definition of the ps pod
+      metadata:
+        labels:
+          role: leader
+          kalavai.job.name: {{ .Values.system.jobId}}
+      spec:
+        terminationGracePeriodSeconds: 60
+      {{ if .Values.system.nodeSelectors }}
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+            {{ if eq .Values.system.nodeSelectorsOps "OR" }}
+              {{ range $k, $v := .Values.system.nodeSelectors }}
+              - matchExpressions:
+                - key: {{$k}}
+                  operator: In
+                  values:
+                  {{ range $v }}
+                  - "{{ . }}"
+                  {{ end }}
+              {{ end }}
+            {{ else }}
+              - matchExpressions:
+              {{ range $k, $v := .Values.system.nodeSelectors }}
+                {{ range $v }}
+                - key: {{ $k }}
+                  operator: In
+                  values:
+                  - "{{ . }}"
+                {{ end }}
+              {{ end }}
+            {{ end }}
+        {{ end }}
+        containers:
+        - name: localai
+          image: localai/localai:v4.0.0 #latest #ghcr.io/kalavai-net/localai:latest
+          imagePullPolicy: {{ .Values.deployment.imagePullPolicy }}
+          # command:
+          # - sh
+          # - -c
+          # - |
+          #   ./local-ai run --p2p
+          #   # HOSTS=`cat /etc/volcano/worker.host`;
+          #   # export WORKERS=$(./get_workers_address.sh --rpc_port=50051 --rpc_servers="${HOSTS}");
+          #   # echo "Llama workers: "$WORKERS;
+          #   # LLAMACPP_GRPC_SERVERS=$WORKERS ./local-ai run;
+          env:
+          - name: HF_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name}}-localai-secret
+                key: hf_token
+          # - name: GALLERIES
+          #   value: '[{"name":"kalavai", "url":"github:mudler/localai/gallery/index.yaml@v2.25.0"}]'
+          - name: DEBUG
+            value: "{{ .Values.localai.debug }}"
+          - name: LOCALAI_P2P_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name}}-localai-secret
+                key: p2p_token
+          - name: P2P_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name}}-localai-secret
+                key: p2p_token
+          - name: TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name}}-localai-secret
+                key: p2p_token
+          - name: LOCALAI_P2P
+            value: "true"
+          # Auth (required for distributed mode — must use PostgreSQL)
+          - name: LOCALAI_AUTH
+            value: "false"
+          - name: LOCALAI_AUTH_DATABASE_URL
+            value: "postgresql://{{ .Values.postgres.user }}:{{ .Values.postgres.password }}@{{ .Release.Name }}-localai-postgres-service:5432/{{ .Values.postgres.db }}?sslmode=disable"
+          # Paths
+          - name: MODELS_PATH
+            value: /models
+          # agents
+          # - name: LOCALAI_AGENT_POOL_EMBEDDING_MODEL
+          #   value: "granite-embedding-107m-multilingual"
+          # - name: LOCALAI_AGENT_POOL_VECTOR_ENGINE
+          #   value: "postgres"
+          # - name: LOCALAI_AGENT_POOL_DATABASE_URL
+          #   value: "postgresql://{{ .Values.postgres.user }}:{{ .Values.postgres.password }}@{{ .Release.Name }}-localai-postgres-service:5432/{{ .Values.postgres.db }}?sslmode=disable"
+          ports:
+          - containerPort: 8080
+            name: localai-ui
+          resources:
+            requests:
+              cpu: 1
+              memory: 2Gi
+            limits:
+              cpu: 1
+              memory: 2Gi
+        restartPolicy: {{ .Values.deployment.restartPolicy }}
+  - replicas: {{ .Values.localai.workers}}
+    name: worker
+    policies:
+    - event: PodEvicted
+      action: RestartJob
+    - event: PodFailed
+      action: RestartJob
+    - event: TaskCompleted
+      action: RestartJob
+    - event: Unknown
+      action: RestartJob
+    template: # Definition of worker pods
+      metadata:
+        labels:
+          kalavai.job.name: {{ .Values.system.jobId}}
+      spec:
+        terminationGracePeriodSeconds: 60
+        runtimeClassName: nvidia
+      {{ if .Values.system.nodeSelectors }}
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+            {{ if eq .Values.system.nodeSelectorsOps "OR" }}
+              {{ range $k, $v := .Values.system.nodeSelectors }}
+              - matchExpressions:
+                - key: {{$k}}
+                  operator: In
+                  values:
+                  {{ range $v }}
+                  - "{{ . }}"
+                  {{ end }}
+              {{ end }}
+            {{ else }}
+              - matchExpressions:
+              {{ range $k, $v := .Values.system.nodeSelectors }}
+                {{ range $v }}
+                - key: {{ $k }}
+                  operator: In
+                  values:
+                  - "{{ . }}"
+                {{ end }}
+              {{ end }}
+            {{ end }}
+        {{ end }}
+        containers:
+        - name: localai-worker
+          image: localai/localai:v4.0.0-gpu-nvidia-cuda-12 #latest-gpu-nvidia-cuda-12
+          imagePullPolicy: {{ .Values.deployment.imagePullPolicy }}
+          args:
+          - worker
+          - p2p-llama-cpp-rpc
+          - --llama-cpp-args=-H 0.0.0.0 -p 50051
+          - --runner-address=test-localai-worker-0.test-localai
+          - --runner-port=50051
+          # command:
+          # - sh
+          # - -c
+          # - |
+          #   # Get worker pod hostname for proper address advertisement
+          #   WORKER_HOSTNAME="{{ .Release.Name }}-localai-worker-$VC_TASK_INDEX.{{ .Release.Name }}-localai"
+          #   echo "Worker hostname: $WORKER_HOSTNAME"
+            
+          #   # Run P2P llama-cpp worker with proper address advertisement
+          #   ./local-ai worker p2p-llama-cpp-rpc \
+          #     --llama-cpp-args="-H 0.0.0.0 -p 50051" \
+          #     --runner-address="$WORKER_HOSTNAME" \
+          #     --runner-port=50051
+          env:
+          - name: HF_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name}}-localai-secret
+                key: hf_token
+          - name: DEBUG
+            value: "{{ .Values.localai.debug }}"
+          - name: LOCALAI_P2P
+            value: "true"
+          - name: LOCALAI_P2P_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name}}-localai-secret
+                key: p2p_token
+          - name: P2P_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name}}-localai-secret
+                key: p2p_token
+          - name: TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name}}-localai-secret
+                key: p2p_token
+          - name: MODELS_PATH
+            value: /models
+          resources:
+            requests:
+              cpu: {{ .Values.deployment.cpus}}
+              memory: {{ .Values.deployment.memory}}Gi
+              nvidia.com/gpu: 1
+              ephemeral-storage: {{ .Values.deployment.workingMemory}}Gi
+            limits:
+              cpu: {{ .Values.deployment.cpus}}
+              memory: {{ .Values.deployment.memory}}Gi
+              nvidia.com/gpu: 1
+            {{ if .Values.deployment.gpuMemory }}
+              nvidia.com/gpumem: {{ .Values.deployment.gpuMemory}}
+            {{ end }}
+              ephemeral-storage: {{ .Values.deployment.workingMemory}}Gi
+          # readinessProbe:
+          #   exec:
+          #     command:
+          #     - sh
+          #     - -c
+          #     - |
+          #       # Check if RPC port is responding
+          #       nc -z localhost 50051
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 10
+          #   timeoutSeconds: 5
+          #   failureThreshold: 3
+          # livenessProbe:
+          #   exec:
+          #     command:
+          #     - sh
+          #     - -c
+          #     - |
+          #       # Check if RPC port is responding
+          #       nc -z localhost 50051
+          #   initialDelaySeconds: 60
+          #   periodSeconds: 30
+          #   timeoutSeconds: 10
+          #   failureThreshold: 3
+        restartPolicy: {{ .Values.deployment.restartPolicy }}
+ {{- end }}

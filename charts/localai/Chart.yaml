@@ -1,0 +1,16 @@
+apiVersion: v2
+appVersion: 0.0.1
+description: LocalAI is an open source, drop-in replacement for OpenAI's API that runs entirely on your own hardware.
+icon: https://avatars.githubusercontent.com/u/132594073?s=200&v=4
+kubeVersion: '>= 1.25.0'
+maintainers:
+- email: carlos@kalavai.net
+  name: Carlos Fernandez Musoles
+  url: https://kalavai.net
+name: localai
+sources:
+- https://github.com/go-skynet/LocalAI
+version: 0.0.1
+annotations:
+  status: dev
+  category: development

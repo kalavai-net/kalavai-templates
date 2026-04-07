@@ -1,0 +1,31 @@
+localai:
+  registrationToken: "your-registration-token-here"
+  workers: 1
+  hfToken: "your-hf-token-here"
+  debug: true
+  p2pToken: "your-p2p-token-here"
+  distributed: false
+
+postgres:
+  db: "localai"
+  user: "localai"
+  password: "localai"
+
+deployment:
+  memory: 8
+  cpus: 2
+  gpus: 1
+  workingMemory: 20
+  gpuMemory: null
+  imagePullPolicy: IfNotPresent
+  restartPolicy: OnFailure
+
+ingress:
+  enabled: false
+  subdomain: spaces.kalavai.net
+
+system:
+  priorityClassName: user-spot-priority
+  nodeSelectors: null
+  nodeSelectorsOps: OR
+  jobId: null

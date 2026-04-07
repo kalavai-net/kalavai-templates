@@ -1,0 +1,114 @@
+{{- if not .Values.localai.distributed }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Release.Name}}-localai-nats
+    kalavai.job.name: {{ .Values.system.jobId }}
+  name: {{ .Release.Name }}-localai-nats
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name}}-localai-nats
+      kalavai.job.name: {{ .Values.system.jobId }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name}}-localai-nats
+        kalavai.job.name: {{ .Values.system.jobId }}
+    spec:
+    {{- if .Values.system.nodeSelectors }}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+          {{- if eq .Values.system.nodeSelectorsOps "OR" }}
+            {{- range $k, $v := .Values.system.nodeSelectors }}
+            - matchExpressions:
+              - key: {{$k}}
+                operator: In
+                values:
+                {{- range $v }}
+                - "{{ . }}"
+                {{- end }}
+            {{- end }}
+          {{- else }}
+            - matchExpressions:
+            {{- range $k, $v := .Values.system.nodeSelectors }}
+              {{- range $v }}
+              - key: {{ $k }}
+                operator: In
+                values:
+                - "{{ . }}"
+              {{- end }}
+            {{- end }}
+          {{- end }}
+      {{- end }}
+      containers:
+      - name: nats
+        image: nats:2-alpine
+        imagePullPolicy: {{ .Values.deployment.imagePullPolicy }}
+        command:
+          - sh
+          - -c
+          - |
+            nats-server --js -m 8222
+        ports:
+        - containerPort: 4222
+          name: nats-client
+        - containerPort: 8222
+          name: nats-monitor
+        resources:
+          requests:
+            cpu: 1
+            memory: 1Gi
+          limits:
+            cpu: 1
+            memory: 1Gi
+      restartPolicy: Always
+---
+# Agent worker
+---
+# PostgreSQL
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-localai-postgres
+  labels:
+    app: {{ .Release.Name}}-localai-postgres
+    kalavai.job.name: {{ .Values.system.jobId }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name}}-localai-postgres
+      kalavai.job.name: {{ .Values.system.jobId }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name}}-localai-postgres
+        kalavai.job.name: {{ .Values.system.jobId }}
+    spec:
+      containers:
+      - name: postgres
+        image: quay.io/mudler/localrecall:v0.5.5-postgresql # PostgreSQL with pgvector
+        ports:
+        - containerPort: 5432
+        env:
+        # NOTE: Using plain text for secrets is okay for simple local testing, 
+        # but use K8s Secrets for anything more serious.
+        - name: POSTGRES_DB
+          value: {{ .Values.postgres.db }}
+        - name: POSTGRES_USER
+          value: {{ .Values.postgres.user }}
+        - name: POSTGRES_PASSWORD
+          value: {{ .Values.postgres.password }}
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+{{- end }}

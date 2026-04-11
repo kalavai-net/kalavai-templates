@@ -61,6 +61,10 @@ if __name__ == "__main__":
     # global system properties
     properties["system"] = {
         "properties": {
+            "envFromSecrets": {
+                "type": "array",
+                "description": "List of secret names to mount as environment variables"
+            },
             "priorityClassName": {
                 "type": "string",
                 "description": "PriorityClassName to use for the deployment"

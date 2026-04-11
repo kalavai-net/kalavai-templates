@@ -103,6 +103,16 @@ spec:
               preStop:
                 exec:
                   command: ["/bin/sh","-c","ray stop"]
+            env:
+          {{- if .Values.system.envFromSecrets }}
+            {{- range .Values.system.envFromSecrets }}
+            - name: {{ . }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ . }}
+                  key: {{ . }}
+            {{- end }}
+          {{- end }}
             ports:
             - containerPort: 6379
               name: gcs

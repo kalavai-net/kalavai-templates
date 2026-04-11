@@ -1,7 +1,8 @@
+hfToken: null
+
 localai:
   registrationToken: "your-registration-token-here"
   workers: 1
-  hfToken: "your-hf-token-here"
   debug: true
   p2pToken: "your-p2p-token-here"
   distributed: false

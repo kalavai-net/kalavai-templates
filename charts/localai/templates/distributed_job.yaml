@@ -62,17 +62,17 @@ spec:
         {{ end }}
         containers:
         - name: localai
-          image: localai/localai:v4.0.0 #latest #ghcr.io/kalavai-net/localai:latest
+          image: quay.io/go-skynet/local-ai:v4.1.2 #ghcr.io/kalavai-net/localai-cuda:latest
           imagePullPolicy: {{ .Values.deployment.imagePullPolicy }}
           # command:
           # - sh
           # - -c
           # - |
-          #   ./local-ai run --p2p
           #   # HOSTS=`cat /etc/volcano/worker.host`;
-          #   # export WORKERS=$(./get_workers_address.sh --rpc_port=50051 --rpc_servers="${HOSTS}");
+          #   # export WORKERS=$(/workspace/get_workers_address.sh --rpc_port=51001 --rpc_servers="${HOSTS}");
           #   # echo "Llama workers: "$WORKERS;
-          #   # LLAMACPP_GRPC_SERVERS=$WORKERS ./local-ai run;
+          #   # LLAMACPP_GRPC_SERVERS=$WORKERS /workspace/local-ai run;
+          #   /workspace/local-ai run --p2p;
           env:
           - name: HF_TOKEN
             valueFrom:
@@ -173,27 +173,26 @@ spec:
         {{ end }}
         containers:
         - name: localai-worker
-          image: localai/localai:v4.0.0-gpu-nvidia-cuda-12 #latest-gpu-nvidia-cuda-12
+          image: quay.io/go-skynet/local-ai:v4.1.2-gpu-nvidia-cuda-12
           imagePullPolicy: {{ .Values.deployment.imagePullPolicy }}
           args:
-          - worker
+          - p2p-worker
           - p2p-llama-cpp-rpc
-          - --llama-cpp-args=-H 0.0.0.0 -p 50051
-          - --runner-address=test-localai-worker-0.test-localai
-          - --runner-port=50051
+          #- --llama-cpp-args=-H 0.0.0.0 -p 50051
           # command:
           # - sh
           # - -c
           # - |
           #   # Get worker pod hostname for proper address advertisement
-          #   WORKER_HOSTNAME="{{ .Release.Name }}-localai-worker-$VC_TASK_INDEX.{{ .Release.Name }}-localai"
+          #   WORKER_HOSTNAME="{{ .Release.Name }}-localai-worker-${VC_TASK_INDEX}.{{ .Release.Name }}-localai"
           #   echo "Worker hostname: $WORKER_HOSTNAME"
             
           #   # Run P2P llama-cpp worker with proper address advertisement
-          #   ./local-ai worker p2p-llama-cpp-rpc \
-          #     --llama-cpp-args="-H 0.0.0.0 -p 50051" \
-          #     --runner-address="$WORKER_HOSTNAME" \
-          #     --runner-port=50051
+          #   ./local-ai p2p-worker p2p-llama-cpp-rpc \
+          #     --llama-cpp-args="-H 0.0.0.0 -p 50051"
+          ports:
+          - containerPort: 50051
+            name: rpc
           env:
           - name: HF_TOKEN
             valueFrom:

@@ -55,11 +55,20 @@ spec:
           python -m moshi.server --quantize-4bit --host 0.0.0.0 --port 8998
         imagePullPolicy: {{ .Values.resources.imagePullPolicy }}
         env:
+        {{- range $key, $value := .Values.system.envFromSecrets }}
+        - name: {{ $key }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ $value }}
+              key: {{ $key }}
+        {{- end }}
+        {{- if .Values.hfToken }}
         - name: HF_TOKEN
           valueFrom:
             secretKeyRef:
               name: {{ .Release.Name }}-personaplex-secret
               key: hf_token
+        {{- end }}
         ports:
         - containerPort: 8998
           name: ui

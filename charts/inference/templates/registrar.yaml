@@ -60,6 +60,15 @@ spec:
             --litellm_kalavai_extras='{{ .Values.litellm.kalavaiExtras }}' \
             --litellm_access_group={{ .Values.litellm.accessGroup }}
         env:
+        {{- if .Values.system.envFromSecrets }}
+        {{- range .Values.system.envFromSecrets }}
+        - name: {{ . }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ . }}
+              key: {{ . }}
+        {{- end }}
+        {{- end }}
         - name: VC_NAMESPACE
           valueFrom:
             fieldRef:

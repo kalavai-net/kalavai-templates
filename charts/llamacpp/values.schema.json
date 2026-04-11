@@ -2,6 +2,13 @@
    "$schema": "http://json-schema.org/draft-07/schema#",
    "type": "object",
    "properties": {
+      "hfToken": {
+         "description": "Huggingface access token, only required to load gated model weights",
+         "type": [
+            "string",
+            "null"
+         ]
+      },
       "llamacpp": {
          "type": "object",
          "properties": {
@@ -12,13 +19,6 @@
             "repoId": {
                "description": "Huggingface model id to deploy",
                "type": "string"
-            },
-            "hfToken": {
-               "description": "Huggingface access token, only required to load gated model weights",
-               "type": [
-                  "string",
-                  "null"
-               ]
             },
             "parallel": {
                "description": "Number of sequences to decode in parallel.",
@@ -162,6 +162,10 @@
       },
       "system": {
          "properties": {
+            "envFromSecrets": {
+               "type": "array",
+               "description": "List of secret names to mount as environment variables"
+            },
             "priorityClassName": {
                "type": "string",
                "description": "PriorityClassName to use for the deployment"

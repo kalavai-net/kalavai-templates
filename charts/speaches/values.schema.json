@@ -567,6 +567,10 @@
       },
       "system": {
          "properties": {
+            "env": {
+               "type": "object",
+               "description": "Environment variables to set in the deployment"
+            },
             "priorityClassName": {
                "type": "string",
                "description": "PriorityClassName to use for the deployment"

@@ -74,6 +74,13 @@ spec:
           imagePullPolicy: IfNotPresent
           {{- if .Values.auth.enabled }}
           env:
+          {{- range $key, $value := .Values.system.envFromSecrets }}
+          - name: {{ $key }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $value }}
+                key: {{ $key }}
+          {{- end }}
           - name: RAY_AUTH_MODE
             value: token
           - name: RAY_AUTH_TOKEN
@@ -82,6 +89,10 @@ spec:
                 key: auth_token
                 name: {{ .Release.Name }}-raycluster-secret
           {{- end }}
+          - name: MY_POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
           resources:
             # proportional to the size of the cluster (recommended 8CPU / 32GB RAM)
             limits:
@@ -90,11 +101,6 @@ spec:
             requests:
               cpu: 2
               memory: 4Gi
-          env:
-          - name: MY_POD_IP
-            valueFrom:
-              fieldRef:
-                fieldPath: status.podIP
           lifecycle:
             preStop:
               exec:
@@ -156,6 +162,14 @@ spec:
         - name: ml-work-group
           image: docker.io/rayproject/ray:{{ .Values.ray.rayVersion }}-py{{ .Values.ray.pythonVersion }}-cu{{ .Values.ray.cudaVersion }}
           imagePullPolicy: IfNotPresent
+          env:
+          {{- range $key, $value := .Values.system.envFromSecrets }}
+          - name: {{ $key }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $value }}
+                key: {{ $key }}
+          {{- end }}
           resources:
             limits:
               nvidia.com/gpu: 1
@@ -215,6 +229,14 @@ spec:
         - name: ml-work-group
           image: docker.io/rayproject/ray:{{ .Values.ray.rayVersion }}-py{{ .Values.ray.pythonVersion }}-{{ .Values.ray.cudaVersion}}
           imagePullPolicy: IfNotPresent
+          env:
+          {{- range $key, $value := .Values.system.envFromSecrets }}
+          - name: {{ $key }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $value }}
+                key: {{ $key }}
+          {{- end }}
           resources:
             limits:
               amd.com/gpu: 1

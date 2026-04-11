@@ -1,3 +1,5 @@
+hfToken: null
+    
 llmConfigs:
   deploymentConfig:
     autoscalingConfig:
@@ -27,7 +29,6 @@ llmConfigs:
       # Options: "mean", "max", "min"
       aggregation_function: "mean"
   modelLoadingConfig:
-    hfToken: null
     modelId: null
     modelNameOverride: null
   engineKwargs: {}
@@ -63,3 +64,5 @@ system:
   priorityClassName: user-spot-priority
   nodeSelectors: null
   nodeSelectorsOps: OR
+  jobId: null
+  envFromSecrets: []

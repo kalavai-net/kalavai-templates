@@ -120,6 +120,10 @@
       },
       "system": {
          "properties": {
+            "envFromSecrets": {
+               "type": "array",
+               "description": "List of secret names to mount as environment variables"
+            },
             "priorityClassName": {
                "type": "string",
                "description": "PriorityClassName to use for the deployment"

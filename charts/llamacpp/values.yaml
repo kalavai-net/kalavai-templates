@@ -1,6 +1,7 @@
+hfToken: null
+
 llamacpp:
   modelFilename: null
-  hfToken: null
   parallel: -1
   repoId: null
   serverExtra: null
@@ -35,6 +36,7 @@ system:
   priorityClassName: user-spot-priority
   nodeSelectors: null
   nodeSelectorsOps: OR
+  envFromSecrets: []
 
 ingress:
   enabled: false

@@ -94,6 +94,13 @@ spec:
               --parallel={{ .Values.llamacpp.parallel }} \
               --extra='{{ .Values.llamacpp.serverExtra}}'
           env:
+          {{- range $key, $value := .Values.system.envFromSecrets }}
+          - name: {{ $key }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $value }}
+                key: {{ $key }}
+          {{- end }}
           - name: HF_TOKEN
             valueFrom:
               secretKeyRef:
@@ -207,6 +214,13 @@ spec:
           {{ end }}
             /workspace/run_rpc_worker.sh --rpc_port=50052
           env:
+          {{- range $key, $value := .Values.system.envFromSecrets }}
+          - name: {{ $key }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $value }}
+                key: {{ $key }}
+          {{- end }}
           - name: HF_TOKEN
             valueFrom:
               secretKeyRef:
@@ -296,6 +310,13 @@ spec:
               --litellm_kalavai_extras='{{ .Values.litellm.kalavaiExtras }}' \
               --litellm_access_group={{ .Values.litellm.accessGroup }}
           env:
+          {{- range $key, $value := .Values.system.envFromSecrets }}
+          - name: {{ $key }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $value }}
+                key: {{ $key }}
+          {{- end }}
           - name: VC_NAMESPACE
             valueFrom:
               fieldRef:

@@ -264,6 +264,10 @@
       },
       "system": {
          "properties": {
+            "envFromSecrets": {
+               "type": "array",
+               "description": "List of secret names to mount as environment variables"
+            },
             "queue": {
                 "type": "string",
                 "description": "Queue to use for the deployment"
@@ -293,7 +297,6 @@
    },
    "required": [
       "workers",
-      "modelId",
-      "hfToken"
+      "modelId"
    ]
 }

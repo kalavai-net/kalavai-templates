@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: 0.1.14
+appVersion: 0.1.15
 description: Access to JupyterHub instance for terminal and jupyter notebooks
 icon: https://jupyter.org/assets/homepage/hublogo.svg
 kubeVersion: '>= 1.25.0'
@@ -10,7 +10,7 @@ maintainers:
 name: jupyterhub
 sources:
 - https://jupyter.org/hub
-version: 0.1.14
+version: 0.1.15
 annotations:
   status: release
   category: development

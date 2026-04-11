@@ -23,6 +23,13 @@ spec:
           ports:
             - containerPort: 3000
           env:
+            {{- range $key, $value := .Values.system.envFromSecrets }}
+            - name: {{ $key }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $value }}
+                  key: {{ $key }}
+            {{- end }}
             - name: NEXT_PUBLIC_KALAVAI_API_URL
               value: http://{{ .Release.Name}}-api-service:8000
             - name: NEXT_PUBLIC_ACCESS_KEY

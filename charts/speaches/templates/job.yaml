@@ -79,6 +79,11 @@ spec:
           ports:
           - containerPort: 8000
             name: model-port
+          env:
+          {{- range $key, $value := .Values.system.env }}
+          - name: {{ $key }}
+            value: {{ $value }}
+          {{- end }}
           resources:
             requests:
               cpu: {{ .Values.deployment.cpus}}
@@ -203,6 +208,11 @@ spec:
               --litellm_kalavai_extras='{{ .Values.litellm.kalavaiExtras }}' \
               --litellm_access_group={{ .Values.litellm.accessGroup }}
           env:
+          {{- range $key, $value := .Values.system.env }}
+          - name: {{ $key }}
+            value: {{ $value }}
+          {{- end }}
+          
           - name: VC_NAMESPACE
             valueFrom:
               fieldRef:

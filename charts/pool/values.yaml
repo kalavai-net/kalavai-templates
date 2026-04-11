@@ -18,9 +18,11 @@ watcher:
   writeKey: write_key
 
 system:
-  jobPriority: user-spot-priority
+  priorityClassName: user-spot-priority
   nodeSelectors: null
   nodeSelectorsOps: OR
+  jobId: null
+  envFromSecrets: []
 
 ui: 
   enabled: true

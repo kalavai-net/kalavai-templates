@@ -21,6 +21,7 @@ system:
   nodeSelectors: null
   nodeSelectorsOps: OR
   jobId: null
+  envFromSecrets: []
 
 ingress:
   enabled: false

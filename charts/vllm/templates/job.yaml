@@ -98,10 +98,7 @@ spec:
               --model_name={{ .Values.deployment.modelNameOverride }} \
               --extra='{{ .Values.vllm.extra }}' \
               --template_url='{{ .Values.vllm.templateUrl }}' \
-            {{- if .Values.deployment.tensorParallelismOnly}}
-              --tensor_parallel_size={{ mul .Values.deployment.gpus .Values.workers }} \
-              --pipeline_parallel_size=1 \
-            {{- else }}
+            {{- if .Values.deployment.autoParallelism }}
               --tensor_parallel_size={{ .Values.deployment.gpus }} \
               --pipeline_parallel_size={{ .Values.workers }} \
             {{- end}}
@@ -109,11 +106,22 @@ spec:
               --lora_modules="{{ .Values.vllm.loraModules }}";
             exit 1
           env:
+          {{- if .Values.system.envFromSecrets }}
+          {{- range .Values.system.envFromSecrets }}
+          - name: {{ . }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ . }}
+                key: {{ . }}
+          {{- end }}
+          {{- end }}
+          {{-if .Values.hfToken }}
           - name: HF_TOKEN
             valueFrom:
               secretKeyRef:
                 name: {{ .Release.Name}}-secret
                 key: hf_token
+          {{- end }}
           - name: VLLM_ENGINE_READY_TIMEOUT_S
             value: "1200"
           - name: VLLM_ENGINE_ITERATION_TIMEOUT_S
@@ -264,6 +272,10 @@ spec:
           {{- end }}
             RAY_BACKEND_LOG_LEVEL=error /home/ray/workspace/ray_init.sh worker --ray_address=$PS_HOST --ray_port=6379 --ray_object_store_memory={{ .Values.deployment.sharedMemory}} --ray_block=1
           env:
+          {{- range $key, $value := .Values.system.env }}
+          - name: {{ $key }}
+            value: {{ $value }}
+          {{- end }}
           - name: HF_TOKEN
             valueFrom:
               secretKeyRef:
@@ -389,6 +401,13 @@ spec:
               --litellm_kalavai_extras='{{ .Values.litellm.kalavaiExtras }}' \
               --litellm_access_group={{ .Values.litellm.accessGroup }}
           env:
+          {{- range $key, $value := .Values.system.envFromSecrets }}
+          - name: {{ $key }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $value }}
+                key: {{ $key }}
+          {{- end }}
           - name: VC_NAMESPACE
             valueFrom:
               fieldRef:

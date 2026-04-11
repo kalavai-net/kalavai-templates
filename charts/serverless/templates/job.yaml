@@ -79,6 +79,14 @@ spec:
           #   containerPort: {{ . }}
           #   protocol: TCP
           # {{- end }}
+          env:
+          {{- range $key, $value := .Values.system.envFromSecrets }}
+          - name: {{ $key }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $value }}
+                key: {{ $key }}
+          {{- end }}
           resources:
             requests:
               cpu: {{ .Values.cpus}}

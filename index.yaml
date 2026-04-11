@@ -5,6 +5,26 @@ entries:
       category: llm
       status: beta
     apiVersion: v2
+    appVersion: 0.0.9
+    created: "2026-04-11T21:05:36.276287306Z"
+    description: Scalable, flexible multi-node, multi-GPU LLM deployments
+    digest: 6c97f862f7b4ca571660dcb29fdf4d710732afacd1afdbae14288117cfa507bd
+    icon: https://docs.vllm.ai/en/latest/assets/logos/vllm-logo-only-light.ico
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: inference
+    sources:
+    - https://docs.ray.io/en/latest/cluster/kubernetes/examples/rayserve-llm-example.html
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/inference-0.0.9/inference-0.0.9.tgz
+    version: 0.0.9
+  - annotations:
+      category: llm
+      status: beta
+    apiVersion: v2
     appVersion: 0.0.8
     created: "2026-04-07T07:23:05.449168057Z"
     description: Scalable, flexible multi-node, multi-GPU LLM deployments
@@ -141,6 +161,26 @@ entries:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/inference-0.0.1/inference-0.0.1.tgz
     version: 0.0.1
   jupyterhub:
+  - annotations:
+      category: development
+      status: release
+    apiVersion: v2
+    appVersion: 0.1.15
+    created: "2026-04-11T21:05:36.48626298Z"
+    description: Access to JupyterHub instance for terminal and jupyter notebooks
+    digest: 2aa5614637c41fdb753df8684b7f016379243547fb6787137e74d98ebe5a58f7
+    icon: https://jupyter.org/assets/homepage/hublogo.svg
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: jupyterhub
+    sources:
+    - https://jupyter.org/hub
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/jupyterhub-0.1.15/jupyterhub-0.1.15.tgz
+    version: 0.1.15
   - annotations:
       category: development
       status: release
@@ -624,6 +664,26 @@ entries:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/jupyterhub-0.0.1/jupyterhub-0.0.1.tgz
     version: 0.0.1
   kalavai-pool:
+  - annotations:
+      category: development
+      status: release
+    apiVersion: v2
+    appVersion: 0.1.5
+    created: "2026-04-11T21:05:36.672880732Z"
+    description: A functional Kalavai pool to manage AI workloads at scale
+    digest: 8a58bd8b7afb75192106ce1fb7a1a297131cbd40dbc4692c1d0dc9513ea1eff2
+    icon: https://kalavai-net.github.io/kalavai-client/assets/icons/logo_no_background.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: kalavai-pool
+    sources:
+    - https://kalavai-net.github.io/kalavai-client/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/kalavai-pool-0.1.5/kalavai-pool-0.1.5.tgz
+    version: 0.1.5
   - annotations:
       category: development
       status: release
@@ -1451,6 +1511,26 @@ entries:
       category: llm
       status: beta
     apiVersion: v2
+    appVersion: 0.1.5
+    created: "2026-04-11T21:05:36.863319816Z"
+    description: LLM inference in C/C++
+    digest: e9359aff69d84998e170d1533792fadd7d900b3e0cd5c9f9caf93ff69cd37263
+    icon: https://user-images.githubusercontent.com/1991296/230134379-7181e485-c521-4d23-a0d6-f7b3b61ba524.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: llama.cpp
+    sources:
+    - https://github.com/ggml-org/llama.cpp
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/llama.cpp-0.1.5/llama.cpp-0.1.5.tgz
+    version: 0.1.5
+  - annotations:
+      category: llm
+      status: beta
+    apiVersion: v2
     appVersion: 0.1.4
     created: "2026-04-07T07:23:05.931399683Z"
     description: LLM inference in C/C++
@@ -1749,6 +1829,27 @@ entries:
       category: voice
       status: dev
     apiVersion: v2
+    appVersion: 0.0.10
+    created: "2026-04-11T21:05:37.269704348Z"
+    description: Voice and Role Control for Full Duplex Conversational Speech Models
+    digest: b4cfe26f8afb251bc0ae6e044a70d38f7cfec47ce3907db00d81911e9a51f8f0
+    icon: https://www.nvidia.com/content/nvidiaGDC/us/en_US/about-nvidia/legal-info/logo-brand-usage/_jcr_content/root/responsivegrid/nv_container_392921705/nv_container/nv_image.coreimg.100.1070.png/1703060329053/nvidia-logo-vert.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: personaplex
+    sources:
+    - https://huggingface.co/brianmatzelle/personaplex-7b-v1-bnb-4bit
+    - https://huggingface.co/nvidia/personaplex-7b-v1
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/personaplex-0.0.10/personaplex-0.0.10.tgz
+    version: 0.0.10
+  - annotations:
+      category: voice
+      status: dev
+    apiVersion: v2
     appVersion: 0.0.8
     created: "2026-04-07T07:23:06.19780038Z"
     description: Voice and Role Control for Full Duplex Conversational Speech Models
@@ -1842,6 +1943,27 @@ entries:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/postgresql-0.0.1/postgresql-0.0.1.tgz
     version: 0.0.1
   ray-cluster:
+  - annotations:
+      category: development
+      status: beta
+    apiVersion: v2
+    appVersion: 0.1.10
+    created: "2026-04-11T21:05:37.470022285Z"
+    description: An open source framework to build and scale your ML and Python applications
+      easily
+    digest: d7ca7139b02aeacc25bb84861fb0adfbc71fcfffb24eee89158bd03adbb0d9c6
+    icon: https://github.com/ray-project/ray/raw/master/doc/source/images/ray_header_logo.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: ray-cluster
+    sources:
+    - https://docs.ray.io/en/latest
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/ray-cluster-0.1.10/ray-cluster-0.1.10.tgz
+    version: 0.1.10
   - annotations:
       category: development
       status: beta
@@ -2192,6 +2314,26 @@ entries:
       category: development
       status: dev
     apiVersion: v2
+    appVersion: 0.0.5
+    created: "2026-04-11T21:05:37.671993149Z"
+    description: Serverless is a template that allows you to deploy docker containers
+      on your cluster.
+    digest: 3d0b9f3144056ac370cc0c01cacf3c62cc3fa73e38bd82db9a4509b0c5b9e7f4
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: serverless
+    sources:
+    - ""
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/serverless-0.0.5/serverless-0.0.5.tgz
+    version: 0.0.5
+  - annotations:
+      category: development
+      status: dev
+    apiVersion: v2
     appVersion: 0.0.4
     created: "2026-04-07T07:23:06.500862446Z"
     description: Serverless is a template that allows you to deploy docker containers
@@ -2298,6 +2440,27 @@ entries:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/speaches-0.0.1/speaches-0.0.1.tgz
     version: 0.0.1
   vllm:
+  - annotations:
+      category: llm
+      status: beta
+    apiVersion: v2
+    appVersion: 0.1.12
+    created: "2026-04-11T21:05:38.054797358Z"
+    description: A high-throughput and memory-efficient inference and serving engine
+      for LLMs (v0.18.1)
+    digest: 3f7ba3cdd3609b7e7fa79121190b42a551989ac5c66d4d0a07516ec212dcc80a
+    icon: https://docs.vllm.ai/en/latest/assets/logos/vllm-logo-only-light.ico
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: vllm
+    sources:
+    - https://docs.vllm.ai/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.1.12/vllm-0.1.12.tgz
+    version: 0.1.12
   - annotations:
       category: llm
       status: beta
@@ -2988,4 +3151,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-04-08T20:26:03.049989404Z"
+generated: "2026-04-11T21:05:38.055689661Z"

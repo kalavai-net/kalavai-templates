@@ -327,13 +327,17 @@ spec:
           {{- else }}
             value: "{{ .Values.llamacpp.modelFilename }}"
           {{- end }}
+          {{- if .Values.litellm.baseUrl}}
           - name: LITELLM_BASE_URL
             value: {{ .Values.litellm.baseUrl }}
+          {{- end }}
+          {{- if .Values.litellm.baseUrl}}
           - name: LITELLM_KEY
             valueFrom:
               secretKeyRef:
                 name: {{ .Release.Name }}-llamacpp-secret
                 key: litellm_key
+          {{- end }}
           - name: MODEL_ID
             value: {{ .Values.llamacpp.modelFilename }}
           - name: DEPLOYMENT_ID

@@ -223,13 +223,17 @@ spec:
           {{ else }}
             value: "{{ .Values.speaches.model }}"
           {{ end }}
+          {{- if .Values.litellm.baseUrl}}
           - name: LITELLM_BASE_URL
             value: {{ .Values.litellm.baseUrl }}
+          {{- end }}
+          {{- if .Values.litellm.baseUrl}}
           - name: LITELLM_KEY
             valueFrom:
               secretKeyRef:
-                name: {{ .Release.Name }}-secret
+                name: {{ .Release.Name }}-speaches-secret
                 key: litellm_key
+          {{- end }}
           - name: MODEL_ID
             value: {{ .Values.speaches.model }}
           - name: DEPLOYMENT_ID

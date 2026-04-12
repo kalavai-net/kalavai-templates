@@ -1,0 +1,285 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "deployer": {
+      "type": "object",
+      "properties": {
+        "service": {
+          "type": "object",
+          "properties": {
+            "image": {
+              "type": "object",
+              "properties": {
+                "pullPolicy": {
+                  "type": "string",
+                  "enum": ["Always", "IfNotPresent", "Never"],
+                  "default": "IfNotPresent"
+                }
+              }
+            }
+          }
+        },
+        "ui": {
+          "type": "object",
+          "properties": {
+            "image": {
+              "type": "object",
+              "properties": {
+                "pullPolicy": {
+                  "type": "string",
+                  "enum": ["Always", "IfNotPresent", "Never"],
+                  "default": "IfNotPresent"
+                }
+              }
+            }
+          }
+        },
+        "masterApiKey": {
+          "type": "string",
+          "description": "Master API key for authentication"
+        },
+        "kalavaiApiEndpoint": {
+          "type": "string",
+          "description": "Kalavai API endpoint URL"
+        },
+        "kalavaiApiKey": {
+          "type": "string",
+          "description": "Kalavai API key"
+        },
+        "hfToken": {
+          "type": "string",
+          "description": "Hugging Face token"
+        },
+        "memoryCapPercentage": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 80,
+          "description": "Memory capacity percentage"
+        }
+      },
+      "required": ["masterApiKey", "kalavaiApiEndpoint", "kalavaiApiKey", "hfToken"]
+    },
+    "litellm": {
+      "type": "object",
+      "properties": {
+        "litellm_ui_password": {
+          "type": "string",
+          "description": "LiteLLM UI password"
+        },
+        "litellm_settings": {
+          "type": "object",
+          "properties": {
+            "num_retries": {
+              "type": "integer",
+              "default": 3,
+              "description": "Number of retries"
+            },
+            "request_timeout": {
+              "type": "integer",
+              "default": 9000,
+              "description": "Request timeout"
+            },
+            "turn_off_message_logging": {
+              "type": "boolean",
+              "default": false,
+              "description": "Turn off message logging"
+            }
+          }
+        },
+        "callback_settings": {
+          "type": "object",
+          "properties": {
+            "otel": {
+              "type": "object",
+              "properties": {
+                "message_logging": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Message logging"
+                }
+              }
+            }
+          }
+        },
+        "general_settings": {
+          "type": "object",
+          "properties": {
+            "store_prompts_in_spend_logs": {
+              "type": "boolean",
+              "default": false,
+              "description": "Store prompts in spend logs"
+            },
+            "disable_prisma_schema_update": {
+              "type": "boolean",
+              "default": false,
+              "description": "Disable prisma schema update"
+            },
+            "disable_error_logs": {
+              "type": "boolean",
+              "default": false,
+              "description": "Disable error logs"
+            },
+            "disable_spend_logs": {
+              "type": "boolean",
+              "default": false,
+              "description": "Disable spend logs"
+            }
+          }
+        },
+        "router_settings": {
+          "type": "object",
+          "properties": {
+            "timeout": {
+              "type": "integer",
+              "default": 9000,
+              "description": "Router timeout"
+            }
+          }
+        }
+      },
+      "required": ["litellm_ui_password"]
+    },
+    "ingress": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable ingress for the UI service"
+        },
+        "subdomain": {
+          "type": "string",
+          "default": "spaces.kalavai.net",
+          "description": "Subdomain for ingress"
+        }
+      },
+      "required": ["enabled"]
+    },
+    "autoscaling": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable horizontal pod autoscaling"
+        },
+        "service": {
+          "type": "object",
+          "properties": {
+            "minReplicas": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "description": "Minimum number of replicas for the service"
+            },
+            "maxReplicas": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 3,
+              "description": "Maximum number of replicas for the service"
+            },
+            "targetCPUUtilization": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 70,
+              "description": "Target CPU utilization percentage for the service"
+            },
+            "targetMemoryUtilization": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 80,
+              "description": "Target memory utilization percentage for the service"
+            }
+          },
+          "required": ["minReplicas", "maxReplicas", "targetCPUUtilization", "targetMemoryUtilization"]
+        },
+        "ui": {
+          "type": "object",
+          "properties": {
+            "minReplicas": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "description": "Minimum number of replicas for the UI"
+            },
+            "maxReplicas": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2,
+              "description": "Maximum number of replicas for the UI"
+            },
+            "targetCPUUtilization": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 70,
+              "description": "Target CPU utilization percentage for the UI"
+            },
+            "targetMemoryUtilization": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 80,
+              "description": "Target memory utilization percentage for the UI"
+            }
+          },
+          "required": ["minReplicas", "maxReplicas", "targetCPUUtilization", "targetMemoryUtilization"]
+        }
+      },
+      "required": ["enabled"]
+    },
+    "system": {
+      "type": "object",
+      "properties": {
+        "envFromSecrets": {
+          "type": "array",
+          "description": "Environment variables from secrets",
+          "items": {
+            "type": "string"
+          }
+        },
+        "priorityClassName": {
+          "type": ["string", "null"],
+          "default": "user-spot-priority",
+          "description": "Priority class name for pods"
+        },
+        "nodeSelectors": {
+          "type": ["array", "null"],
+          "description": "Node selectors for pod scheduling",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Node selector key"
+              },
+              "value": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Node selector values"
+              }
+            },
+            "required": ["name", "value"]
+          }
+        },
+        "nodeSelectorsOps": {
+          "type": "string",
+          "enum": ["OR", "AND"],
+          "default": "OR",
+          "description": "Node selector operation (OR or AND)"
+        },
+        "jobId": {
+          "type": "string",
+          "description": "Job ID for labeling resources"
+        }
+      },
+      "required": ["jobId"]
+    }
+  }
+}

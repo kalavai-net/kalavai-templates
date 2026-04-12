@@ -1,0 +1,144 @@
+# UI Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-deployer-ui
+  labels:
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+    component: ui
+spec:
+  replicas: {{ .Values.deployer.ui.replicas }}
+  selector:
+    matchLabels:
+      kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+      component: ui
+  template:
+    metadata:
+      labels:
+        kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+        component: ui
+        role: ui
+    spec:
+      terminationGracePeriodSeconds: 10
+      {{- if .Values.system.priorityClassName }}
+      priorityClassName: {{ .Values.system.priorityClassName }}
+      {{- end }}
+      tolerations:
+      - key: "node.kubernetes.io/not-ready"
+        operator: Exists
+        effect: NoExecute
+        tolerationSeconds: 10
+      - key: "node.kubernetes.io/unreachable"
+        operator: Exists
+        effect: NoExecute
+        tolerationSeconds: 10
+      - key: "node.kubernetes.io/unknown"
+        operator: Exists
+        effect: NoExecute
+        tolerationSeconds: 10
+      - key: "node.kubernetes.io/memory-pressure"
+        operator: Exists
+        effect: NoSchedule
+      - key: "node.kubernetes.io/disk-pressure"
+        operator: Exists
+        effect: NoSchedule
+      - key: "node.kubernetes.io/pid-pressure"
+        operator: Exists
+        effect: NoSchedule
+      - key: "node.kubernetes.io/network-unavailable"
+        operator: Exists
+        effect: NoSchedule
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: kalavai.job.name
+                  operator: In
+                  values:
+                  - {{ .Values.system.jobId | default .Release.Name }}
+              topologyKey: "kubernetes.io/hostname"
+      {{- if .Values.system.nodeSelectors }}
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            {{- if eq .Values.system.nodeSelectorsOps "OR" }}
+              {{- range .Values.system.nodeSelectors }}
+              - matchExpressions:
+                - key: {{ .name }}
+                  operator: In
+                  values:
+                  {{- range .value }}
+                  - "{{ . }}"
+                  {{- end }}
+              {{- end }}
+            {{- else }}
+              - matchExpressions:
+              {{- range .Values.system.nodeSelectors }}
+                {{- range .value }}
+                - key: {{ .name }}
+                  operator: In
+                  values:
+                  - "{{ . }}"
+                {{- end }}
+              {{- end }}
+            {{- end }}
+      {{- end }}
+      containers:
+      - name: ui
+        image: "ghcr.io/kalavai-net/kalavai-deployer-ui:latest"
+        imagePullPolicy: {{ .Values.deployer.ui.image.pullPolicy }}
+        ports:
+        - containerPort: 3000
+          name: ui-port
+        startupProbe:
+          httpGet:
+            path: /_stcore/health
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 6
+        livenessProbe:
+          httpGet:
+            path: /_stcore/health
+            port: 3000
+          initialDelaySeconds: 20
+          periodSeconds: 5
+          timeoutSeconds: 2
+          failureThreshold: 2
+        readinessProbe:
+          httpGet:
+            path: /_stcore/health
+            port: 3000
+          initialDelaySeconds: 3
+          periodSeconds: 3
+          timeoutSeconds: 2
+          failureThreshold: 2
+        env:
+        {{- if .Values.system.envFromSecrets }}
+        {{- range .Values.system.envFromSecrets }}
+        - name: {{ . }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ . }}
+              key: {{ . }}
+        {{- end }}
+        {{- end }}
+        - name: VITE_API_BASE_URL
+          value: {{ .Release.Name }}-deployer-service:8000
+        - name: VITE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-deployer-secrets
+              key: deployer_master_key
+        resources:
+          requests:
+            cpu: 1
+            memory: 1Gi
+          limits:
+            cpu: 1
+            memory: 1Gi
+      restartPolicy: Always

@@ -19,4 +19,4 @@ system:
   nodeSelectors: null
   nodeSelectorsOps: OR
   priorityClassName: user-spot-priority
-  env: {}
+  envFromSecrets: []

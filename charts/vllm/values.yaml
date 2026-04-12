@@ -34,7 +34,7 @@ ingress:
 litellm:
   enabled: false
   accessGroup: null
-  baseUrl: http://litellm-service.default.svc.cluster.local:4000
+  baseUrl: null
   key: null
   kalavaiExtras: '{}'
 

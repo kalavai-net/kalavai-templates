@@ -567,9 +567,9 @@
       },
       "system": {
          "properties": {
-            "env": {
-               "type": "object",
-               "description": "Environment variables to set in the deployment"
+            "envFromSecrets": {
+               "type": "array",
+               "description": "List of secret names to mount as environment variables"
             },
             "priorityClassName": {
                "type": "string",

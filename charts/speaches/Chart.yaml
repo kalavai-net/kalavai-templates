@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: 0.0.2
+appVersion: 0.0.3
 description: speaches is an OpenAI API-compatible server supporting streaming transcription,
   translation, and speech generation
 icon: ''
@@ -11,7 +11,7 @@ maintainers:
 name: speaches
 sources:
 - https://speaches.ai/
-version: 0.0.2
+version: 0.0.3
 annotations:
   status: dev
   category: voice

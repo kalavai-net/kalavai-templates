@@ -1,0 +1,59 @@
+{{- if .Values.autoscaling.enabled }}
+---
+# HorizontalPodAutoscaler for Service
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ .Release.Name }}-deployer-service-hpa
+  labels:
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ .Release.Name }}-deployer
+  minReplicas: {{ .Values.autoscaling.service.minReplicas }}
+  maxReplicas: {{ .Values.autoscaling.service.maxReplicas }}
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.autoscaling.service.targetCPUUtilization }}
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.autoscaling.service.targetMemoryUtilization }}
+
+---
+# HorizontalPodAutoscaler for UI
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ .Release.Name }}-deployer-ui-hpa
+  labels:
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ .Release.Name }}-deployer-ui
+  minReplicas: {{ .Values.autoscaling.ui.minReplicas }}
+  maxReplicas: {{ .Values.autoscaling.ui.maxReplicas }}
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.autoscaling.ui.targetCPUUtilization }}
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.autoscaling.ui.targetMemoryUtilization }}
+{{- end }}

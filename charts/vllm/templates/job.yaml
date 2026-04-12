@@ -33,7 +33,7 @@ spec:
       spec:
         {{- if and .Values.deployment.githubUsername .Values.deployment.githubToken }}
         imagePullSecrets:
-          - name: {{ .Release.Name }}-ghcr-secret
+          - name: {{ .Release.Name }}-vllm-ghcr-secret
         {{- end }}
         terminationGracePeriodSeconds: 60
       {{- if eq .Values.deployment.gpuBackend "cuda" }}
@@ -119,7 +119,7 @@ spec:
           - name: HF_TOKEN
             valueFrom:
               secretKeyRef:
-                name: {{ .Release.Name}}-secret
+                name: {{ .Release.Name}}-vllm-secret
                 key: hf_token
           {{- end }}
           - name: VLLM_ENGINE_READY_TIMEOUT_S
@@ -215,7 +215,7 @@ spec:
       spec:
         {{- if and .Values.deployment.githubUsername .Values.deployment.githubToken }}
         imagePullSecrets:
-          - name: {{ .Release.Name }}-ghcr-secret
+          - name: {{ .Release.Name }}-vllm-ghcr-secret
         {{- end }}
         terminationGracePeriodSeconds: 60
       {{- if eq .Values.deployment.gpuBackend "cuda" }}
@@ -279,7 +279,7 @@ spec:
           - name: HF_TOKEN
             valueFrom:
               secretKeyRef:
-                name: {{ .Release.Name}}-secret
+                name: {{ .Release.Name}}-svllm-ecret
                 key: hf_token
           - name: VLLM_ENGINE_READY_TIMEOUT_S
             value: "1200"
@@ -418,13 +418,17 @@ spec:
           {{ else }}
             value: "{{ .Values.modelId }}"
           {{ end }}
+          {{- if .Values.litellm.baseUrl}}
           - name: LITELLM_BASE_URL
             value: {{ .Values.litellm.baseUrl }}
+          {{- end }}
+          {{- if .Values.litellm.baseUrl}}
           - name: LITELLM_KEY
             valueFrom:
               secretKeyRef:
-                name: {{ .Release.Name }}-secret
+                name: {{ .Release.Name }}-vllm-secret
                 key: litellm_key
+          {{- end }}
           - name: MODEL_ID
             value: {{ .Values.modelId }}
           - name: DEPLOYMENT_ID

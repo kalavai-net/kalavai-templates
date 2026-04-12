@@ -1,0 +1,68 @@
+hfToken: null
+
+# Deployer Configuration
+deployer:
+  # Main deployer service configuration
+  service:
+    image:
+      # repository: ghcr.io/kalavai-net/kalavai-deployer
+      # tag: latest
+      pullPolicy: IfNotPresent
+  
+  # UI service configuration
+  ui:
+    image:
+      # repository: ghcr.io/kalavai-net/kalavai-deployer-ui
+      # tag: latest
+      pullPolicy: IfNotPresent
+
+  # API Keys and Configuration
+  masterApiKey: null
+  kalavaiApiEndpoint: null
+  kalavaiApiKey: null
+  memoryCapPercentage: 80
+
+litellm:
+  litellm_ui_password: null
+  litellm_settings:
+    num_retries: 3
+    request_timeout: 9000
+    turn_off_message_logging: false
+  callback_settings:
+    otel:
+      message_logging: false
+  general_settings:
+    store_prompts_in_spend_logs: false
+    disable_prisma_schema_update: false
+    disable_error_logs: false
+    disable_spend_logs: false
+  router_settings:
+    timeout: 9000
+
+# Ingress Configuration
+ingress:
+  enabled: false
+  subdomain: spaces.kalavai.net
+
+# Autoscaling Configuration
+autoscaling:
+  enabled: false
+  service:
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilization: 70
+    targetMemoryUtilization: 80
+  ui:
+    minReplicas: 1
+    maxReplicas: 2
+    targetCPUUtilization: 70
+    targetMemoryUtilization: 80
+
+# System Configuration
+system:
+  priorityClassName: user-spot-priority
+  nodeSelectors: null
+  nodeSelectorsOps: OR
+  jobId: null
+  envFromSecrets: []
+

@@ -79,14 +79,18 @@ spec:
         {{- else }}
           value: "{{ .Values.llmConfigs.modelLoadingConfig.modelId }}"
         {{- end }}
-        - name: LITELLM_BASE_URL
-          value: {{ .Values.litellm.baseUrl }}
-        - name: LITELLM_KEY
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Release.Name }}-secret
-              key: litellm_key
-        - name: MODEL_ID
+        {{- if .Values.litellm.baseUrl}}
+          - name: LITELLM_BASE_URL
+            value: {{ .Values.litellm.baseUrl }}
+          {{- end }}
+          {{- if .Values.litellm.baseUrl}}
+          - name: LITELLM_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name }}-inference-secret
+                key: litellm_key
+          {{- end }}
+          - name: MODEL_ID
           value: {{ .Values.llmConfigs.modelLoadingConfig.modelId }}
         - name: DEPLOYMENT_ID
           value: {{ .Release.Name }}

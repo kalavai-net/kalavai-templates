@@ -1,6 +1,47 @@
 apiVersion: v1
 entries:
+  deployer:
+  - annotations:
+      category: development
+      status: dev
+    apiVersion: v2
+    appVersion: 0.0.1
+    created: "2026-04-12T17:54:11.180251883Z"
+    description: Deployer application for multi tenant LLM deployments
+    digest: f818eb3f3f4d86bef8495198e146482e2f5644edf441f4967832b20f06ac4238
+    icon: https://docs.vllm.ai/en/latest/assets/logos/vllm-logo-only-light.ico
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: deployer
+    sources:
+    - https://docs.ray.io/en/latest/cluster/kubernetes/examples/rayserve-llm-example.html
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/deployer-0.0.1/deployer-0.0.1.tgz
+    version: 0.0.1
   inference:
+  - annotations:
+      category: llm
+      status: beta
+    apiVersion: v2
+    appVersion: 0.0.10
+    created: "2026-04-12T17:54:11.316766155Z"
+    description: Scalable, flexible multi-node, multi-GPU LLM deployments
+    digest: 70dba58d551a73fd21a25ce49a23d75c914cf06aeaa6acc5d1ab24d23e923873
+    icon: https://docs.vllm.ai/en/latest/assets/logos/vllm-logo-only-light.ico
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: inference
+    sources:
+    - https://docs.ray.io/en/latest/cluster/kubernetes/examples/rayserve-llm-example.html
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/inference-0.0.10/inference-0.0.10.tgz
+    version: 0.0.10
   - annotations:
       category: llm
       status: beta
@@ -1511,6 +1552,26 @@ entries:
       category: llm
       status: beta
     apiVersion: v2
+    appVersion: 0.1.6
+    created: "2026-04-12T17:54:11.46177941Z"
+    description: LLM inference in C/C++
+    digest: 6eb0e56215c99bcd26e55551c6d1c9c25afc0762133ca2ecc691643aad62223c
+    icon: https://user-images.githubusercontent.com/1991296/230134379-7181e485-c521-4d23-a0d6-f7b3b61ba524.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: llama.cpp
+    sources:
+    - https://github.com/ggml-org/llama.cpp
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/llama.cpp-0.1.6/llama.cpp-0.1.6.tgz
+    version: 0.1.6
+  - annotations:
+      category: llm
+      status: beta
+    apiVersion: v2
     appVersion: 0.1.5
     created: "2026-04-11T21:05:36.863319816Z"
     description: LLM inference in C/C++
@@ -2406,6 +2467,26 @@ entries:
       category: voice
       status: dev
     apiVersion: v2
+    appVersion: 0.0.3
+    created: "2026-04-12T17:54:11.595047253Z"
+    description: speaches is an OpenAI API-compatible server supporting streaming
+      transcription, translation, and speech generation
+    digest: 27cf9fcbefc171924e1e56aaf9a405208f3e0c9988eaada63f1139b0d34c2af8
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: speaches
+    sources:
+    - https://speaches.ai/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/speaches-0.0.3/speaches-0.0.3.tgz
+    version: 0.0.3
+  - annotations:
+      category: voice
+      status: dev
+    apiVersion: v2
     appVersion: 0.0.2
     created: "2026-04-07T07:23:06.698706126Z"
     description: speaches is an OpenAI API-compatible server supporting streaming
@@ -2440,6 +2521,27 @@ entries:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/speaches-0.0.1/speaches-0.0.1.tgz
     version: 0.0.1
   vllm:
+  - annotations:
+      category: llm
+      status: beta
+    apiVersion: v2
+    appVersion: 0.1.13
+    created: "2026-04-12T17:54:11.743306852Z"
+    description: A high-throughput and memory-efficient inference and serving engine
+      for LLMs (v0.18.1)
+    digest: 019b217c9375ec1d04de5f5115c746bcd211c4aab9c2b4206b4ea6df8243de05
+    icon: https://docs.vllm.ai/en/latest/assets/logos/vllm-logo-only-light.ico
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: vllm
+    sources:
+    - https://docs.vllm.ai/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.1.13/vllm-0.1.13.tgz
+    version: 0.1.13
   - annotations:
       category: llm
       status: beta
@@ -3151,4 +3253,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-04-11T21:05:38.055689661Z"
+generated: "2026-04-12T17:54:11.743940103Z"

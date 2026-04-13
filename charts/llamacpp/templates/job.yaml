@@ -341,7 +341,7 @@ spec:
           - name: MODEL_ID
             value: {{ .Values.llamacpp.modelFilename }}
           - name: DEPLOYMENT_ID
-            value: {{ .Values.system.jobId }}
+            value: {{ .Release.Name }}
           - name: PROVIDER
             value: openai
           lifecycle:

@@ -20,13 +20,13 @@ case "$subcommand" in
     cmake -B build -DGGML_RPC=ON -DLLAMA_CURL=OFF -DLLAMA_BUILD_TESTS=OFF -DGGML_NATIVE=OFF
     cmake --build build --config Release -j $(nproc)
     ;;
-  nvidia)
+  cuda)
     cd /workspace/llama.cpp
     #cmake -B build -DGGML_RPC=ON -DGGML_CUDA=ON -DGGML_CUDA_ENABLE_UNIFIED_MEMORY=1 -DLLAMA_CURL=OFF -DLLAMA_BUILD_TESTS=OFF
     cmake -B build -DGGML_RPC=ON -DGGML_CUDA=ON -DGGML_CUDA_ENABLE_UNIFIED_MEMORY=1 -DLLAMA_CURL=OFF -DLLAMA_BUILD_TESTS=OFF -DGGML_NATIVE=OFF -DCMAKE_CUDA_ARCHITECTURES=$CUDA_ARCHITECTURES
     cmake --build build --config Release -j $(nproc)
     ;;
-  amd)
+  rocm)
     cd /workspace/llama.cpp
     HIPCXX="$(hipconfig -l)/clang" HIP_PATH="$(hipconfig -R)" \
       cmake -S . -B build -DLLAMA_CURL=OFF -DGGML_HIP=ON -DGPU_TARGETS=gfx1100 -DCMAKE_BUILD_TYPE=Release -DLLAMA_BUILD_TESTS=OFF -DGGML_NATIVE=OFF \

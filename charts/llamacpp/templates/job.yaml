@@ -77,9 +77,9 @@ spec:
           - -c
           - |
           {{ if eq .Values.deployment.backend  "cuda" }}
-            /workspace/build.sh nvidia;
+            /workspace/build.sh cuda;
           {{ else if eq .Values.deployment.backend "rocm" }}
-            /workspace/build.sh amd; 
+            /workspace/build.sh rocm; 
           {{ else }}
             /workspace/build.sh cpu;
           {{ end }}
@@ -206,9 +206,9 @@ spec:
           - -c
           - |
           {{ if eq .Values.deployment.backend "cuda" }}
-            /workspace/build.sh nvidia;
+            /workspace/build.sh cuda;
           {{ else if eq .Values.deployment.backend "rocm" }}
-            /workspace/build.sh amd; 
+            /workspace/build.sh rocm; 
           {{ else }}
             /workspace/build.sh cpu;
           {{ end }}
@@ -304,7 +304,7 @@ spec:
             echo "Waiting for model to be served..."
             echo "Namespace: "$VC_NAMESPACE;
             PS_HOST=`cat /etc/volcano/server.host`;
-            /workspace/wait_for_service.sh --servers="$PS_HOST" --port=8080
+            #/workspace/wait_for_service.sh --servers="$PS_HOST" --port=8080
             export MODEL_API_BASE="http://"$PS_HOST"."$VC_NAMESPACE":8080/v1";
             /workspace/start_point.sh \
               --litellm_kalavai_extras='{{ .Values.litellm.kalavaiExtras }}' \
@@ -341,7 +341,7 @@ spec:
           - name: MODEL_ID
             value: {{ .Values.llamacpp.modelFilename }}
           - name: DEPLOYMENT_ID
-            value: {{ .Release.Name }}
+            value: {{ .Values.system.jobId }}
           - name: PROVIDER
             value: openai
           lifecycle:

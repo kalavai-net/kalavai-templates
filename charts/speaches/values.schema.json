@@ -508,28 +508,38 @@
             "null"
          ]
       },
-      "litellmBaseUrl": {
-         "description": "Base URL of the LiteLLM service (central model registry). This can be an external LiteLLM instance or an internal deployment in the pool (default)",
-         "type": "string"
+      "litellm": {
+         "type": "object",
+         "properties": {
+            "waitReady": {
+               "description": "Wait for the model to be ready before registering it in LiteLLM",
+               "type": "boolean"
+            }
+         },
+         "baseUrl": {
+            "description": "Base URL of the LiteLLM service (central model registry). This can be an external LiteLLM instance or an internal deployment in the pool (default)",
+            "type": "string"
+         },
+         "key": {
+            "description": "Master key of the LiteLLM service (central model registry)",
+            "type": [
+               "string",
+               "null"
+            ]
+         },
+         "accessGroup": {
+            "description": "What access group to assign the model to (ringfencing)",
+            "type": [
+               "string",
+               "null"
+            ]
+         },
+         "kalavaiExtras": {
+            "description": "Extra information to store in the LiteLLM model registration (must be a dictionary)",
+            "type": "string"
+         }
       },
-      "litellmKey": {
-         "description": "Master key of the LiteLLM service (central model registry)",
-         "type": [
-            "string",
-            "null"
-         ]
-      },
-      "litellmAccessGroup": {
-         "description": "What access group to assign the model to (ringfencing)",
-         "type": [
-            "string",
-            "null"
-         ]
-      },
-      "litellmKalavaiExtras": {
-         "description": "Extra information to store in the LiteLLM model registration (must be a dictionary)",
-         "type": "string"
-      },
+      
       "lagoUrl": {
          "description": "Base URL of the Lago service (payment system)",
          "type": [

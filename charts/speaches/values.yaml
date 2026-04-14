@@ -7,12 +7,14 @@ deployment:
   gpuBackend: cuda
   gpus: 1
   memory: 4
+
 litellm:
   accessGroup: null
   baseUrl: http://litellm.default.svc.cluster.local:4000
   enabled: false
   kalavaiExtras: '{}'
   key: null
+  waitReady: false
 
 system:
   jobId: null

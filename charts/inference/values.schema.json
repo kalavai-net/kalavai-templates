@@ -186,6 +186,10 @@
                   "string",
                   "null"
                ]
+            },
+            "waitReady": {
+               "type": "boolean",
+               "description": "Wait for the model to be ready before registering it in LiteLLM"
             }
          }
       },

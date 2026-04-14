@@ -33,6 +33,7 @@ ingress:
 
 litellm:
   enabled: false
+  waitReady: false
   accessGroup: null
   baseUrl: null
   key: null

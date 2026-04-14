@@ -13,7 +13,7 @@ deployment:
   cpus: 2
   memory: 8
   imagePullPolicy: IfNotPresent
-  version: b8783
+  version: b8783-1
   restartPolicy: OnFailure
 
 lago:

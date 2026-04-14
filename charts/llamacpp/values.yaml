@@ -11,8 +11,9 @@ deployment:
   workers: 1
   workingMemory: 5
   cpus: 2
-  memory: 4
+  memory: 8
   imagePullPolicy: IfNotPresent
+  version: b8783
   restartPolicy: OnFailure
 
 lago:
@@ -25,6 +26,7 @@ lago:
 
 litellm:
   enabled: false
+  waitReady: false
   modelNameOverride: null
   accessGroup: null
   baseUrl: null

@@ -1,10 +1,31 @@
 #!/bin/bash
 
-docker build -t ghcr.io/kalavai-net/llamacpp-cuda:latest src/ -f src/Dockerfile_cuda
-docker push ghcr.io/kalavai-net/llamacpp-cuda:latest
+PUSH_LATEST=false
+LLAMACPP_VERSION=master
+TEMPLATE_VERSION=1
 
-docker build -t ghcr.io/kalavai-net/llamacpp-cpu:latest src/ -f src/Dockerfile_cpu
-docker push ghcr.io/kalavai-net/llamacpp-cpu:latest
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        --latest) PUSH_LATEST=true ;;
+        --version) LLAMACPP_VERSION="$2" ;;
+        --template-version) TEMPLATE_VERSION="$2" ;;
+    esac
+    shift
+done
 
-docker build -t ghcr.io/kalavai-net/llamacpp-rocm:latest src/ -f src/Dockerfile_rocm
-docker push ghcr.io/kalavai-net/llamacpp-rocm:latest
+LLAMACPP_VERSION=${LLAMACPP_VERSION:-"master"}
+IMAGE_TAG="${LLAMACPP_VERSION}-${TEMPLATE_VERSION}"
+
+echo "Building Llama.cpp version: $LLAMACPP_VERSION"
+echo "Pushing latest: $PUSH_LATEST"
+echo "Image tag: $IMAGE_TAG"
+
+
+docker build -t ghcr.io/kalavai-net/llamacpp-cuda:$IMAGE_TAG src/ -f src/Dockerfile_cuda
+docker push ghcr.io/kalavai-net/llamacpp-cuda:$IMAGE_TAG
+
+docker build -t ghcr.io/kalavai-net/llamacpp-cpu:$IMAGE_TAG src/ -f src/Dockerfile_cpu
+docker push ghcr.io/kalavai-net/llamacpp-cpu:$IMAGE_TAG
+
+# docker build -t ghcr.io/kalavai-net/llamacpp-rocm:$IMAGE_TAG src/ -f src/Dockerfile_rocm
+# docker push ghcr.io/kalavai-net/llamacpp-rocm:$IMAGE_TAG

@@ -2,15 +2,39 @@
 #FROM debian:bullseye AS builder
 FROM python:3.12-slim AS builder
 
-RUN apt-get update && apt-get install --yes git cmake g++ libgomp1 iputils-ping wget curl && \
-    rm -rf /var/lib/apt/lists/*
-
-COPY common_requirements.txt .
-RUN pip install -r common_requirements.txt --no-cache-dir && \
-    rm -rf /home/ray/.cache/pip
+ARG LLAMACPP_VERSION=master
 
 WORKDIR /workspace
-RUN git clone https://github.com/ggerganov/llama.cpp.git
+
+# Install build dependencies
+RUN apt-get update && \
+    apt-get install -y python3-venv curl git cmake gcc g++ \
+    libgomp1 libbz2-dev libev-dev libffi-dev libgdbm-dev liblzma-dev \
+    libncurses-dev libreadline-dev libsqlite3-dev libssl-dev make tk-dev wget zlib1g-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install python dependencies
+COPY common_requirements.txt .
+RUN python3 -m venv /opt/venv && \
+    . /opt/venv/bin/activate && \
+    pip install -r common_requirements.txt --no-cache-dir
+
+# Set environment paths
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Fetch and build llama.cpp
+RUN git clone https://github.com/ggerganov/llama.cpp.git && \
+    cd llama.cpp && \
+    git checkout --detach ${LLAMACPP_VERSION} && \
+    cmake -B build \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DGGML_RPC=ON \
+        -DGGML_BACKEND_DL=ON \
+        -DGGML_CPU_ALL_VARIANTS=ON \
+        -DLLAMA_CURL=OFF \
+        -DLLAMA_BUILD_TESTS=OFF \
+        -DGGML_NATIVE=OFF \
+    && cmake --build build -j $(nproc)
 
 COPY run_rpc_worker.sh .
 COPY run_api_server.sh .

@@ -578,8 +578,8 @@
       "system": {
          "properties": {
             "envFromSecrets": {
-               "type": "array",
-               "description": "List of secret names to mount as environment variables"
+               "type": "object",
+               "description": "Dictionary mapping environment variable names to secret names"
             },
             "priorityClassName": {
                "type": "string",

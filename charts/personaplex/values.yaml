@@ -12,7 +12,7 @@ system:
   nodeSelectors: null
   nodeSelectorsOps: OR
   jobId: null
-  envFromSecrets: []
+  envFromSecrets: {}
 
 ingress:
   enabled: false

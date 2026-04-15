@@ -102,11 +102,13 @@ spec:
                 name: {{ $value }}
                 key: {{ $key }}
           {{- end }}
+          {{-if .Values.hfToken }}
           - name: HF_TOKEN
             valueFrom:
               secretKeyRef:
                 name: {{ .Release.Name}}-llamacpp-secret
                 key: hf_token
+          {{- end }}
           ports:
           - containerPort: 8080
             name: model-port
@@ -223,11 +225,13 @@ spec:
                 name: {{ $value }}
                 key: {{ $key }}
           {{- end }}
+          {{-if .Values.hfToken }}
           - name: HF_TOKEN
             valueFrom:
               secretKeyRef:
                 name: {{ .Release.Name}}-llamacpp-secret
                 key: hf_token
+          {{- end }}
           resources:
             requests:
               cpu: {{ .Values.deployment.cpus}}

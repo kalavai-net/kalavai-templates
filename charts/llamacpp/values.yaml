@@ -39,7 +39,7 @@ system:
   nodeSelectors: null
   nodeSelectorsOps: OR
   nodeAffinityPreferenceKey: null
-  envFromSecrets: []
+  envFromSecrets: {}
 
 ingress:
   enabled: false

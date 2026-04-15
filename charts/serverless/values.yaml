@@ -11,6 +11,6 @@ system:
   jobPriority: user-spot-priority
   nodeSelectors: null
   nodeSelectorsOps: OR
-  envFromSecrets: []
+  envFromSecrets: {}
 workers: 1
 workingMemory: 5

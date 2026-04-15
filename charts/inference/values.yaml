@@ -66,6 +66,6 @@ system:
   nodeSelectors: null
   nodeSelectorsOps: OR
   jobId: null
-  envFromSecrets: []
+  envFromSecrets: {}
   nodeAffinityPreferenceKey: null
 

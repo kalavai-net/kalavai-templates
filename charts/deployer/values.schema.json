@@ -237,11 +237,8 @@
       "type": "object",
       "properties": {
         "envFromSecrets": {
-          "type": "array",
-          "description": "Environment variables from secrets",
-          "items": {
-            "type": "string"
-          }
+            "type": "object",
+            "description": "Dictionary mapping environment variable names to secret names"
         },
         "priorityClassName": {
           "type": ["string", "null"],

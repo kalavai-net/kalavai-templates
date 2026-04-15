@@ -30,3 +30,5 @@ system:
   nodeSelectors: null
   nodeSelectorsOps: OR
   jobId: null
+  nodeAffinityPreferenceKey: null
+  envFromSecrets: []

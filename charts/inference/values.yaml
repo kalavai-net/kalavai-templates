@@ -67,3 +67,5 @@ system:
   nodeSelectorsOps: OR
   jobId: null
   envFromSecrets: []
+  nodeAffinityPreferenceKey: null
+

@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: 0.0.1
+appVersion: 0.0.3
 description: LocalAI is an open source, drop-in replacement for OpenAI's API that runs entirely on your own hardware.
 icon: https://avatars.githubusercontent.com/u/132594073?s=200&v=4
 kubeVersion: '>= 1.25.0'
@@ -10,7 +10,7 @@ maintainers:
 name: localai
 sources:
 - https://github.com/go-skynet/LocalAI
-version: 0.0.1
+version: 0.0.3
 annotations:
   status: dev
   category: development

@@ -22,3 +22,5 @@ system:
   nodeSelectorsOps: OR
   priorityClassName: user-spot-priority
   envFromSecrets: []
+  nodeAffinityPreferenceKey: null
+

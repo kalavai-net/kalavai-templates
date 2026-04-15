@@ -32,11 +32,19 @@ spec:
           kalavai.job.name: {{ .Values.system.jobId}}
       spec:
         terminationGracePeriodSeconds: 60
-      {{ if eq .Values.deployment.backend "cuda" }}
+      {{- if eq .Values.deployment.backend "cuda" }}
         runtimeClassName: nvidia
-      {{ end }}
-      {{ if .Values.system.nodeSelectors }}
+      {{- end }}
         affinity:
+        {{- if .Values.system.nodeAffinityPreferenceKey }}
+          podAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                  matchLabels:
+                    kalavai.job.name: {{ .Values.system.jobId }}
+                topologyKey: {{ .Values.system.nodeAffinityPreferenceKey }}
+        {{- end }}
+        {{- if .Values.system.nodeSelectors }}
           nodeAffinity:
             requiredDuringSchedulingIgnoredDuringExecution:
               nodeSelectorTerms:
@@ -61,7 +69,7 @@ spec:
                 {{ end }}
               {{ end }}
             {{ end }}
-        {{ end }}
+        {{- end }}
         containers:
         - name: llamacpp-leader
         {{ if eq .Values.deployment.backend "cuda" }}
@@ -154,11 +162,19 @@ spec:
           kalavai.job.name: {{ .Values.system.jobId}}
       spec:
         terminationGracePeriodSeconds: 60
-      {{ if eq .Values.deployment.backend "cuda" }}
+      {{- if eq .Values.deployment.backend "cuda" }}
         runtimeClassName: nvidia
-      {{ end }}
-      {{ if .Values.system.nodeSelectors }}
+      {{- end }}
         affinity:
+        {{- if .Values.system.nodeAffinityPreferenceKey }}
+          podAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                  matchLabels:
+                    kalavai.job.name: {{ .Values.system.jobId }}
+                topologyKey: {{ .Values.system.nodeAffinityPreferenceKey }}
+        {{- end }}
+        {{- if .Values.system.nodeSelectors }}
           nodeAffinity:
             requiredDuringSchedulingIgnoredDuringExecution:
               nodeSelectorTerms:
@@ -183,7 +199,7 @@ spec:
                 {{ end }}
               {{ end }}
             {{ end }}
-        {{ end }}
+        {{- end }}
         containers:
         - name: llamacpp-worker
         {{ if eq .Values.deployment.backend "cuda" }}
@@ -253,7 +269,7 @@ spec:
           kalavai.job.name: {{ .Values.system.jobId}}
       spec:
         terminationGracePeriodSeconds: 60
-      {{ if .Values.system.nodeSelectors }}
+        {{ if or .Values.system.nodeSelectors }}
         affinity:
           nodeAffinity:
             requiredDuringSchedulingIgnoredDuringExecution:

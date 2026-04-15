@@ -60,33 +60,41 @@ spec:
             kalavai.job.name: {{ .Values.system.jobId}}
         spec: # Pod spec
           priorityClassName: "kalavai-system-priority"
-        {{- if .Values.system.nodeSelectors }}
           affinity:
+          {{- if .Values.system.nodeAffinityPreferenceKey }}
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      kalavai.job.name: {{ .Values.system.jobId }}
+                  topologyKey: {{ .Values.system.nodeAffinityPreferenceKey }}
+          {{- end }}
+          {{- if .Values.system.nodeSelectors }}
             nodeAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
                 nodeSelectorTerms:
-              {{- if eq .Values.system.nodeSelectorsOps "OR" }}
-                {{- range $k, $v := .Values.system.nodeSelectors }}
+              {{ if eq .Values.system.nodeSelectorsOps "OR" }}
+                {{ range $k, $v := .Values.system.nodeSelectors }}
                 - matchExpressions:
                   - key: {{$k}}
                     operator: In
                     values:
-                    {{- range $v }}
+                    {{ range $v }}
                     - "{{ . }}"
-                    {{- end }}
-                {{- end }}
-              {{- else }}
+                    {{ end }}
+                {{ end }}
+              {{ else }}
                 - matchExpressions:
-                {{- range $k, $v := .Values.system.nodeSelectors }}
-                  {{- range $v }}
+                {{ range $k, $v := .Values.system.nodeSelectors }}
+                  {{ range $v }}
                   - key: {{ $k }}
                     operator: In
                     values:
                     - "{{ . }}"
-                  {{- end }}
-                {{- end }}
-              {{- end }}
-        {{- end }}
+                  {{ end }}
+                {{ end }}
+              {{ end }}
+          {{- end }}
           restartPolicy: Always
           containers:
           - name: ray-head
@@ -137,33 +145,41 @@ spec:
         spec:
           priorityClassName: {{ .Values.system.priorityClassName }}
           runtimeClassName: nvidia
-        {{- if .Values.system.nodeSelectors }}
           affinity:
+          {{- if .Values.system.nodeAffinityPreferenceKey }}
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      kalavai.job.name: {{ .Values.system.jobId }}
+                  topologyKey: {{ .Values.system.nodeAffinityPreferenceKey }}
+          {{- end }}
+          {{- if .Values.system.nodeSelectors }}
             nodeAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
                 nodeSelectorTerms:
-              {{- if eq .Values.system.nodeSelectorsOps "OR" }}
-                {{- range $k, $v := .Values.system.nodeSelectors }}
+              {{ if eq .Values.system.nodeSelectorsOps "OR" }}
+                {{ range $k, $v := .Values.system.nodeSelectors }}
                 - matchExpressions:
                   - key: {{$k}}
                     operator: In
                     values:
-                    {{- range $v }}
+                    {{ range $v }}
                     - "{{ . }}"
-                    {{- end }}
-                {{- end }}
-              {{- else }}
+                    {{ end }}
+                {{ end }}
+              {{ else }}
                 - matchExpressions:
-                {{- range $k, $v := .Values.system.nodeSelectors }}
-                  {{- range $v }}
+                {{ range $k, $v := .Values.system.nodeSelectors }}
+                  {{ range $v }}
                   - key: {{ $k }}
                     operator: In
                     values:
                     - "{{ . }}"
-                  {{- end }}
-                {{- end }}
-              {{- end }}
-        {{- end }}
+                  {{ end }}
+                {{ end }}
+              {{ end }}
+          {{- end }}
           containers:
           - name: ml-work-group
             image: rayproject/ray-llm:{{ .Values.ray.rayVersion }}-py311-cu128

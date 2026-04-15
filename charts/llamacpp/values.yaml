@@ -38,6 +38,7 @@ system:
   priorityClassName: user-spot-priority
   nodeSelectors: null
   nodeSelectorsOps: OR
+  nodeAffinityPreferenceKey: null
   envFromSecrets: []
 
 ingress:

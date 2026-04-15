@@ -33,8 +33,16 @@ spec:
           kalavai.job.name: {{ .Values.system.jobId}}
       spec:
         terminationGracePeriodSeconds: 60
-      {{ if .Values.system.nodeSelectors }}
         affinity:
+        {{- if .Values.system.nodeAffinityPreferenceKey }}
+          podAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                  matchLabels:
+                    kalavai.job.name: {{ .Values.system.jobId }}
+                topologyKey: {{ .Values.system.nodeAffinityPreferenceKey }}
+        {{- end }}
+        {{- if .Values.system.nodeSelectors }}
           nodeAffinity:
             requiredDuringSchedulingIgnoredDuringExecution:
               nodeSelectorTerms:
@@ -59,7 +67,7 @@ spec:
                 {{ end }}
               {{ end }}
             {{ end }}
-        {{ end }}
+        {{- end }}
         containers:
         - name: localai
           image: quay.io/go-skynet/local-ai:v4.1.2 #ghcr.io/kalavai-net/localai-cuda:latest
@@ -144,8 +152,16 @@ spec:
       spec:
         terminationGracePeriodSeconds: 60
         runtimeClassName: nvidia
-      {{ if .Values.system.nodeSelectors }}
         affinity:
+          {{- if .Values.system.nodeAffinityPreferenceKey }}
+          podAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                  matchLabels:
+                    kalavai.job.name: {{ .Values.system.jobId }}
+                topologyKey: {{ .Values.system.nodeAffinityPreferenceKey }}
+        {{- end }}
+        {{- if .Values.system.nodeSelectors }}
           nodeAffinity:
             requiredDuringSchedulingIgnoredDuringExecution:
               nodeSelectorTerms:
@@ -170,7 +186,7 @@ spec:
                 {{ end }}
               {{ end }}
             {{ end }}
-        {{ end }}
+        {{- end }}
         containers:
         - name: localai-worker
           image: quay.io/go-skynet/local-ai:v4.1.2-gpu-nvidia-cuda-12

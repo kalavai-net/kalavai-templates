@@ -295,6 +295,10 @@
                "type": "string",
                "enum": ["OR", "AND"],
                "description": "Logical operation to use to apply to nodeSelectors. Accepted values: 'OR', 'AND'"
+            },
+            "nodeAffinityPreferenceKey": {
+               "type": ["null", "string"],
+               "description": "Node affinity preference key to use for the deployment"
             }
          }
       }

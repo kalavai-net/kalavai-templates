@@ -62,8 +62,8 @@ if __name__ == "__main__":
     properties["system"] = {
         "properties": {
             "envFromSecrets": {
-                "type": "array",
-                "description": "List of secret names to mount as environment variables"
+               "type": "array",
+               "description": "List of secret names to mount as environment variables"
             },
             "priorityClassName": {
                 "type": "string",
@@ -81,6 +81,10 @@ if __name__ == "__main__":
             "jobId": {
                 "type": "string",
                 "description": "Id to tag spawned objects."
+            },
+            "nodeAffinityPreferenceKey": {
+               "type": "string",
+               "description": "Key to prioritise group scheduling on nodes with a matching label key value"
             }
         }
     }

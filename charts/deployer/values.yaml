@@ -1,4 +1,4 @@
-hfToken: null
+hfTokenSecret: null
 
 # Deployer Configuration
 deployer:
@@ -7,20 +7,20 @@ deployer:
     image:
       # repository: ghcr.io/kalavai-net/kalavai-deployer
       # tag: latest
-      pullPolicy: IfNotPresent
+      pullPolicy: Always
   
   # UI service configuration
   ui:
     image:
       # repository: ghcr.io/kalavai-net/kalavai-deployer-ui
       # tag: latest
-      pullPolicy: IfNotPresent
+      pullPolicy: Always
 
   # API Keys and Configuration
   masterApiKey: null
   kalavaiApiEndpoint: null
   kalavaiApiKey: null
-  memoryCapPercentage: 80
+  memoryCapPercentage: 95
 
 litellm:
   litellm_ui_password: null

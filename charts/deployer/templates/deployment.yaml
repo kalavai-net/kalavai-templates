@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-deployer
+  name: {{ .Release.Name }}-deployer-backend
   labels:
     kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
     component: backend
@@ -107,56 +107,70 @@ spec:
         {{- end }}
         {{- end }}
         - name: MASTER_API_KEY
-          secretKeyRef:
-            name: {{ .Release.Name }}-deployer-secrets
-            key: deployer_master_key
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-deployer-secrets
+              key: deployer_master_key
         - name: KALAVAI_API_ENDPOINT
           value: {{ .Values.deployer.kalavaiApiEndpoint | quote }}
         - name: KALAVAI_API_KEY
-          secretKeyRef:
-            name: {{ .Release.Name }}-deployer-secrets
-            key: kalavai_api_key
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-deployer-secrets
+              key: kalavai_api_key
+        - name: PUBLIC_LITELLM_URL
+          {{- if .Values.ingress.enabled }}
+          value: https://{{ .Release.Name }}-{{ .Release.Namespace }}-deployer-litellm.{{ .Values.ingress.subdomain }}
+          {{- else }}
+          value: http://{{ .Release.Name }}-deployer-litellm-service:4000
+          {{- end }}
         - name: LITELLM_BASE_URL
-          value: {{ .Release.name }}-deployer-litellm-service:4000
+          value: http://{{ .Release.Name }}-deployer-litellm-service:4000
         - name: LITELLM_KEY
-          secretKeyRef:
-            name: {{ .Release.Name }}-deployer-secrets
-            key: litellm_key
-        {{- if not .Values.hfTokenSecret }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-deployer-secrets
+              key: litellm_key
+        - name: LITELLM_USERNAME
+          value: admin
+        - name: LITELLM_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-deployer-secrets
+              key: litellm_ui_password
         - name: HF_TOKEN_SECRET
-          value: {{ .Release.Name }}-deployer-secrets
-        {{- else }}
           value: {{ .Values.hfTokenSecret }} 
-        {{- end }}
+        - name: USER_ID
+          value: {{ .Release.Namespace }}
         - name: MEMORY_CAP_PERCENTAGE
           value: {{ .Values.deployer.memoryCapPercentage | quote }}
         ports:
         - containerPort: 8000
           name: container-port
-        startupProbe:
-          httpGet:
-            path: /v1/health
-            port: 8000
-          initialDelaySeconds: 5
-          periodSeconds: 2
-          timeoutSeconds: 2
-          failureThreshold: 5
-        livenessProbe:
-          httpGet:
-            path: /v1/health
-            port: 8000
-          initialDelaySeconds: 10
-          periodSeconds: 3
-          timeoutSeconds: 2
-          failureThreshold: 2
-        readinessProbe:
-          httpGet:
-            path: /v1/health
-            port: 8000
-          initialDelaySeconds: 2
-          periodSeconds: 2
-          timeoutSeconds: 1
-          failureThreshold: 2
+        # startupProbe:
+        #   httpGet:
+        #     path: /v1/health
+        #     port: 8000
+        #   initialDelaySeconds: 50
+        #   periodSeconds: 60
+        #   timeoutSeconds: 2
+        #   failureThreshold: 5
+        # livenessProbe:
+        #   httpGet:
+        #     path: /v1/health
+        #     port: 8000
+        #   initialDelaySeconds: 100
+        #   periodSeconds: 90
+        #   timeoutSeconds: 2
+        #   failureThreshold: 2
+        # readinessProbe:
+        #   httpGet:
+        #     path: /v1/health
+        #     port: 8000
+        #   initialDelaySeconds: 20
+        #   periodSeconds: 120
+        #   timeoutSeconds: 1
+        #   failureThreshold: 2
         resources:
           requests:
             cpu: 1

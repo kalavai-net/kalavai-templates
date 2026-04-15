@@ -244,7 +244,7 @@ spec:
       {{- end }}
       containers:
       - name: service
-        image: "postgres:15"
+        image: "postgres:14"
         env:
         - name: POSTGRES_DB
           value: litellm
@@ -257,7 +257,6 @@ spec:
               key: litellm_db_password
         - name: PGDATA
           value: "/var/lib/postgresql/data/pgdata"
-        env:
         {{- if .Values.system.envFromSecrets }}
         {{- range .Values.system.envFromSecrets }}
         - name: {{ . }}

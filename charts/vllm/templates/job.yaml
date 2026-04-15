@@ -123,7 +123,7 @@ spec:
                 key: {{ . }}
           {{- end }}
           {{- end }}
-          {{-if .Values.hfToken }}
+          {{- if .Values.hfToken }}
           - name: HF_TOKEN
             valueFrom:
               secretKeyRef:
@@ -292,11 +292,13 @@ spec:
           - name: {{ $key }}
             value: {{ $value }}
           {{- end }}
+          {{- if .Values.hfToken }}
           - name: HF_TOKEN
             valueFrom:
               secretKeyRef:
-                name: {{ .Release.Name}}-svllm-ecret
+                name: {{ .Release.Name}}-vllm-secret
                 key: hf_token
+          {{- end }}
           - name: VLLM_ENGINE_READY_TIMEOUT_S
             value: "1200"
           - name: VLLM_ENGINE_ITERATION_TIMEOUT_S

@@ -26,6 +26,26 @@ entries:
       category: llm
       status: beta
     apiVersion: v2
+    appVersion: 0.0.12
+    created: "2026-04-15T11:55:37.151564749Z"
+    description: Scalable, flexible multi-node, multi-GPU LLM deployments
+    digest: eb3dcc411100080962680b45fbdda0c1c80e13dba21e0a71df7a770a6519baca
+    icon: https://docs.vllm.ai/en/latest/assets/logos/vllm-logo-only-light.ico
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: inference
+    sources:
+    - https://docs.ray.io/en/latest/cluster/kubernetes/examples/rayserve-llm-example.html
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/inference-0.0.12/inference-0.0.12.tgz
+    version: 0.0.12
+  - annotations:
+      category: llm
+      status: beta
+    apiVersion: v2
     appVersion: 0.0.11
     created: "2026-04-14T15:42:48.762440568Z"
     description: Scalable, flexible multi-node, multi-GPU LLM deployments
@@ -1988,6 +2008,27 @@ entries:
       category: development
       status: dev
     apiVersion: v2
+    appVersion: 0.0.3
+    created: "2026-04-15T11:55:37.487879195Z"
+    description: LocalAI is an open source, drop-in replacement for OpenAI's API that
+      runs entirely on your own hardware.
+    digest: 580de21a56e74c646eaadb409e57df057cd76f478b28f5e23d53091a501e3842
+    icon: https://avatars.githubusercontent.com/u/132594073?s=200&v=4
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: localai
+    sources:
+    - https://github.com/go-skynet/LocalAI
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/localai-0.0.3/localai-0.0.3.tgz
+    version: 0.0.3
+  - annotations:
+      category: development
+      status: dev
+    apiVersion: v2
     appVersion: 0.0.1
     created: "2026-04-07T07:23:06.063763812Z"
     description: LocalAI is an open source, drop-in replacement for OpenAI's API that
@@ -2124,6 +2165,27 @@ entries:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/postgresql-0.0.1/postgresql-0.0.1.tgz
     version: 0.0.1
   ray-cluster:
+  - annotations:
+      category: development
+      status: beta
+    apiVersion: v2
+    appVersion: 0.1.11
+    created: "2026-04-15T11:55:37.64649083Z"
+    description: An open source framework to build and scale your ML and Python applications
+      easily
+    digest: 8840f65a3053a0d759777cc41e339502c7c084ddabc3cf188755bb2e1384fcdb
+    icon: https://github.com/ray-project/ray/raw/master/doc/source/images/ray_header_logo.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: ray-cluster
+    sources:
+    - https://docs.ray.io/en/latest
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/ray-cluster-0.1.11/ray-cluster-0.1.11.tgz
+    version: 0.1.11
   - annotations:
       category: development
       status: beta
@@ -2641,6 +2703,27 @@ entries:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/speaches-0.0.1/speaches-0.0.1.tgz
     version: 0.0.1
   vllm:
+  - annotations:
+      category: llm
+      status: beta
+    apiVersion: v2
+    appVersion: 0.1.15
+    created: "2026-04-15T11:55:37.97593469Z"
+    description: A high-throughput and memory-efficient inference and serving engine
+      for LLMs (v0.18.1)
+    digest: 27d4fb8b7413844bdd2b1988984a0b66e5f28cede48a58c6447a30d038413a51
+    icon: https://docs.vllm.ai/en/latest/assets/logos/vllm-logo-only-light.ico
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: vllm
+    sources:
+    - https://docs.vllm.ai/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.1.15/vllm-0.1.15.tgz
+    version: 0.1.15
   - annotations:
       category: llm
       status: beta
@@ -3394,4 +3477,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-04-14T19:59:48.915412631Z"
+generated: "2026-04-15T11:55:37.976871706Z"

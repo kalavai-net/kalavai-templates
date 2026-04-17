@@ -61,6 +61,25 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/deployer-0.0.1/deployer-0.0.1.tgz
     version: 0.0.1
+  gateway:
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2026-04-17T18:06:09.588118654Z"
+    description: Python SDK, Proxy Server (LLM Gateway) to call 100+ LLM APIs in OpenAI
+      format
+    digest: 577497fff2db06d055c4cebf03917e061441d404437a00dba04c7252a0e8d42b
+    icon: https://opensource.muenchen.de/logo/litellm.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: gateway
+    sources:
+    - https://docs.litellm.ai/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/gateway-0.0.1/gateway-0.0.1.tgz
+    version: 0.0.1
   inference:
   - annotations:
       category: llm
@@ -1672,6 +1691,26 @@ entries:
       category: llm
       status: beta
     apiVersion: v2
+    appVersion: 0.1.17
+    created: "2026-04-17T18:06:09.846527765Z"
+    description: LLM inference in C/C++
+    digest: 4ce10470014a9defe3d2248c4620540b0fd45fffb73dd115bff03b809765ada7
+    icon: https://user-images.githubusercontent.com/1991296/230134379-7181e485-c521-4d23-a0d6-f7b3b61ba524.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: llama.cpp
+    sources:
+    - https://github.com/ggml-org/llama.cpp
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/llama.cpp-0.1.17/llama.cpp-0.1.17.tgz
+    version: 0.1.17
+  - annotations:
+      category: llm
+      status: beta
+    apiVersion: v2
     appVersion: 0.1.16
     created: "2026-04-15T14:11:39.287614844Z"
     description: LLM inference in C/C++
@@ -2949,6 +2988,27 @@ entries:
       category: llm
       status: beta
     apiVersion: v2
+    appVersion: 0.1.18
+    created: "2026-04-17T18:06:10.097889012Z"
+    description: A high-throughput and memory-efficient inference and serving engine
+      for LLMs (v0.18.1)
+    digest: afdceef63bb472bb0a962c126054caa0437fe9cb35f79508eb2eeae36a05c0a3
+    icon: https://docs.vllm.ai/en/latest/assets/logos/vllm-logo-only-light.ico
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: vllm
+    sources:
+    - https://docs.vllm.ai/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.1.18/vllm-0.1.18.tgz
+    version: 0.1.18
+  - annotations:
+      category: llm
+      status: beta
+    apiVersion: v2
     appVersion: 0.1.17
     created: "2026-04-15T14:11:39.532575473Z"
     description: A high-throughput and memory-efficient inference and serving engine
@@ -3761,4 +3821,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-04-15T14:11:39.533684023Z"
+generated: "2026-04-17T18:06:10.09857615Z"

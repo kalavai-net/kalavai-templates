@@ -54,17 +54,17 @@
             },
             "gpuMemory": {
                "description": "GPU memory to be used per single worker (final one = gpu_memory * workers). Workers should have these many GB of GPU memory available.",
-               "type": "integer"
+               "type": ["integer", "null"]
             },
             "autoParallelism": {
                "type": "boolean",
                "description": "Automatically determine parallelism settings"
             },
             "githubUsername": {
-               "type": "string"
+               "type": ["string", "null"]
             },
             "githubToken": {
-               "type": "string"
+               "type": ["string", "null"]
             },
             "imagePullPolicy": {
                "description": "Image pull policy for the containers (Always, IfNotPresent, Never)",

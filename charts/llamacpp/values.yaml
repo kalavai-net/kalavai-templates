@@ -26,6 +26,7 @@ lago:
 
 litellm:
   enabled: false
+  provider: openai
   waitReady: false
   modelNameOverride: null
   accessGroup: null

@@ -91,6 +91,11 @@
       "litellm": {
          "type": "object",
          "properties": {
+            "provider": {
+               "type": "string",
+               "default": "openai",
+               "description": "Default LiteLLM provider to register models as"
+            },
             "modelNameOverride": {
                "description": "Model name to use (defaults to model_id) during inference",
                "type": [

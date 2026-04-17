@@ -276,8 +276,7 @@
           "type": "string",
           "description": "Job ID for labeling resources"
         }
-      },
-      "required": ["jobId"]
+      }
     }
   },
   "required": ["hfTokenSecret"]

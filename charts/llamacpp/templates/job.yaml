@@ -351,7 +351,7 @@ spec:
           - name: DEPLOYMENT_ID
             value: {{ .Release.Name }}
           - name: PROVIDER
-            value: openai
+            value: {{ .Values.litellm.provider }}
           lifecycle:
             preStop:
               exec:

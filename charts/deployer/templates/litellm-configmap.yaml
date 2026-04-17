@@ -21,6 +21,7 @@ data:
         message_logging: {{ .Values.litellm.callback_settings.otel.message_logging | default false }}
 
     general_settings:
+      always_include_stream_usage: true # required to track reasoning tokens on streaming calls
       background_health_checks: False
       store_prompts_in_spend_logs: {{ .Values.litellm.general_settings.store_prompts_in_spend_logs | default false }}
       disable_prisma_schema_update: {{ .Values.litellm.general_settings.disable_prisma_schema_update | default false }}

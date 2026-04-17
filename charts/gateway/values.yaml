@@ -1,0 +1,35 @@
+litellm:
+  master_key: sk-1234
+  salt_key: sk-1234567890
+  ui_username: admin
+  ui_password: null
+  litellm_settings:
+    num_retries: 3
+    request_timeout: 9000
+    turn_off_message_logging: false
+  callback_settings:
+    otel:
+      message_logging: false
+  general_settings:
+    store_prompts_in_spend_logs: false
+    disable_prisma_schema_update: false
+    disable_error_logs: false
+    disable_spend_logs: false
+  router_settings:
+    timeout: 9000
+
+# Ingress Configuration
+ingress:
+  enabled: false
+  subdomain: spaces.kalavai.net
+
+ollama:
+  enabled: false
+
+# System Configuration
+system:
+  priorityClassName: user-spot-priority
+  nodeSelectors: null
+  nodeSelectorsOps: OR
+  jobId: null
+  envFromSecrets: {}

@@ -1,0 +1,155 @@
+{
+   "$schema": "http://json-schema.org/draft-07/schema#",
+   "type": "object",
+   "properties": {
+      "litellm": {
+         "type": "object",
+         "properties": {
+            "ui_password": {
+               "type": "string",
+               "description": "LiteLLM UI password"
+            },
+            "master_key": {
+               "type": "string",
+               "description": "LiteLLM master key"
+            },
+            "salt_key": {
+               "type": "string",
+               "description": "LiteLLM salt key"
+            },
+            "litellm_settings": {
+               "type": "object",
+               "properties": {
+                  "num_retries": {
+                     "type": "integer",
+                     "default": 3,
+                     "description": "Number of retries"
+                  },
+                  "request_timeout": {
+                     "type": "integer",
+                     "default": 9000,
+                     "description": "Request timeout"
+                  },
+                  "turn_off_message_logging": {
+                     "type": "boolean",
+                     "default": false,
+                     "description": "Turn off message logging"
+                  }
+               }
+            },
+            "callback_settings": {
+               "type": "object",
+               "properties": {
+                  "otel": {
+                  "type": "object",
+                  "properties": {
+                     "message_logging": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "Message logging"
+                     }
+                  }
+                  }
+               }
+            },
+            "general_settings": {
+               "type": "object",
+               "properties": {
+                  "store_prompts_in_spend_logs": {
+                     "type": "boolean",
+                     "default": false,
+                     "description": "Store prompts in spend logs"
+                  },
+                  "disable_prisma_schema_update": {
+                     "type": "boolean",
+                     "default": false,
+                     "description": "Disable prisma schema update"
+                  },
+                  "disable_error_logs": {
+                     "type": "boolean",
+                     "default": false,
+                     "description": "Disable error logs"
+                  },
+                  "disable_spend_logs": {
+                     "type": "boolean",
+                     "default": false,
+                     "description": "Disable spend logs"
+                  }
+               }
+            },
+            "router_settings": {
+               "type": "object",
+               "properties": {
+                  "timeout": {
+                     "type": "integer",
+                     "default": 9000,
+                     "description": "Router timeout"
+                  }
+               }
+            }
+         },
+         "required": ["ui_password", "master_key", "salt_key"]
+      },
+      "ingress": {
+         "type": "object",
+         "properties": {
+            "enabled": {
+               "type": "boolean",
+               "default": false,
+               "description": "Enable ingress for the litellm service"
+            },
+            "subdomain": {
+               "type": "string",
+               "default": "spaces.kalavai.net",
+               "description": "Subdomain for ingress"
+            }
+         }
+      },
+      "ollama": {
+         "type": "object",
+         "properties": {
+            "enabled": {
+               "type": "boolean",
+               "default": true,
+               "description": "Enable ollama compatible API"
+            }
+         }
+      },
+      "system": {
+         "properties": {
+            "envFromSecrets": {
+               "type": "object",
+               "description": "Dictionary mapping environment variable names to secret names"
+            },
+            "priorityClassName": {
+               "type": "string",
+               "description": "PriorityClassName to use for the deployment"
+            },
+            "nodeSelectors": {
+               "type": [
+                  "object",
+                  "null"
+               ],
+               "description": "target specific devices. Expected format -> key: value pairs, where 'value' is a list of elements"
+            },
+            "nodeSelectorsOps": {
+               "type": "string",
+               "enum": [
+                  "OR",
+                  "AND"
+               ],
+               "description": "Logical operation to use to apply to nodeSelectors. Accepted values: 'OR', 'AND'"
+            },
+            "jobId": {
+               "type": "string",
+               "description": "Id to tag spawned objects."
+            },
+            "nodeAffinityPreferenceKey": {
+               "type": "string",
+               "description": "Key to prioritise group scheduling on nodes with a matching label key value"
+            }
+         }
+      }
+   },
+   "required": []
+}

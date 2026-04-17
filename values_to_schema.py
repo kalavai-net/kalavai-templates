@@ -6,7 +6,7 @@ import yaml
 import json
 
 
-TEMPLATE = "pool"
+TEMPLATE = "litellm"
 INPUT_VALUES_FILE = f"charts/{TEMPLATE}/values.yaml"
 INPUT_METADATA_FILE = f"charts/{TEMPLATE}/metadata.json"
 OUTPUT_SCHEMA_FILE = f"charts/{TEMPLATE}/values.schema.json"
@@ -62,8 +62,8 @@ if __name__ == "__main__":
     properties["system"] = {
         "properties": {
             "envFromSecrets": {
-               "type": "array",
-               "description": "List of secret names to mount as environment variables"
+               "type": "object",
+               "description": "Dictionary mapping environment variable names to secret names"
             },
             "priorityClassName": {
                 "type": "string",

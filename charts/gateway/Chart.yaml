@@ -1,0 +1,14 @@
+apiVersion: v2
+appVersion: 0.0.1
+description: Python SDK, Proxy Server (LLM Gateway) to call 100+ LLM APIs in OpenAI
+  format
+icon: https://opensource.muenchen.de/logo/litellm.png
+kubeVersion: '>= 1.25.0'
+maintainers:
+- email: carlos@kalavai.net
+  name: Carlos Fernandez Musoles
+  url: https://kalavai.net
+name: gateway
+sources:
+- https://docs.litellm.ai/
+version: 0.0.1

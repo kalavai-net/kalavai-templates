@@ -30,6 +30,9 @@ spec:
         labels:
           role: leader
           kalavai.job.name: {{ .Values.system.jobId}}
+          {{ if .Values.system.workerGpuMemory }}
+          kalavai/vram: {{ .Values.system.workerGpuMemory}}
+          {{ end }}
       spec:
         terminationGracePeriodSeconds: 60
       {{- if eq .Values.deployment.backend "cuda" }}
@@ -133,9 +136,9 @@ spec:
               memory: {{ .Values.deployment.memory}}Gi
             {{ if eq .Values.deployment.backend "cuda" }}
               nvidia.com/gpu: 1
-              {{ if .Values.deployment.gpuMemory }}
-              nvidia.com/gpumem: {{ .Values.deployment.gpuMemory}}
-              {{ end }}
+              # {{ if .Values.system.workerGpuMemory }}
+              # nvidia.com/gpumem: {{ .Values.system.workerGpuMemory}}
+              # {{ end }}
             {{ else if eq .Values.deployment.backend "rocm" }}
               amd.com/gpu: 1
             {{ end }}
@@ -162,6 +165,9 @@ spec:
       metadata:
         labels:
           kalavai.job.name: {{ .Values.system.jobId}}
+          {{ if .Values.system.workerGpuMemory }}
+          kalavai/vram: {{ .Values.system.workerGpuMemory}}
+          {{ end }}
       spec:
         terminationGracePeriodSeconds: 60
       {{- if eq .Values.deployment.backend "cuda" }}
@@ -247,9 +253,9 @@ spec:
               memory: {{ .Values.deployment.memory}}Gi
             {{ if eq .Values.deployment.backend "cuda" }}
               nvidia.com/gpu: 1
-              {{ if .Values.deployment.gpuMemory }}
-              nvidia.com/gpumem: {{ .Values.deployment.gpuMemory}}
-              {{ end }}
+              # {{ if .Values.system.workerGpuMemory }}
+              # nvidia.com/gpumem: {{ .Values.system.workerGpuMemory}}
+              # {{ end }}
             {{ else if eq .Values.deployment.backend "rocm" }}
               amd.com/gpu: 1
             {{ end }}

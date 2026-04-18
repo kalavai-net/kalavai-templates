@@ -23,4 +23,5 @@ system:
   priorityClassName: user-spot-priority
   envFromSecrets: {}
   nodeAffinityPreferenceKey: null
+  workerGpuMemory: null
 

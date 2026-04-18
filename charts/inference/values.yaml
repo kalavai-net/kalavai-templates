@@ -68,4 +68,5 @@ system:
   jobId: null
   envFromSecrets: {}
   nodeAffinityPreferenceKey: null
+  workerGpuMemory: null
 

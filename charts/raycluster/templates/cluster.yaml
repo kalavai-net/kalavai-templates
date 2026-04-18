@@ -134,6 +134,9 @@ spec:
       metadata:
         labels:
           kalavai.job.name: {{ .Values.system.jobId }}
+          {{- if .Values.system.workerGpuMemory }}
+          kalavai/vram: {{ .Values.system.workerGpuMemory | quote }}
+          {{- end }}
       spec:
         #restartPolicy: Never # for testing
         terminationGracePeriodSeconds: 60
@@ -189,9 +192,9 @@ spec:
           resources:
             limits:
               nvidia.com/gpu: 1
-              {{ if .Values.deployment.gpuMemory }}
-              nvidia.com/gpumem: {{ .Values.deployment.gpuMemory}}
-              {{ end }}
+              # {{ if .Values.system.workerGpuMemory }}
+              # nvidia.com/gpumem: {{ .Values.system.workerGpuMemory}}
+              # {{ end }}
               cpu: {{ .Values.deployment.cpus }}
               memory: {{ .Values.deployment.memory }}Gi
             requests:
@@ -213,6 +216,9 @@ spec:
       metadata:
         labels:
           kalavai.job.name: {{ .Values.system.jobId }}
+          {{- if .Values.system.workerGpuMemory }}
+          kalavai/vram: {{ .Values.system.workerGpuMemory | quote }}
+          {{- end }}
       spec:
       {{ if .Values.system.nodeSelectors }}
         affinity:

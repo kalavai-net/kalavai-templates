@@ -142,6 +142,9 @@ spec:
         metadata:
           labels:
             kalavai.job.name: {{ .Values.system.jobId}}
+            {{- if .Values.system.workerGpuMemory }}
+            kalavai/vram: {{ .Values.system.workerGpuMemory | quote }}
+            {{- end }}
         spec:
           priorityClassName: {{ .Values.system.priorityClassName }}
           runtimeClassName: nvidia

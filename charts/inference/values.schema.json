@@ -228,6 +228,13 @@
                   "null"
                ],
                "description": "Key to use for node affinity"
+            },
+            "workerGpuMemory": {
+               "type": [
+                  "number",
+                  "null"
+               ],
+               "description": "GPU memory to request for worker pods"
             }
          }
       }

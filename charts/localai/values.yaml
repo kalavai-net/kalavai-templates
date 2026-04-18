@@ -32,3 +32,4 @@ system:
   jobId: null
   nodeAffinityPreferenceKey: null
   envFromSecrets: {}
+  workerGpuMemory: null

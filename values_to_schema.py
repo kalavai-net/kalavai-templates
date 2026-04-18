@@ -85,6 +85,10 @@ if __name__ == "__main__":
             "nodeAffinityPreferenceKey": {
                "type": "string",
                "description": "Key to prioritise group scheduling on nodes with a matching label key value"
+            },
+            "workerGpuMemory": {
+               "type": ["number", "null"],
+               "description": "Working GPU memory to be used per single worker (final one = working_gpu_memory * workers). Workers should have these many GB of working GPU memory available."
             }
         }
     }

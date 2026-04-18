@@ -52,10 +52,6 @@
                "description": "GPUs to be used per single worker (final one = gpus * workers). Workers should have these many GPUs available.",
                "type": "integer"
             },
-            "gpuMemory": {
-               "description": "GPU memory to be used per single worker (final one = gpu_memory * workers). Workers should have these many GB of GPU memory available.",
-               "type": ["integer", "null"]
-            },
             "autoParallelism": {
                "type": "boolean",
                "description": "Automatically determine parallelism settings"
@@ -299,6 +295,10 @@
             "nodeAffinityPreferenceKey": {
                "type": ["null", "string"],
                "description": "Node affinity preference key to use for the deployment"
+            },
+            "workingGpuMemory": {
+               "type": ["number", "null"],
+               "description": "Working GPU memory to be used per single worker (final one = working_gpu_memory * workers). Workers should have these many GB of working GPU memory available."
             }
          }
       }

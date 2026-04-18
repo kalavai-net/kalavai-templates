@@ -149,6 +149,9 @@ spec:
       metadata:
         labels:
           kalavai.job.name: {{ .Values.system.jobId}}
+          {{- if .Values.system.workerGpuMemory }}
+          kalavai/vram: {{ .Values.system.workerGpuMemory | quote }}
+          {{- end }}
       spec:
         terminationGracePeriodSeconds: 60
         runtimeClassName: nvidia
@@ -246,9 +249,9 @@ spec:
               cpu: {{ .Values.deployment.cpus}}
               memory: {{ .Values.deployment.memory}}Gi
               nvidia.com/gpu: 1
-            {{ if .Values.deployment.gpuMemory }}
-              nvidia.com/gpumem: {{ .Values.deployment.gpuMemory}}
-            {{ end }}
+            # {{ if .Values.system.workerGpuMemory }}
+            #   nvidia.com/gpumem: {{ .Values.system.workerGpuMemory}}
+            # {{ end }}
               ephemeral-storage: {{ .Values.deployment.workingMemory}}Gi
           # readinessProbe:
           #   exec:

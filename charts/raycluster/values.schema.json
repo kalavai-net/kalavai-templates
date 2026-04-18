@@ -127,6 +127,10 @@
                "type": "string",
                "enum": ["OR", "AND"],
                "description": "Logical operation to use to apply to nodeSelectors. Accepted values: 'OR', 'AND'"
+            },
+            "workerGpuMemory": {
+               "type": ["number", "null"],
+               "description": "Working GPU memory to be used per single worker (final one = working_gpu_memory * workers). Workers should have these many GB of working GPU memory available."
             }
          }
       }

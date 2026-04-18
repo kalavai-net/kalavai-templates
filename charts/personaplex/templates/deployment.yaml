@@ -15,6 +15,9 @@ spec:
       labels:
         app: {{ .Release.Name}}-personaplex
         kalavai.job.name: {{ .Values.system.jobId }}
+        {{- if .Values.system.workerGpuMemory }}
+        kalavai/vram: {{ .Values.system.workerGpuMemory | quote }}
+        {{- end }}
     spec:
       runtimeClassName: nvidia
     {{- if .Values.system.nodeSelectors }}
@@ -82,8 +85,8 @@ spec:
             cpu: {{ .Values.resources.cpus}}
             memory: {{ .Values.resources.memory }}Gi
             nvidia.com/gpu: {{ .Values.resources.gpus}}
-          {{- if .Values.resources.gpuMemory }}
-            nvidia.com/gpumem: {{ .Values.resources.gpuMemory}}
-          {{- end }}
+          # {{- if .Values.system.workerGpuMemory }}
+          #   nvidia.com/gpumem: {{ .Values.system.workerGpuMemory}}
+          # {{- end }}
             ephemeral-storage: 64Gi
       restartPolicy: Always

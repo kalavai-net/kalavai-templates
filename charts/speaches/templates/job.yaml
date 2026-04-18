@@ -30,6 +30,9 @@ spec:
         labels:
           role: leader
           kalavai.job.name: {{ .Values.system.jobId}}
+          {{- if .Values.system.workerGpuMemory }}
+          kalavai/vram: {{ .Values.system.workerGpuMemory | quote }}
+          {{- end }}
       spec:
         terminationGracePeriodSeconds: 60
       {{- if eq .Values.deployment.gpuBackend "cuda" }}

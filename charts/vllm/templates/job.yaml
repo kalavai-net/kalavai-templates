@@ -30,6 +30,9 @@ spec:
         labels:
           role: leader
           kalavai.job.name: {{ .Values.system.jobId}}
+          {{ if .Values.system.workerGpuMemory }}
+          kalavai/vram: {{ .Values.system.workerGpuMemory | quote }}
+          {{ end }}
       spec:
         {{- if and .Values.deployment.githubUsername .Values.deployment.githubToken }}
         imagePullSecrets:
@@ -183,9 +186,9 @@ spec:
               memory: {{ add .Values.deployment.memory .Values.deployment.sharedMemory }}Gi
             {{- if eq .Values.deployment.gpuBackend "cuda" }}
               nvidia.com/gpu: {{ .Values.deployment.gpus}}
-              {{- if .Values.deployment.gpuMemory }}
-              nvidia.com/gpumem: {{ .Values.deployment.gpuMemory}}
-              {{- end }}
+              # {{- if .Values.system.workingGpuMemory }}
+              # nvidia.com/gpumem: {{ .Values.system.workingGpuMemory}}
+              # {{- end }}
             {{- else }}
               amd.com/gpu: {{ .Values.deployment.gpus}}
             {{- end }}
@@ -220,6 +223,9 @@ spec:
       metadata:
         labels:
           kalavai.job.name: {{ .Values.system.jobId}}
+          {{- if .Values.system.workerGpuMemory }}
+          kalavai/vram: {{ .Values.system.workerGpuMemory | quote }}
+          {{- end }}
       spec:
         {{- if and .Values.deployment.githubUsername .Values.deployment.githubToken }}
         imagePullSecrets:
@@ -338,9 +344,9 @@ spec:
               memory: {{ add .Values.deployment.memory .Values.deployment.sharedMemory}}Gi
             {{- if eq .Values.deployment.gpuBackend "cuda" }}
               nvidia.com/gpu: {{ .Values.deployment.gpus}}
-              {{- if .Values.deployment.gpuMemory }}
-              nvidia.com/gpumem: {{ .Values.deployment.gpuMemory}}
-              {{- end }}
+                # {{- if .Values.system.workingGpuMemory }}
+                # nvidia.com/gpumem: {{ .Values.system.workingGpuMemory}}
+                # {{- end }}
             {{- else }}
               amd.com/gpu: {{ .Values.deployment.gpus}}
             {{- end }}

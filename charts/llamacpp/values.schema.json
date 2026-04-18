@@ -208,8 +208,8 @@
                "description": "Key to prioritise group scheduling on nodes with a matching label key value"
             },
             "workerGpuMemory": {
-               "type": ["string", "null"],
-               "description": "GPU memory to request per worker pod"
+               "type": ["number", "null"],
+               "description": "GPU memory (in GB) to request per worker pod"
             }
          }
       }

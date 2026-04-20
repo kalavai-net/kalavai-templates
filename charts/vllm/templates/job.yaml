@@ -412,6 +412,7 @@ spec:
         containers:
         - name: registrar-leader
           image: ghcr.io/kalavai-net/kalavai-utils:latest
+          imagePullPolicy: Always
           command:
           - sh
           - -c

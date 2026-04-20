@@ -44,103 +44,55 @@
           "type": "string",
           "description": "Master API key for authentication"
         },
-        "kalavaiApiEndpoint": {
-          "type": "string",
-          "description": "Kalavai API endpoint URL"
-        },
-        "kalavaiApiKey": {
-          "type": "string",
-          "description": "Kalavai API key"
+        "kalavaiApi": {
+          "type": "object",
+          "properties": {
+            "endpoint": {
+              "type": "string",
+              "description": "Kalavai API endpoint URL"
+            },
+            "key": {
+              "type": "string",
+              "description": "Kalavai API key"
+            }
+          },
+          "required": ["endpoint", "key"]
         },
         "memoryCapPercentage": {
           "type": "integer",
           "minimum": 1,
           "maximum": 100,
-          "default": 80,
+          "default": 95,
           "description": "Memory capacity percentage"
         }
       },
-      "required": ["masterApiKey", "kalavaiApiEndpoint", "kalavaiApiKey"]
-    },
-    "litellm": {
-      "type": "object",
-      "properties": {
-        "litellm_ui_password": {
-          "type": "string",
-          "description": "LiteLLM UI password"
-        },
-        "litellm_settings": {
-          "type": "object",
-          "properties": {
-            "num_retries": {
-              "type": "integer",
-              "default": 3,
-              "description": "Number of retries"
-            },
-            "request_timeout": {
-              "type": "integer",
-              "default": 9000,
-              "description": "Request timeout"
-            },
-            "turn_off_message_logging": {
-              "type": "boolean",
-              "default": false,
-              "description": "Turn off message logging"
-            }
+      "gateway": {
+        "type": "object",
+        "properties": {
+          "ui_username": {
+            "type": "string",
+            "description": "LiteLLM UI username"
+          },
+          "ui_password": {
+            "type": "string",
+            "description": "LiteLLM UI password"
+          },
+          "publicUrl": {
+            "type": "string",
+            "description": "LiteLLM public URL"
+          },
+          "internalUrl": {
+            "type": ["string", "null"],
+            "description": "LiteLLM internal URL"
+          },
+          "litellm_key": {
+            "type": "string",
+            "description": "LiteLLM key"
           }
         },
-        "callback_settings": {
-          "type": "object",
-          "properties": {
-            "otel": {
-              "type": "object",
-              "properties": {
-                "message_logging": {
-                  "type": "boolean",
-                  "default": false,
-                  "description": "Message logging"
-                }
-              }
-            }
-          }
-        },
-        "general_settings": {
-          "type": "object",
-          "properties": {
-            "store_prompts_in_spend_logs": {
-              "type": "boolean",
-              "default": false,
-              "description": "Store prompts in spend logs"
-            },
-            "disable_prisma_schema_update": {
-              "type": "boolean",
-              "default": false,
-              "description": "Disable prisma schema update"
-            },
-            "disable_error_logs": {
-              "type": "boolean",
-              "default": false,
-              "description": "Disable error logs"
-            },
-            "disable_spend_logs": {
-              "type": "boolean",
-              "default": false,
-              "description": "Disable spend logs"
-            }
-          }
-        },
-        "router_settings": {
-          "type": "object",
-          "properties": {
-            "timeout": {
-              "type": "integer",
-              "default": 9000,
-              "description": "Router timeout"
-            }
-          }
-        }
+        "required": ["ui_password", "publicUrl", "litellm_key"]
       },
-      "required": ["litellm_ui_password"]
+      "required": ["masterApiKey"]
     },
     "ingress": {
       "type": "object",

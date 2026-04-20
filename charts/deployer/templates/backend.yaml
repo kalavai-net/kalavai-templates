@@ -112,27 +112,30 @@ spec:
               name: {{ .Release.Name }}-deployer-secrets
               key: deployer_master_key
         - name: KALAVAI_API_ENDPOINT
-          value: {{ .Values.deployer.kalavaiApiEndpoint | quote }}
+          value: {{ .Values.deployer.kalavaiApi.endpoint | quote }}
         - name: KALAVAI_API_KEY
           valueFrom:
             secretKeyRef:
               name: {{ .Release.Name }}-deployer-secrets
               key: kalavai_api_key
         - name: PUBLIC_LITELLM_URL
-          {{- if .Values.ingress.enabled }}
-          value: https://{{ .Release.Name }}-{{ .Release.Namespace }}-deployer-litellm.{{ .Values.ingress.subdomain }}
-          {{- else }}
-          value: http://{{ .Release.Name }}-deployer-litellm-service:4000
-          {{- end }}
+          value: {{ .Values.deployer.gateway.publicUrl | quote }}
         - name: LITELLM_BASE_URL
-          value: http://{{ .Release.Name }}-deployer-litellm-service:4000
+          {{- if .Values.deployer.gateway.internalUrl }}
+          value: {{ .Values.deployer.gateway.internalUrl | quote }}
+          {{- else }}
+          value: {{ .Values.deployer.gateway.publicUrl | quote }}
+          {{- end }}
         - name: LITELLM_KEY
           valueFrom:
             secretKeyRef:
               name: {{ .Release.Name }}-deployer-secrets
               key: litellm_key
         - name: LITELLM_USERNAME
-          value: admin
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-deployer-secrets
+              key: litellm_ui_username
         - name: LITELLM_PASSWORD
           valueFrom:
             secretKeyRef:

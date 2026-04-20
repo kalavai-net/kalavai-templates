@@ -1,4 +1,4 @@
-hfTokenSecret: null
+hfTokenSecret: user-data
 
 # Deployer Configuration
 deployer:
@@ -8,36 +8,24 @@ deployer:
       # repository: ghcr.io/kalavai-net/kalavai-deployer
       # tag: latest
       pullPolicy: Always
-  
   # UI service configuration
   ui:
     image:
       # repository: ghcr.io/kalavai-net/kalavai-deployer-ui
       # tag: latest
       pullPolicy: Always
-
-  # API Keys and Configuration
-  masterApiKey: null
-  kalavaiApiEndpoint: null
-  kalavaiApiKey: null
   memoryCapPercentage: 95
-
-litellm:
-  litellm_ui_password: null
-  litellm_settings:
-    num_retries: 3
-    request_timeout: 9000
-    turn_off_message_logging: false
-  callback_settings:
-    otel:
-      message_logging: false
-  general_settings:
-    store_prompts_in_spend_logs: false
-    disable_prisma_schema_update: false
-    disable_error_logs: false
-    disable_spend_logs: false
-  router_settings:
-    timeout: 9000
+  # API Keys and external services configuration
+  masterApiKey: null
+  kalavaiApi:
+    endpoint: null
+    key: null
+  gateway:
+    ui_username: admin
+    ui_password: null
+    publicUrl: null
+    internalUrl: null
+    litellm_key: null
 
 # Ingress Configuration
 ingress:

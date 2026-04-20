@@ -39,44 +39,6 @@ spec:
   type: NodePort
   {{- end }}
 ---
-# Service for LiteLLM
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ .Release.Name }}-deployer-litellm-service
-  labels:
-    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
-    component: litellm
-spec:
-  type: ClusterIP
-  selector:
-    component: litellm
-    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
-  ports:
-  - name: main
-    port: 4000
-    targetPort: 4000
-    protocol: TCP
----
-# Service for DB
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ .Release.Name }}-deployer-db-service
-  labels:
-    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
-    component: db
-spec:
-  type: ClusterIP
-  selector:
-    component: db
-    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
-  ports:
-  - name: postgres
-    port: 5432
-    targetPort: 5432
-    protocol: TCP
----
 {{- if .Values.ingress.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -97,28 +59,6 @@ spec:
             name: {{ .Release.Name }}-deployer-ui-service
             port:
               number: 3000 # match internal port
-        path: /
-        pathType: Prefix
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  # annotations:
-  #   traefik.ingress.kubernetes.io/router.middlewares: "{{ .Release.Namespace }}-{{ .Release.Name }}-large-body@kubernetescrd"
-  labels:
-    kalavai.job.name: {{ .Values.system.jobId }}
-  name: {{ .Release.Name }}-deployer-litellm-ingress
-spec:
-  ingressClassName: traefik
-  rules:
-  - host: {{ .Release.Name }}-{{ .Release.Namespace }}-deployer-litellm.{{ .Values.ingress.subdomain }}
-    http:
-      paths:
-      - backend:
-          service:
-            name: {{ .Release.Name }}-deployer-litellm-service
-            port:
-              number: 4000 # match internal port
         path: /
         pathType: Prefix
 {{- end }}

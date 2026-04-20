@@ -94,7 +94,7 @@ spec:
         - sh
         - -c
         - |
-          DB_HOST={{ .Release.Name }}-litellm-db-service:5432;
+          DB_HOST={{ .Release.Name }}-gateway-db-service:5432;
           export DATABASE_URL=postgres://admin:$POSTGRES_PASSWORD@$DB_HOST/litellm
           litellm --port 4000 --config /workspace/config.yaml
         env:
@@ -278,6 +278,7 @@ spec:
             memory: 1Gi
       restartPolicy: Always
 ---
+{{- if .Values.ollama.enabled }}
 # Ollama adaptor
 # Service Deployment
 apiVersion: apps/v1
@@ -397,3 +398,4 @@ spec:
             cpu: 1000m
             memory: 512Mi
       restartPolicy: Always
+{{- end }}

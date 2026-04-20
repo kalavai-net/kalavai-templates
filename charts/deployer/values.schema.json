@@ -87,6 +87,10 @@
             "litellm_key": {
               "type": "string",
               "description": "LiteLLM key"
+            },
+            "ollama_url": {
+              "type": ["string", "null"],
+              "description": "Ollama API endpoint URL"
             }
           },
           "required": ["ui_password", "publicUrl", "litellm_key"]

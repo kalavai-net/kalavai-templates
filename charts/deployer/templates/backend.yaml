@@ -120,6 +120,10 @@ spec:
               key: kalavai_api_key
         - name: PUBLIC_LITELLM_URL
           value: {{ .Values.deployer.gateway.publicUrl | quote }}
+        {{- if .Values.deployer.gateway.ollama_url }}
+        - name: PUBLIC_OLLAMA_URL
+          value: {{ .Values.deployer.gateway.ollama_url | quote }}
+        {{- end }}
         - name: LITELLM_BASE_URL
           {{- if .Values.deployer.gateway.internalUrl }}
           value: {{ .Values.deployer.gateway.internalUrl | quote }}

@@ -26,6 +26,7 @@ deployer:
     publicUrl: null
     internalUrl: null
     litellm_key: null
+    ollama_url: null
 
 # Ingress Configuration
 ingress:

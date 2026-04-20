@@ -64,33 +64,33 @@
           "maximum": 100,
           "default": 95,
           "description": "Memory capacity percentage"
-        }
-      },
-      "gateway": {
-        "type": "object",
-        "properties": {
-          "ui_username": {
-            "type": "string",
-            "description": "LiteLLM UI username"
-          },
-          "ui_password": {
-            "type": "string",
-            "description": "LiteLLM UI password"
-          },
-          "publicUrl": {
-            "type": "string",
-            "description": "LiteLLM public URL"
-          },
-          "internalUrl": {
-            "type": ["string", "null"],
-            "description": "LiteLLM internal URL"
-          },
-          "litellm_key": {
-            "type": "string",
-            "description": "LiteLLM key"
-          }
         },
-        "required": ["ui_password", "publicUrl", "litellm_key"]
+        "gateway": {
+          "type": "object",
+          "properties": {
+            "ui_username": {
+              "type": "string",
+              "description": "LiteLLM UI username"
+            },
+            "ui_password": {
+              "type": "string",
+              "description": "LiteLLM UI password"
+            },
+            "publicUrl": {
+              "type": "string",
+              "description": "LiteLLM public URL"
+            },
+            "internalUrl": {
+              "type": ["string", "null"],
+              "description": "LiteLLM internal URL"
+            },
+            "litellm_key": {
+              "type": "string",
+              "description": "LiteLLM key"
+            }
+          },
+          "required": ["ui_password", "publicUrl", "litellm_key"]
+        }
       },
       "required": ["masterApiKey"]
     },

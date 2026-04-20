@@ -3,6 +3,26 @@ entries:
   deployer:
   - annotations:
       category: development
+      status: beta
+    apiVersion: v2
+    appVersion: 0.1.0
+    created: "2026-04-20T11:02:46.145539149Z"
+    description: Deployer application for multi tenant LLM deployments
+    digest: 92f27e0365ae8801227ac89e062cadda24abc737b2e42a8f3179086c35e86fb4
+    icon: https://docs.vllm.ai/en/latest/assets/logos/vllm-logo-only-light.ico
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: deployer
+    sources:
+    - https://docs.ray.io/en/latest/cluster/kubernetes/examples/rayserve-llm-example.html
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/deployer-0.1.0/deployer-0.1.0.tgz
+    version: 0.1.0
+  - annotations:
+      category: development
       status: dev
     apiVersion: v2
     appVersion: 0.0.3
@@ -62,6 +82,27 @@ entries:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/deployer-0.0.1/deployer-0.0.1.tgz
     version: 0.0.1
   gateway:
+  - annotations:
+      category: development
+      status: beta
+    apiVersion: v2
+    appVersion: 0.0.2
+    created: "2026-04-20T11:02:46.29425343Z"
+    description: Python SDK, Proxy Server (LLM Gateway) to call 100+ LLM APIs in OpenAI
+      format
+    digest: 8236bb72a20391dc363b67ca8cc4dcb0fa3f4e1e55971a80c84207781842aa82
+    icon: https://opensource.muenchen.de/logo/litellm.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: gateway
+    sources:
+    - https://docs.litellm.ai/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/gateway-0.0.2/gateway-0.0.2.tgz
+    version: 0.0.2
   - apiVersion: v2
     appVersion: 0.0.1
     created: "2026-04-17T18:06:09.588118654Z"
@@ -3985,4 +4026,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-04-18T05:33:36.20446013Z"
+generated: "2026-04-20T11:02:46.294724989Z"

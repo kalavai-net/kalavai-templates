@@ -1832,6 +1832,26 @@ entries:
       category: llm
       status: beta
     apiVersion: v2
+    appVersion: 0.1.22
+    created: "2026-04-21T19:38:16.339292143Z"
+    description: LLM inference in C/C++
+    digest: b68e14289ab49e1a89e632f235a1f995e4ebae4971f0e922bf24594b0a462b63
+    icon: https://user-images.githubusercontent.com/1991296/230134379-7181e485-c521-4d23-a0d6-f7b3b61ba524.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: llama.cpp
+    sources:
+    - https://github.com/ggml-org/llama.cpp
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/llama.cpp-0.1.22/llama.cpp-0.1.22.tgz
+    version: 0.1.22
+  - annotations:
+      category: llm
+      status: beta
+    apiVersion: v2
     appVersion: 0.1.21
     created: "2026-04-20T15:26:59.199796776Z"
     description: LLM inference in C/C++
@@ -3272,6 +3292,27 @@ entries:
       category: llm
       status: beta
     apiVersion: v2
+    appVersion: 0.1.21
+    created: "2026-04-21T19:38:16.533186645Z"
+    description: A high-throughput and memory-efficient inference and serving engine
+      for LLMs (v0.18.1)
+    digest: 1a3357d84498716550cf402b69fba9ffd06a9eee0e7283a99be0c624a2ca7230
+    icon: https://docs.vllm.ai/en/latest/assets/logos/vllm-logo-only-light.ico
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: vllm
+    sources:
+    - https://docs.vllm.ai/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.1.21/vllm-0.1.21.tgz
+    version: 0.1.21
+  - annotations:
+      category: llm
+      status: beta
+    apiVersion: v2
     appVersion: 0.1.20
     created: "2026-04-20T15:26:59.576282606Z"
     description: A high-throughput and memory-efficient inference and serving engine
@@ -4147,4 +4188,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-04-21T09:43:21.166953158Z"
+generated: "2026-04-21T19:38:16.534023307Z"

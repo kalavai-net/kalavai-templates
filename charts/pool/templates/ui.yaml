@@ -20,6 +20,7 @@ spec:
       containers:
         - name: kalavai-ui
           image: ghcr.io/kalavai-net/kalavai-ui:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 3000
           env:

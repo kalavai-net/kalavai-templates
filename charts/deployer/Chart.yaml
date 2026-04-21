@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: 0.1.2
+appVersion: 0.1.3
 description: Deployer application for multi tenant LLM deployments
 icon: https://docs.vllm.ai/en/latest/assets/logos/vllm-logo-only-light.ico
 kubeVersion: '>= 1.25.0'
@@ -10,7 +10,7 @@ maintainers:
 name: deployer
 sources:
 - https://docs.ray.io/en/latest/cluster/kubernetes/examples/rayserve-llm-example.html
-version: 0.1.2
+version: 0.1.3
 annotations:
   status: beta
   category: development

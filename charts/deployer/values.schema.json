@@ -202,25 +202,11 @@
           "description": "Priority class name for pods"
         },
         "nodeSelectors": {
-          "type": ["array", "null"],
-          "description": "Node selectors for pod scheduling",
-          "items": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string",
-                "description": "Node selector key"
-              },
-              "value": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "description": "Node selector values"
-              }
-            },
-            "required": ["name", "value"]
-          }
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "target specific devices. Expected format -> key: value pairs, where 'value' is a list of elements"
         },
         "nodeSelectorsOps": {
           "type": "string",

@@ -64,27 +64,27 @@ spec:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-            {{- if eq .Values.system.nodeSelectorsOps "OR" }}
-              {{- range .Values.system.nodeSelectors }}
-              - matchExpressions:
-                - key: {{ .name }}
-                  operator: In
-                  values:
-                  {{- range .value }}
-                  - "{{ . }}"
-                  {{- end }}
-              {{- end }}
-            {{- else }}
-              - matchExpressions:
-              {{- range .Values.system.nodeSelectors }}
-                {{- range .value }}
-                - key: {{ .name }}
-                  operator: In
-                  values:
-                  - "{{ . }}"
+          {{- if eq .Values.system.nodeSelectorsOps "OR" }}
+            {{ range $k, $v := .Values.system.nodeSelectors }}
+            - matchExpressions:
+              - key: {{$k}}
+                operator: In
+                values:
+                {{- range $v }}
+                - "{{ . }}"
                 {{- end }}
-              {{- end }}
-            {{- end }}
+            {{ end }}
+          {{- else }}
+            - matchExpressions:
+            {{ range $k, $v := .Values.system.nodeSelectors }}
+              {{ range $v }}
+              - key: {{ $k }}
+                operator: In
+                values:
+                - "{{ . }}"
+              {{ end }}
+            {{ end }}
+          {{- end }}
       {{- end }}
       containers:
       - name: service
@@ -220,27 +220,27 @@ spec:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-            {{- if eq .Values.system.nodeSelectorsOps "OR" }}
-              {{- range .Values.system.nodeSelectors }}
-              - matchExpressions:
-                - key: {{ .name }}
-                  operator: In
-                  values:
-                  {{- range .value }}
-                  - "{{ . }}"
-                  {{- end }}
-              {{- end }}
-            {{- else }}
-              - matchExpressions:
-              {{- range .Values.system.nodeSelectors }}
-                {{- range .value }}
-                - key: {{ .name }}
-                  operator: In
-                  values:
-                  - "{{ . }}"
+          {{- if eq .Values.system.nodeSelectorsOps "OR" }}
+            {{ range $k, $v := .Values.system.nodeSelectors }}
+            - matchExpressions:
+              - key: {{$k}}
+                operator: In
+                values:
+                {{- range $v }}
+                - "{{ . }}"
                 {{- end }}
-              {{- end }}
-            {{- end }}
+            {{ end }}
+          {{- else }}
+            - matchExpressions:
+            {{ range $k, $v := .Values.system.nodeSelectors }}
+              {{ range $v }}
+              - key: {{ $k }}
+                operator: In
+                values:
+                - "{{ . }}"
+              {{ end }}
+            {{ end }}
+          {{- end }}
       {{- end }}
       containers:
       - name: service
@@ -345,27 +345,27 @@ spec:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-            {{- if eq .Values.system.nodeSelectorsOps "OR" }}
-              {{- range .Values.system.nodeSelectors }}
-              - matchExpressions:
-                - key: {{ .name }}
-                  operator: In
-                  values:
-                  {{- range .value }}
-                  - "{{ . }}"
-                  {{- end }}
-              {{- end }}
-            {{- else }}
-              - matchExpressions:
-              {{- range .Values.system.nodeSelectors }}
-                {{- range .value }}
-                - key: {{ .name }}
-                  operator: In
-                  values:
-                  - "{{ . }}"
+          {{- if eq .Values.system.nodeSelectorsOps "OR" }}
+            {{ range $k, $v := .Values.system.nodeSelectors }}
+            - matchExpressions:
+              - key: {{$k}}
+                operator: In
+                values:
+                {{- range $v }}
+                - "{{ . }}"
                 {{- end }}
-              {{- end }}
-            {{- end }}
+            {{ end }}
+          {{- else }}
+            - matchExpressions:
+            {{ range $k, $v := .Values.system.nodeSelectors }}
+              {{ range $v }}
+              - key: {{ $k }}
+                operator: In
+                values:
+                - "{{ . }}"
+              {{ end }}
+            {{ end }}
+          {{- end }}
       {{- end }}
       containers:
       - name: service

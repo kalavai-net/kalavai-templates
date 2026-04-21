@@ -89,6 +89,27 @@ if __name__ == "__main__":
             "workerGpuMemory": {
                "type": ["number", "null"],
                "description": "Working GPU memory to be used per single worker (final one = working_gpu_memory * workers). Workers should have these many GB of working GPU memory available."
+            },
+            "workingMemory": {
+               "description": "Temporary storage to use to cache model weights (in GB), should be big enough to hold the model weights. All workers should have enough free disk to accommodate the weights.",
+               "type": "integer"
+            },
+            "workers": {
+               "description": "Number of workers, corresponding to the number of nodes (or machines) that will be used to deploy the model",
+               "type": "integer"
+            },
+            "backend": {
+               "description": "Backend to run workers. One of the following: cpu, cuda, rocm",
+               "type": "string",
+               "enum": ["cpu", "cuda", "rocm"]
+            },
+            "cpus": {
+               "description": "CPUs to be used per single worker (final one = cpus * workers). Workers should have these many CPUs available.",
+               "type": "integer"
+            },
+            "memory": {
+               "description": "RAM memory to be used per single worker (final one = memory * workers). Workers should have these much RAM available.",
+               "type": "integer"
             }
         }
     }

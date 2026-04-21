@@ -1,6 +1,5 @@
 modelId: null
 hfToken: null
-workers: 1
 
 vllm:
   image:
@@ -10,20 +9,12 @@ vllm:
   toolCallParser: llama3_json
   loraModules: null
   templateUrl: null
-
-deployment:
-  gpuBackend: cuda
-  workingMemory: 16
-  memory: 8
-  sharedMemory: 6
-  cpus: 4
-  gpus: 1
-  autoParallelism: true
-  gpuMemory: null
   modelNameOverride: null
   imagePullPolicy: IfNotPresent
   restartPolicy: OnFailure
   debugLevel: INFO
+  autoParallelism: true
+  sharedMemory: 6
   githubUsername: null
   githubToken: null
 
@@ -64,3 +55,9 @@ system:
   envFromSecrets: {}
   nodeAffinityPreferenceKey: null
   workerGpuMemory: null
+  workers: 1
+  backend: cuda
+  workingMemory: 16
+  memory: 8
+  cpus: 4
+  gpus: 1

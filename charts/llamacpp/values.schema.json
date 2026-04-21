@@ -30,38 +30,11 @@
                   "string",
                   "null"
                ]
-            }
-         }
-      },
-      "deployment": {
-         "type": "object",
-         "properties": {
+            },
             "version": {
                "description": "Release of the llamacpp project to use",
                "type": "string",
                "enum": ["latest", "b8783-1"]
-            },
-            "workingMemory": {
-               "description": "Temporary storage to use to cache model weights (in GB), should be big enough to hold the model weights. All workers should have enough free disk to accommodate the weights.",
-               "type": "integer"
-            },
-            "workers": {
-               "description": "Number of workers, corresponding to the number of nodes (or machines) that will be used to deploy the model",
-               "type": "integer"
-            },
-            "backend": {
-               "description": "Backend to run workers. One of the following: cpu, cuda, rocm",
-               "type": "string",
-               "enum": ["cpu", "cuda", "rocm"]
-            },
-            
-            "cpus": {
-               "description": "CPUs to be used per single worker (final one = cpus * workers). Workers should have these many CPUs available.",
-               "type": "integer"
-            },
-            "memory": {
-               "description": "RAM memory to be used per single worker (final one = memory * workers). Workers should have these much RAM available.",
-               "type": "integer"
             },
             "imagePullPolicy": {
                "description": "Image pull policy for the workers",
@@ -210,6 +183,27 @@
             "workerGpuMemory": {
                "type": ["number", "null"],
                "description": "GPU memory (in GB) to request per worker pod"
+            },
+            "workingMemory": {
+               "description": "Temporary storage to use to cache model weights (in GB), should be big enough to hold the model weights. All workers should have enough free disk to accommodate the weights.",
+               "type": "integer"
+            },
+            "workers": {
+               "description": "Number of workers, corresponding to the number of nodes (or machines) that will be used to deploy the model",
+               "type": "integer"
+            },
+            "backend": {
+               "description": "Backend to run workers. One of the following: cpu, cuda, rocm",
+               "type": "string",
+               "enum": ["cpu", "cuda", "rocm"]
+            },
+            "cpus": {
+               "description": "CPUs to be used per single worker (final one = cpus * workers). Workers should have these many CPUs available.",
+               "type": "integer"
+            },
+            "memory": {
+               "description": "RAM memory to be used per single worker (final one = memory * workers). Workers should have these much RAM available.",
+               "type": "integer"
             }
          }
       }

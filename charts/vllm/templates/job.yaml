@@ -34,12 +34,12 @@ spec:
           kalavai/vram: {{ .Values.system.workerGpuMemory | quote }}
           {{ end }}
       spec:
-        {{- if and .Values.deployment.githubUsername .Values.deployment.githubToken }}
+        {{- if and .Values.vllm.githubUsername .Values.vllm.githubToken }}
         imagePullSecrets:
           - name: {{ .Release.Name }}-vllm-ghcr-secret
         {{- end }}
         terminationGracePeriodSeconds: 60
-      {{- if eq .Values.deployment.gpuBackend "cuda" }}
+      {{- if eq .Values.system.backend "cuda" }}
         runtimeClassName: nvidia
       {{- end }}
         affinity:
@@ -79,8 +79,8 @@ spec:
         {{- end }}
         containers:
         - name: vllm-leader
-          image: ghcr.io/kalavai-net/vllm-{{ .Values.deployment.gpuBackend}}:latest
-          imagePullPolicy: {{ .Values.deployment.imagePullPolicy }}
+          image: ghcr.io/kalavai-net/vllm-{{ .Values.system.backend}}:latest
+          imagePullPolicy: {{ .Values.vllm.imagePullPolicy }}
           command:
           - sh
           - -c
@@ -92,9 +92,9 @@ spec:
             echo "Using auto-detected vllm version";
             pip show vllm;
           {{- end }}
-            RAY_BACKEND_LOG_LEVEL=error /home/ray/workspace/ray_init.sh leader --ray_cluster_size={{ .Values.workers}} --ray_object_store_memory={{ .Values.deployment.sharedMemory}};
+            RAY_BACKEND_LOG_LEVEL=error /home/ray/workspace/ray_init.sh leader --ray_cluster_size={{ .Values.system.workers}} --ray_object_store_memory={{ .Values.vllm.sharedMemory}};
             sleep 30;
-          {{- if eq .Values.deployment.gpuBackend "cuda" }}
+          {{- if eq .Values.system.backend "cuda" }}
             nvidia-smi;
           {{- else }}
             rocm-smi;
@@ -102,19 +102,25 @@ spec:
           {{- end }}
             ray status;
             # Run model
-            echo "Total parallelism: {{ mul .Values.workers .Values.deployment.gpus }}";
+            echo "Total parallelism: {{ mul .Values.system.workers .Values.system.gpus }}";
             /home/ray/workspace/run_model.sh \
+            {{- if .Values.vllm.modelNameOverride }}
+              --model_name={{ .Values.vllm.modelNameOverride }} \
+            {{- end }}
+              --extra='{{ .Values.vllm.extra }}' \
+            {{- if .Values.vllm.templateUrl }}
+              --template_url='{{ .Values.vllm.templateUrl }}' \
+            {{- end }}
+            {{- if .Values.vllm.autoParallelism}}
+              --tensor_parallel_size={{ .Values.system.gpus }} \
+              --pipeline_parallel_size={{ .Values.system.workers }} \
+            {{- end}}
+            {{- if .Values.vllm.loraModules }}
+              --lora_modules="{{ .Values.vllm.loraModules }}";
+            {{- end }}
               --model_path="/home/ray/cache/{{ .Values.modelId }}" \
               --model_id={{ .Values.modelId}} \
-              --model_name={{ .Values.deployment.modelNameOverride }} \
-              --extra='{{ .Values.vllm.extra }}' \
-              --template_url='{{ .Values.vllm.templateUrl }}' \
-            {{- if .Values.deployment.autoParallelism }}
-              --tensor_parallel_size={{ .Values.deployment.gpus }} \
-              --pipeline_parallel_size={{ .Values.workers }} \
-            {{- end}}
-              --tool_call_parser={{ .Values.vllm.toolCallParser }} \
-              --lora_modules="{{ .Values.vllm.loraModules }}";
+              --tool_call_parser={{ .Values.vllm.toolCallParser }};
             exit 1
           env:
           {{- if .Values.system.envFromSecrets }}
@@ -140,9 +146,9 @@ spec:
           - name: VLLM_USE_RAY_COMPILED_DAG_CHANNEL_TYPE
             value: "auto"
           - name: NCCL_DEBUG
-            value: "{{ .Values.deployment.debugLevel }}"
+            value: "{{ .Values.vllm.debugLevel }}"
           - name: VLLM_LOGGING_LEVEL
-            value: "{{ .Values.deployment.debugLevel }}"
+            value: "{{ .Values.vllm.debugLevel }}"
           - name: LMCACHE_CHUNK_SIZE
             value: "{{ .Values.lmcache.chunkSize}}"
           - name: LMCACHE_LOCAL_CPU
@@ -171,29 +177,29 @@ spec:
           #   periodSeconds: 10
           resources:
             requests:
-              cpu: {{ .Values.deployment.cpus}}
-              memory: {{ .Values.deployment.memory }}Gi
-            {{- if eq .Values.deployment.gpuBackend "cuda" }}
-              nvidia.com/gpu: {{ .Values.deployment.gpus}}
+              cpu: {{ .Values.system.cpus}}
+              memory: {{ .Values.system.memory }}Gi
+            {{- if eq .Values.system.backend "cuda" }}
+              nvidia.com/gpu: {{ .Values.system.gpus}}
             {{- else }}
-              amd.com/gpu: {{ .Values.deployment.gpus}}
+              amd.com/gpu: {{ .Values.system.gpus}}
             {{- end }}
-            {{- if eq .Values.deployment.gpuBackend "cuda" }}
-              ephemeral-storage: {{ .Values.deployment.workingMemory}}Gi
+            {{- if eq .Values.system.backend "cuda" }}
+              ephemeral-storage: {{ .Values.system.workingMemory}}Gi
             {{- end }}
             limits:
-              cpu: {{ .Values.deployment.cpus}}
-              memory: {{ add .Values.deployment.memory .Values.deployment.sharedMemory }}Gi
-            {{- if eq .Values.deployment.gpuBackend "cuda" }}
-              nvidia.com/gpu: {{ .Values.deployment.gpus}}
+              cpu: {{ .Values.system.cpus}}
+              memory: {{ add .Values.system.memory .Values.vllm.sharedMemory }}Gi
+            {{- if eq .Values.system.backend "cuda" }}
+              nvidia.com/gpu: {{ .Values.system.gpus}}
               # {{- if .Values.system.workingGpuMemory }}
               # nvidia.com/gpumem: {{ .Values.system.workingGpuMemory}}
               # {{- end }}
             {{- else }}
-              amd.com/gpu: {{ .Values.deployment.gpus}}
+              amd.com/gpu: {{ .Values.system.gpus}}
             {{- end }}
-            {{- if eq .Values.deployment.gpuBackend "cuda" }}
-              ephemeral-storage: {{ .Values.deployment.workingMemory}}Gi
+            {{- if eq .Values.system.backend "cuda" }}
+              ephemeral-storage: {{ .Values.system.workingMemory}}Gi
             {{- end }}
           volumeMounts:
             - mountPath: /dev/shm
@@ -206,9 +212,9 @@ spec:
         - name: dshm
           emptyDir:
             medium: Memory
-            sizeLimit: {{ .Values.deployment.sharedMemory }}Gi
-        restartPolicy: {{ .Values.deployment.restartPolicy }}
-  - replicas: {{ sub .Values.workers 1}}
+            sizeLimit: {{ .Values.vllm.sharedMemory }}Gi
+        restartPolicy: {{ .Values.vllm.restartPolicy }}
+  - replicas: {{ sub .Values.system.workers 1}}
     name: worker
     policies:
     - event: PodEvicted
@@ -227,12 +233,12 @@ spec:
           kalavai/vram: {{ .Values.system.workerGpuMemory | quote }}
           {{- end }}
       spec:
-        {{- if and .Values.deployment.githubUsername .Values.deployment.githubToken }}
+        {{- if and .Values.vllm.githubUsername .Values.vllm.githubToken }}
         imagePullSecrets:
           - name: {{ .Release.Name }}-vllm-ghcr-secret
         {{- end }}
         terminationGracePeriodSeconds: 60
-      {{- if eq .Values.deployment.gpuBackend "cuda" }}
+      {{- if eq .Values.system.backend "cuda" }}
         runtimeClassName: nvidia
       {{- end }}
         affinity:
@@ -272,8 +278,8 @@ spec:
         {{- end }}
         containers:
         - name: vllm-worker
-          image: ghcr.io/kalavai-net/vllm-{{ .Values.deployment.gpuBackend}}:latest
-          imagePullPolicy: {{ .Values.deployment.imagePullPolicy }}
+          image: ghcr.io/kalavai-net/vllm-{{ .Values.system.backend}}:latest
+          imagePullPolicy: {{ .Values.vllm.imagePullPolicy }}
           command:
           - sh
           - -c
@@ -286,13 +292,13 @@ spec:
             pip show vllm;
           {{- end }}
             PS_HOST=`cat /etc/volcano/server.host`;
-          {{- if eq .Values.deployment.gpuBackend "cuda" }}
+          {{- if eq .Values.system.backend "cuda" }}
             nvidia-smi;
           {{- else }}
             rocm-smi;
             python -c "import torch; print(torch.cuda.device_count(), torch.cuda.get_device_name(0))";
           {{- end }}
-            RAY_BACKEND_LOG_LEVEL=error /home/ray/workspace/ray_init.sh worker --ray_address=$PS_HOST --ray_port=6379 --ray_object_store_memory={{ .Values.deployment.sharedMemory}} --ray_block=1
+            RAY_BACKEND_LOG_LEVEL=error /home/ray/workspace/ray_init.sh worker --ray_address=$PS_HOST --ray_port=6379 --ray_object_store_memory={{ .Values.vllm.sharedMemory}} --ray_block=1
           env:
           {{- range $key, $value := .Values.system.env }}
           - name: {{ $key }}
@@ -312,9 +318,9 @@ spec:
           - name: VLLM_USE_RAY_COMPILED_DAG_CHANNEL_TYPE
             value: "auto"
           - name: NCCL_DEBUG
-            value: "{{ .Values.deployment.debugLevel }}"
+            value: "{{ .Values.vllm.debugLevel }}"
           - name: VLLM_LOGGING_LEVEL
-            value: "{{ .Values.deployment.debugLevel }}"
+            value: "{{ .Values.vllm.debugLevel }}"
           - name: LMCACHE_CHUNK_SIZE
             value: "{{ .Values.lmcache.chunkSize}}"
           - name: LMCACHE_LOCAL_CPU
@@ -331,26 +337,26 @@ spec:
           #   value: "10.3.0"
           resources:
             requests:
-              cpu: {{ .Values.deployment.cpus}}
-              memory: {{ .Values.deployment.memory}}Gi
-            {{- if eq .Values.deployment.gpuBackend "cuda" }}
-              nvidia.com/gpu: {{ .Values.deployment.gpus}}
+              cpu: {{ .Values.system.cpus}}
+              memory: {{ .Values.system.memory}}Gi
+            {{- if eq .Values.system.backend "cuda" }}
+              nvidia.com/gpu: {{ .Values.system.gpus}}
             {{- else }}
-              amd.com/gpu: {{ .Values.deployment.gpus}}
+              amd.com/gpu: {{ .Values.system.gpus}}
             {{- end }}
-              ephemeral-storage: {{ .Values.deployment.workingMemory}}Gi
+              ephemeral-storage: {{ .Values.system.workingMemory}}Gi
             limits:
-              cpu: {{ .Values.deployment.cpus}}
-              memory: {{ add .Values.deployment.memory .Values.deployment.sharedMemory}}Gi
-            {{- if eq .Values.deployment.gpuBackend "cuda" }}
-              nvidia.com/gpu: {{ .Values.deployment.gpus}}
+              cpu: {{ .Values.system.cpus}}
+              memory: {{ add .Values.system.memory .Values.vllm.sharedMemory}}Gi
+            {{- if eq .Values.system.backend "cuda" }}
+              nvidia.com/gpu: {{ .Values.system.gpus}}
                 # {{- if .Values.system.workingGpuMemory }}
                 # nvidia.com/gpumem: {{ .Values.system.workingGpuMemory}}
                 # {{- end }}
             {{- else }}
-              amd.com/gpu: {{ .Values.deployment.gpus}}
+              amd.com/gpu: {{ .Values.system.gpus}}
             {{- end }}
-              ephemeral-storage: {{ .Values.deployment.workingMemory}}Gi
+              ephemeral-storage: {{ .Values.system.workingMemory}}Gi
           volumeMounts:
             - mountPath: /dev/shm
               name: dshm
@@ -362,8 +368,8 @@ spec:
         - name: dshm
           emptyDir:
             medium: Memory
-            sizeLimit: {{ .Values.deployment.sharedMemory}}Gi
-        restartPolicy: {{ .Values.deployment.restartPolicy }}
+            sizeLimit: {{ .Values.vllm.sharedMemory}}Gi
+        restartPolicy: {{ .Values.vllm.restartPolicy }}
   {{ if .Values.litellm.enabled }}
   - replicas: 1
     name: registrar
@@ -420,9 +426,11 @@ spec:
             echo "Waiting for model to be served..."
             echo "Namespace: "$VC_NAMESPACE;
             PS_HOST=`cat /etc/volcano/server.host`;
-            {{ if .Values.litellm.waitReady }}
+            {{- if .Values.litellm.waitReady }}
             /workspace/wait_for_service.sh --servers="$PS_HOST" --port=8080
-            {{ end }}
+            {{- else }}
+            /workspace/wait_for_ping.sh --servers="$PS_HOST"
+            {{- end }}
             export MODEL_API_BASE="http://"$PS_HOST"."$VC_NAMESPACE":8080/v1";
             /workspace/start_point.sh \
               --litellm_kalavai_extras='{{ .Values.litellm.kalavaiExtras }}' \
@@ -440,8 +448,8 @@ spec:
               fieldRef:
                 fieldPath: metadata.namespace
           - name: LITELLM_MODEL_NAME
-          {{ if .Values.deployment.modelNameOverride }}
-            value: "{{ .Values.deployment.modelNameOverride }}"
+          {{ if .Values.vllm.modelNameOverride }}
+            value: "{{ .Values.vllm.modelNameOverride }}"
           {{ else }}
             value: "{{ .Values.modelId }}"
           {{ end }}

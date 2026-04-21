@@ -2,10 +2,6 @@
    "$schema": "http://json-schema.org/draft-07/schema#",
    "type": "object",
    "properties": {
-      "workers": {
-         "description": "Number of workers, corresponding to the number of nodes (or machines) that will be used to deploy the model",
-         "type": "integer"
-      },
       "modelId": {
          "description": "Huggingface model id to deploy",
          "type": [
@@ -19,60 +15,6 @@
             "string",
             "null"
          ]
-      },
-      "deployment": {
-         "type": "object",
-         "properties": {
-            "debugLevel": {
-               "type": "string",
-               "enum": ["DEBUG", "INFO", "WARNING", "ERROR"]
-            },
-            "gpuBackend": {
-               "description": "Use 'cuda' (nvidia cards) or 'rocm' (AMD cards) backend",
-               "type": "string",
-               "enum": ["cuda", "rocm"]
-            },
-            "workingMemory": {
-               "description": "Temporary storage to use to cache model weights (in GB), should be big enough to hold the model weights. All workers should have enough free disk to accommodate the weights.",
-               "type": "integer"
-            },
-            "memory": {
-               "description": "Memory to be used per single worker (final one = memory * workers). Workers should have these many GB of memory available.",
-               "type": "integer"
-            },
-            "sharedMemory": {
-               "description": "Shared memory to be used per single worker (final one = shared_memory * workers). Workers should have these many GB of shared memory available.",
-               "type": "integer"
-            },
-            "cpus": {
-               "description": "CPUs to be used per single worker (final one = cpus * workers). Workers should have these many CPUs available.",
-               "type": "integer"
-            },
-            "gpus": {
-               "description": "GPUs to be used per single worker (final one = gpus * workers). Workers should have these many GPUs available.",
-               "type": "integer"
-            },
-            "autoParallelism": {
-               "type": "boolean",
-               "description": "Automatically determine parallelism settings"
-            },
-            "githubUsername": {
-               "type": ["string", "null"]
-            },
-            "githubToken": {
-               "type": ["string", "null"]
-            },
-            "imagePullPolicy": {
-               "description": "Image pull policy for the containers (Always, IfNotPresent, Never)",
-               "type": "string",
-               "enum": ["Always", "IfNotPresent", "Never"]
-            },
-            "restartPolicy": {
-               "description": "Restart policy for the containers (Always, OnFailure, Never)",
-               "type": "string",
-               "enum": ["Always", "OnFailure", "Never"]
-            }
-         }
       },
       "vllm": {
          "type": "object",
@@ -123,6 +65,34 @@
                   "string",
                   "null"
                ]
+            },
+            "autoParallelism": {
+               "type": "boolean",
+               "description": "Automatically determine parallelism settings"
+            },
+            "githubUsername": {
+               "type": ["string", "null"]
+            },
+            "githubToken": {
+               "type": ["string", "null"]
+            },
+            "imagePullPolicy": {
+               "description": "Image pull policy for the containers (Always, IfNotPresent, Never)",
+               "type": "string",
+               "enum": ["Always", "IfNotPresent", "Never"]
+            },
+            "restartPolicy": {
+               "description": "Restart policy for the containers (Always, OnFailure, Never)",
+               "type": "string",
+               "enum": ["Always", "OnFailure", "Never"]
+            },
+            "debugLevel": {
+               "type": "string",
+               "enum": ["DEBUG", "INFO", "WARNING", "ERROR"]
+            },
+            "sharedMemory": {
+               "description": "Shared memory to be used per single worker (final one = shared_memory * workers). Workers should have these many GB of shared memory available.",
+               "type": "integer"
             }
          }
       },
@@ -299,12 +269,32 @@
             "workingGpuMemory": {
                "type": ["number", "null"],
                "description": "Working GPU memory to be used per single worker (final one = working_gpu_memory * workers). Workers should have these many GB of working GPU memory available."
+            },
+            "workers": {
+               "description": "Number of workers, corresponding to the number of nodes (or machines) that will be used to deploy the model",
+               "type": "integer"
+            },
+            "backend": {
+               "description": "Use 'cuda' (nvidia cards) or 'rocm' (AMD cards) backend",
+               "type": "string",
+               "enum": ["cuda", "rocm"]
+            },
+            "memory": {
+               "description": "Memory to be used per single worker (final one = memory * workers). Workers should have these many GB of memory available.",
+               "type": "integer"
+            },
+            "cpus": {
+               "description": "CPUs to be used per single worker (final one = cpus * workers). Workers should have these many CPUs available.",
+               "type": "integer"
+            },
+            "gpus": {
+               "description": "GPUs to be used per single worker (final one = gpus * workers). Workers should have these many GPUs available.",
+               "type": "integer"
             }
          }
       }
    },
    "required": [
-      "workers",
       "modelId"
    ]
 }

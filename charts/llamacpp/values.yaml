@@ -5,13 +5,6 @@ llamacpp:
   parallel: -1
   repoId: null
   serverExtra: null
-
-deployment:
-  backend: cpu
-  workers: 1
-  workingMemory: 5
-  cpus: 2
-  memory: 8
   imagePullPolicy: IfNotPresent
   version: b8783-1
   restartPolicy: OnFailure
@@ -42,6 +35,11 @@ system:
   nodeAffinityPreferenceKey: null
   envFromSecrets: {}
   workerGpuMemory: null
+  backend: cpu
+  workers: 1
+  workingMemory: 5
+  cpus: 2
+  memory: 8
 
 ingress:
   enabled: false

@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: 0.0.3
+appVersion: 0.1.0
 description: Python SDK, Proxy Server (LLM Gateway) to call 100+ LLM APIs in OpenAI
   format
 icon: https://opensource.muenchen.de/logo/litellm.png
@@ -11,7 +11,7 @@ maintainers:
 name: gateway
 sources:
 - https://docs.litellm.ai/
-version: 0.0.3
+version: 0.1.0
 annotations:
   status: beta
   category: development

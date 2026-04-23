@@ -7,7 +7,7 @@ metadata:
     kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
     component: litellm
 spec:
-  replicas: 1
+  replicas: {{ .Values.litellm.replicas | default 1 }}
   selector:
     matchLabels:
       kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
@@ -94,8 +94,10 @@ spec:
         - sh
         - -c
         - |
+        {{- if not .Values.postgres.external_url }}
           DB_HOST={{ .Release.Name }}-gateway-db-service:5432;
           export DATABASE_URL=postgres://admin:$POSTGRES_PASSWORD@$DB_HOST/litellm
+        {{- end }}
           litellm --port 4000 --config /workspace/config.yaml
         env:
         {{- if .Values.system.envFromSecrets }}
@@ -114,16 +116,24 @@ spec:
             secretKeyRef:
               name: {{.Release.Name }}-gateway-secret
               key: litellm_key
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{.Release.Name }}-gateway-secret
-              key: db_password
         - name: LITELLM_SALT_KEY
           valueFrom:
             secretKeyRef:
               name: {{.Release.Name }}-gateway-secret
               key: litellm_salt_key
+      {{- if .Values.postgres.external_url }}
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: {{.Release.Name }}-gateway-secret
+              key: external_postgres_url
+      {{- else }}
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{.Release.Name }}-gateway-secret
+              key: db_password
+      {{- end }}
         - name: STORE_MODEL_IN_DB
           value: "True"
         - name: PORT
@@ -135,6 +145,13 @@ spec:
             secretKeyRef:
               name: {{.Release.Name }}-gateway-secret
               key: litellm_ui_password
+        {{- if .Values.redis.enabled }}
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{.Release.Name }}-gateway-secret
+              key: redis_password
+        {{- end }}
         ports:
         - containerPort: 4000
           name: container-port
@@ -153,129 +170,6 @@ spec:
       - name: config-volume
         configMap:
           name: {{ .Release.Name }}-gateway-config
-      restartPolicy: Always
----
-# Service Deployment
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: {{ .Release.Name }}-gateway-db
-  labels:
-    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
-    component: db
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
-      component: db
-  template:
-    metadata:
-      labels:
-        kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
-        component: db
-    spec:
-      terminationGracePeriodSeconds: 10
-      {{- if .Values.system.priorityClassName }}
-      priorityClassName: {{ .Values.system.priorityClassName }}
-      {{- end }}
-      tolerations:
-      - key: "node.kubernetes.io/not-ready"
-        operator: Exists
-        effect: NoExecute
-        tolerationSeconds: 10
-      - key: "node.kubernetes.io/unreachable"
-        operator: Exists
-        effect: NoExecute
-        tolerationSeconds: 10
-      - key: "node.kubernetes.io/unknown"
-        operator: Exists
-        effect: NoExecute
-        tolerationSeconds: 10
-      - key: "node.kubernetes.io/memory-pressure"
-        operator: Exists
-        effect: NoSchedule
-      - key: "node.kubernetes.io/disk-pressure"
-        operator: Exists
-        effect: NoSchedule
-      - key: "node.kubernetes.io/pid-pressure"
-        operator: Exists
-        effect: NoSchedule
-      - key: "node.kubernetes.io/network-unavailable"
-        operator: Exists
-        effect: NoSchedule
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            podAffinityTerm:
-              labelSelector:
-                matchExpressions:
-                - key: kalavai.job.name
-                  operator: In
-                  values:
-                  - {{ .Values.system.jobId | default .Release.Name }}
-              topologyKey: "kubernetes.io/hostname"
-      {{- if .Values.system.nodeSelectors }}
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-          {{- if eq .Values.system.nodeSelectorsOps "OR" }}
-            {{ range $k, $v := .Values.system.nodeSelectors }}
-            - matchExpressions:
-              - key: {{$k}}
-                operator: In
-                values:
-                {{- range $v }}
-                - "{{ . }}"
-                {{- end }}
-            {{ end }}
-          {{- else }}
-            - matchExpressions:
-            {{ range $k, $v := .Values.system.nodeSelectors }}
-              {{ range $v }}
-              - key: {{ $k }}
-                operator: In
-                values:
-                - "{{ . }}"
-              {{ end }}
-            {{ end }}
-          {{- end }}
-      {{- end }}
-      containers:
-      - name: service
-        image: "postgres:14"
-        env:
-        - name: POSTGRES_DB
-          value: litellm
-        - name: POSTGRES_USER
-          value: admin
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Release.Name }}-gateway-secret
-              key: db_password
-        - name: PGDATA
-          value: "/var/lib/postgresql/data/pgdata"
-        {{- if .Values.system.envFromSecrets }}
-        {{- range .Values.system.envFromSecrets }}
-        - name: {{ . }}
-          valueFrom:
-            secretKeyRef:
-              name: {{ . }}
-              key: {{ . }}
-        {{- end }}
-        {{- end }}
-        ports:
-        - containerPort: 5432
-          name: postgres-port
-        resources:
-          requests:
-            cpu: 1
-            memory: 1Gi
-          limits:
-            cpu: 1
-            memory: 1Gi
       restartPolicy: Always
 ---
 {{- if .Values.ollama.enabled }}
@@ -398,4 +292,98 @@ spec:
             cpu: 1000m
             memory: 512Mi
       restartPolicy: Always
+{{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-gateway-service
+  labels:
+    # must have this!
+    kalavai.job.name: {{ .Values.system.jobId }}
+spec:
+  selector:
+    component: litellm
+    kalavai.job.name: {{ .Values.system.jobId }}
+  ports:
+    - name: main
+      port: 4000
+      targetPort: 4000
+      protocol: TCP
+  {{- if .Values.ingress.enabled }}
+  type: ClusterIP
+  {{- else }}
+  type: NodePort
+  {{- end }}
+---
+{{- if .Values.ollama.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-gateway-ollama-service
+  labels:
+    # must have this!
+    kalavai.job.name: {{ .Values.system.jobId }}
+spec:
+  selector:
+    component: ollama
+    kalavai.job.name: {{ .Values.system.jobId }}
+  ports:
+    - name: main
+      port: 11434
+      targetPort: 11434
+      protocol: TCP
+  {{- if .Values.ingress.enabled }}
+  type: ClusterIP
+  {{- else }}
+  type: NodePort
+  {{- end }}
+{{- end }}
+---
+{{- if .Values.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  # annotations:
+  #   traefik.ingress.kubernetes.io/router.middlewares: "{{ .Release.Namespace }}-{{ .Release.Name }}-large-body@kubernetescrd"
+  labels:
+    kalavai.job.name: {{ .Values.system.jobId }}
+  name: {{ .Release.Name }}-gateway-ingress
+spec:
+  ingressClassName: traefik
+  rules:
+  - host: {{ .Release.Name }}-{{ .Release.Namespace }}-gateway.{{ .Values.ingress.subdomain }}
+    http:
+      paths:
+      - backend:
+          service:
+            name: {{ .Release.Name }}-gateway-service
+            port:
+              number: 4000 # match internal port
+        path: /
+        pathType: Prefix
+---
+{{- if .Values.ollama.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  # annotations:
+  #   traefik.ingress.kubernetes.io/router.middlewares: "{{ .Release.Namespace }}-{{ .Release.Name }}-large-body@kubernetescrd"
+  labels:
+    kalavai.job.name: {{ .Values.system.jobId }}
+  name: {{ .Release.Name }}-gateway-ollama-ingress
+spec:
+  ingressClassName: traefik
+  rules:
+  - host: {{ .Release.Name }}-{{ .Release.Namespace }}-gateway-ollama.{{ .Values.ingress.subdomain }}
+    http:
+      paths:
+      - backend:
+          service:
+            name: {{ .Release.Name }}-gateway-ollama-service
+            port:
+              number: 11434 # match internal port
+        path: /
+        pathType: Prefix
+{{- end }}
 {{- end }}

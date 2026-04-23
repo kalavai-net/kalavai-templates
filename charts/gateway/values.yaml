@@ -1,6 +1,7 @@
 litellm:
   master_key: sk-1234
   salt_key: sk-1234567890
+  replicas: 1
   ui_username: admin
   ui_password: null
   litellm_settings:
@@ -17,6 +18,12 @@ litellm:
     disable_spend_logs: false
   router_settings:
     timeout: 9000
+
+postgres:
+  external_url: null
+
+redis:
+  enabled: false
 
 # Ingress Configuration
 ingress:

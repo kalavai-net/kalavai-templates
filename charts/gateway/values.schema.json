@@ -5,6 +5,11 @@
       "litellm": {
          "type": "object",
          "properties": {
+            "replicas": {
+               "type": "integer",
+               "default": 1,
+               "description": "Number of replicas for the frontend gateway"
+            },
             "ui_password": {
                "type": "string",
                "description": "LiteLLM UI password"
@@ -89,6 +94,26 @@
             }
          },
          "required": ["ui_password", "master_key", "salt_key"]
+      },
+      "redis": {
+         "type": "object",
+         "properties": {
+            "enabled": {
+               "type": "boolean",
+               "default": false,
+               "description": "Enable redis for caching"
+            }
+         }
+      },
+      "postgres": {
+         "type": "object",
+         "properties": {
+            "external_url": {
+               "type": ["string", "null"],
+               "default": null,
+               "description": "External postgres url. If set, no db will be deployed for liteLLM"
+            }
+         }
       },
       "ingress": {
          "type": "object",

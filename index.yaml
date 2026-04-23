@@ -166,6 +166,27 @@ entries:
       category: development
       status: beta
     apiVersion: v2
+    appVersion: 0.1.0
+    created: "2026-04-23T21:57:46.889665805Z"
+    description: Python SDK, Proxy Server (LLM Gateway) to call 100+ LLM APIs in OpenAI
+      format
+    digest: 0e092dc63cdaafa6072d02612ee5cf6efee228dd1f46399b8d203f9e293bbfff
+    icon: https://opensource.muenchen.de/logo/litellm.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: gateway
+    sources:
+    - https://docs.litellm.ai/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/gateway-0.1.0/gateway-0.1.0.tgz
+    version: 0.1.0
+  - annotations:
+      category: development
+      status: beta
+    apiVersion: v2
     appVersion: 0.0.3
     created: "2026-04-21T22:22:07.640912467Z"
     description: Python SDK, Proxy Server (LLM Gateway) to call 100+ LLM APIs in OpenAI
@@ -4269,4 +4290,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-04-21T22:22:07.767671637Z"
+generated: "2026-04-23T21:57:46.89016762Z"

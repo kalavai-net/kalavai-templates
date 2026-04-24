@@ -21,10 +21,10 @@ echo "Pushing latest: $PUSH_LATEST"
 echo "Image tag: $IMAGE_TAG"
 
 
-docker build -t ghcr.io/kalavai-net/llamacpp-cuda:$IMAGE_TAG src/ -f src/Dockerfile_cuda
+docker build --build-arg LLAMACPP_VERSION=$LLAMACPP_VERSION -t ghcr.io/kalavai-net/llamacpp-cuda:$IMAGE_TAG src/ -f src/Dockerfile_cuda
 docker push ghcr.io/kalavai-net/llamacpp-cuda:$IMAGE_TAG
 
-docker build -t ghcr.io/kalavai-net/llamacpp-cpu:$IMAGE_TAG src/ -f src/Dockerfile_cpu
+docker build --build-arg LLAMACPP_VERSION=$LLAMACPP_VERSION -t ghcr.io/kalavai-net/llamacpp-cpu:$IMAGE_TAG src/ -f src/Dockerfile_cpu
 docker push ghcr.io/kalavai-net/llamacpp-cpu:$IMAGE_TAG
 
 # docker build -t ghcr.io/kalavai-net/llamacpp-rocm:$IMAGE_TAG src/ -f src/Dockerfile_rocm

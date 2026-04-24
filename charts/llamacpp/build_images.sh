@@ -23,9 +23,17 @@ echo "Image tag: $IMAGE_TAG"
 
 docker build --build-arg LLAMACPP_VERSION=$LLAMACPP_VERSION -t ghcr.io/kalavai-net/llamacpp-cuda:$IMAGE_TAG src/ -f src/Dockerfile_cuda
 docker push ghcr.io/kalavai-net/llamacpp-cuda:$IMAGE_TAG
+if [ "$PUSH_LATEST" = true ]; then
+    docker tag ghcr.io/kalavai-net/llamacpp-cuda:$IMAGE_TAG ghcr.io/kalavai-net/llamacpp-cuda:latest
+    docker push ghcr.io/kalavai-net/llamacpp-cuda:latest
+fi
 
 docker build --build-arg LLAMACPP_VERSION=$LLAMACPP_VERSION -t ghcr.io/kalavai-net/llamacpp-cpu:$IMAGE_TAG src/ -f src/Dockerfile_cpu
 docker push ghcr.io/kalavai-net/llamacpp-cpu:$IMAGE_TAG
+if [ "$PUSH_LATEST" = true ]; then
+    docker tag ghcr.io/kalavai-net/llamacpp-cpu:$IMAGE_TAG ghcr.io/kalavai-net/llamacpp-cpu:latest
+    docker push ghcr.io/kalavai-net/llamacpp-cpu:latest
+fi
 
 # docker build -t ghcr.io/kalavai-net/llamacpp-rocm:$IMAGE_TAG src/ -f src/Dockerfile_rocm
 # docker push ghcr.io/kalavai-net/llamacpp-rocm:$IMAGE_TAG

@@ -233,6 +233,7 @@
          }
       },
       "system": {
+         "type": "object",
          "properties": {
             "envFromSecrets": {
                "type": "object",

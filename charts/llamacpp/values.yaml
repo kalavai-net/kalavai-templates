@@ -1,12 +1,11 @@
 hfToken: null
 
 llamacpp:
-  modelFilename: null
-  parallel: -1
   repoId: null
+  quant: null
   serverExtra: null
   imagePullPolicy: IfNotPresent
-  version: b8783-1
+  version: b8941-1
   restartPolicy: OnFailure
 
 lago:

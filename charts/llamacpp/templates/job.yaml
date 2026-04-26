@@ -340,7 +340,11 @@ spec:
           {{- if .Values.litellm.modelNameOverride }}
             value: "{{ .Values.litellm.modelNameOverride }}"
           {{- else }}
-            value: "{{ .Values.llamacpp.modelFilename }}"
+            {{- if .Values.llamacpp.quant }}
+            value: "{{ .Values.llamacpp.repoId }}-{{ .Values.llamacpp.quant }}"
+            {{- else }}
+            value: "{{ .Values.llamacpp.repoId }}"
+            {{- end }}
           {{- end }}
           {{- if .Values.litellm.baseUrl}}
           - name: LITELLM_BASE_URL
@@ -354,7 +358,11 @@ spec:
                 key: litellm_key
           {{- end }}
           - name: MODEL_ID
-            value: {{ .Values.llamacpp.modelFilename }}
+          {{- if .Values.llamacpp.quant }}
+            value: "{{ .Values.llamacpp.repoId }}-{{ .Values.llamacpp.quant }}"
+          {{- else }}
+            value: "{{ .Values.llamacpp.repoId }}"
+          {{- end }}
           - name: DEPLOYMENT_ID
             value: {{ .Release.Name }}
           - name: PROVIDER

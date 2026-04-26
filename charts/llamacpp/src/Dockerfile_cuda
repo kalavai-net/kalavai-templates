@@ -1,7 +1,5 @@
 FROM nvidia/cuda:12.4.1-devel-ubuntu22.04
 
-ARG LLAMACPP_VERSION=master
-
 WORKDIR /workspace
 
 # 1. Define the architectures you want to support
@@ -22,6 +20,8 @@ COPY common_requirements.txt .
 RUN python3 -m venv /opt/venv && \
     . /opt/venv/bin/activate && \
     pip install -r common_requirements.txt --no-cache-dir
+
+ARG LLAMACPP_VERSION=master
 
 # Set environment paths
 ENV PATH="/opt/venv/bin:/usr/local/cuda/bin:$PATH"

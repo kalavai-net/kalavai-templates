@@ -2,8 +2,6 @@
 #FROM debian:bullseye AS builder
 FROM python:3.12-slim AS builder
 
-ARG LLAMACPP_VERSION=master
-
 WORKDIR /workspace
 
 # Install build dependencies
@@ -18,6 +16,8 @@ COPY common_requirements.txt .
 RUN python3 -m venv /opt/venv && \
     . /opt/venv/bin/activate && \
     pip install -r common_requirements.txt --no-cache-dir
+
+ARG LLAMACPP_VERSION=master
 
 # Set environment paths
 ENV PATH="/opt/venv/bin:$PATH"

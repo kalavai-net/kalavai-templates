@@ -1,7 +1,6 @@
 #!/bin/bash
 
 port=8080
-parallel="1"
 extra=""
 quant=""
 

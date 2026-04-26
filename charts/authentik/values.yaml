@@ -1,0 +1,61 @@
+authentik:
+  secret_key: "PleaseGenerateASecureKey"
+  # This sends anonymous usage-data, stack traces on errors and
+  # performance data to sentry.io, and is fully opt-in
+  error_reporting:
+    enabled: true
+  email:
+    # -- SMTP Server emails are sent from, fully optional
+    host: "smtp.resend.com"
+    port: 587
+    # -- SMTP credentials. When left empty, no authentication will be done.
+    username: "resend"
+    # -- SMTP credentials. When left empty, no authentication will be done.
+    password: "re_7dqFAw8W_KUNRBMWxDmJ48TF1xMArV3Aw"
+    # -- Enable either use_tls or use_ssl. They can't be enabled at the same time.
+    use_tls: true
+    # -- Enable either use_tls or use_ssl. They can't be enabled at the same time.
+    use_ssl: false
+    # -- Connection timeout in seconds
+    timeout: 30
+    # -- Email 'from' address can either be in the format "foo@bar.baz" or "authentik <foo@bar.baz>"
+    from: "info@kalavai.net"
+
+server:
+  replicas: 3
+  ingress:
+    # Specify kubernetes ingress controller class name
+    ingressClassName: traefik
+    enabled: true
+    hosts:
+    - auth.spaces.kalavai.net
+
+worker:
+  replicas: 2
+
+postgresql:
+  # for testing purposes only
+  enabled: false
+  auth:
+    password: "ThisIsNotASecurePassword"
+  
+global:
+  env:
+  # external postgres connection
+  - name: AUTHENTIK_POSTGRESQL__HOST
+    value: "kalavai-prod-uk-do-user-14127040-0.d.db.ondigitalocean.com"
+  - name: AUTHENTIK_POSTGRESQL__PORT
+    value: "25060"
+  - name: AUTHENTIK_POSTGRESQL__USER
+    value: "doadmin"
+  - name: AUTHENTIK_POSTGRESQL__PASSWORD
+    value: ""
+  - name: AUTHENTIK_POSTGRESQL__NAME
+    value: "auth"
+  - name: AUTHENTIK_POSTGRESQL__SSLMODE
+    value: "require"
+
+  # force server/worker deployments
+  # since workers/servers are stateless, we can also go with  multiple replicas anywhere
+  # nodeSelector:
+  #   kalavai/role: server

@@ -1,29 +1,23 @@
 #!/bin/bash
 
-local_dir=/tmp
 port=8080
 parallel="1"
 extra=""
+quant=""
 
 while [ $# -gt 0 ]; do
   case "$1" in
     --repo_id=*)
       repo_id="${1#*=}"
       ;;
-    --model_filename=*)
-      model_filename="${1#*=}"
-      ;;
-    --local_dir=*)
-      local_dir="${1#*=}"
+    --quant=*)
+      quant="${1#*=}"
       ;;
     --rpc_servers=*)
       rpc_servers="${1#*=}"
       ;;
     --port=*)
       port="${1#*=}"
-      ;;
-    --parallel=*)
-      parallel="${1#*=}"
       ;;
     --extra=*)
       extra="${1#*=}"
@@ -37,35 +31,36 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-download() {
-    local input_string="$1"
-    IFS=',' read -ra elements <<< "$input_string"
+# download() {
+#     local input_string="$1"
+#     IFS=',' read -ra elements <<< "$input_string"
     
-    for element in "${elements[@]}"; do
-      hf download \
-        $repo_id \
-        $element \
-        --local-dir $local_dir >/dev/null 2>&1
-    done
+#     for element in "${elements[@]}"; do
+#       hf download \
+#         $repo_id \
+#         $element \
+#         --local-dir $local_dir >/dev/null 2>&1
+#     done
 
-    if [[ "${#elements[@]}" -gt 1 ]]; then
-      # choose the first file
-      mapfile -t sorted_elements < <(printf "%s\n" "${elements[@]}" | sort)
-      echo "${sorted_elements[0]}"
-    else
-      echo $input_string
-    fi
-}
+#     if [[ "${#elements[@]}" -gt 1 ]]; then
+#       # choose the first file
+#       mapfile -t sorted_elements < <(printf "%s\n" "${elements[@]}" | sort)
+#       echo "${sorted_elements[0]}"
+#     else
+#       echo $input_string
+#     fi
+# }
 
 
 #################
 # download model #
 #################
-source /opt/venv/bin/activate
+# Deprecated. Using -hf flag to fetch model
+# source /opt/venv/bin/activate
 
-echo "Downloading: "$model_filename
-model=$(download $model_filename)
-echo "-----> This is the model: "$model
+# echo "Downloading: "$model_filename
+# model=$(download $model_filename)
+# echo "-----> This is the model: "$model
 
 
 ##################
@@ -78,11 +73,18 @@ else
   echo "Connecting to workers: "$workers
 fi
 
+if [ -z $quant ]; then
+  model=$repo_id
+else
+  model=$repo_id:$quant
+fi
+
+echo "Using model: "$model
+
 /workspace/llama.cpp/build/bin/llama-server \
-  -m $local_dir/$model \
-  --alias $model \
+  -hf $model \
+  --alias $repo_id \
   --host 0.0.0.0 \
   --port 8080 \
-  --parallel $parallel \
   $workers \
   $extra

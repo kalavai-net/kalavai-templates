@@ -91,11 +91,9 @@ spec:
             export WORKERS=$(/workspace/get_workers_address.sh --rpc_port=50052 --rpc_servers="${HOSTS}")
             /workspace/run_api_server.sh \
               --repo_id={{ .Values.llamacpp.repoId }} \
-              --model_filename={{ .Values.llamacpp.modelFilename }} \
-              --local_dir=/cache \
+              --quant={{ .Values.llamacpp.quant }} \
               --port=8080 \
               --rpc_servers=$WORKERS \
-              --parallel={{ .Values.llamacpp.parallel }} \
               --extra='{{ .Values.llamacpp.serverExtra}}'
           env:
           {{- range $key, $value := .Values.system.envFromSecrets }}

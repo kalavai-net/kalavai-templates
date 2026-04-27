@@ -318,9 +318,7 @@ spec:
             {{- if .Values.litellm.waitReady }}
             /workspace/wait_for_service.sh --servers="$PS_HOST" --port=8080
             {{- else }}
-            # TODO: does not work
-            #/workspace/wait_for_ping.sh --servers="$PS_HOST"
-            sleep 60
+            /workspace/wait_for_ping.sh --servers="$PS_HOST"
             {{- end }}
             export MODEL_API_BASE="http://"$PS_HOST"."$VC_NAMESPACE":8080/v1";
             /workspace/start_point.sh \

@@ -123,14 +123,12 @@ spec:
               --tool_call_parser={{ .Values.vllm.toolCallParser }};
             exit 1
           env:
-          {{- if .Values.system.envFromSecrets }}
-          {{- range .Values.system.envFromSecrets }}
-          - name: {{ . }}
+          {{- range $key, $value := .Values.system.envFromSecrets }}
+          - name: {{ $key }}
             valueFrom:
               secretKeyRef:
-                name: {{ . }}
-                key: {{ . }}
-          {{- end }}
+                name: {{ $value }}
+                key: {{ $key }}
           {{- end }}
           {{- if .Values.hfToken }}
           - name: HF_TOKEN
@@ -300,9 +298,12 @@ spec:
           {{- end }}
             RAY_BACKEND_LOG_LEVEL=error /home/ray/workspace/ray_init.sh worker --ray_address=$PS_HOST --ray_port=6379 --ray_object_store_memory={{ .Values.vllm.sharedMemory}} --ray_block=1
           env:
-          {{- range $key, $value := .Values.system.env }}
+          {{- range $key, $value := .Values.system.envFromSecrets }}
           - name: {{ $key }}
-            value: {{ $value }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $value }}
+                key: {{ $key }}
           {{- end }}
           {{- if .Values.hfToken }}
           - name: HF_TOKEN

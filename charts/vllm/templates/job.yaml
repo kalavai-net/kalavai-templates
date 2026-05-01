@@ -166,13 +166,15 @@ spec:
             name: model-port
           - containerPort: 8265
             name: dashboard-port
+          - containerPort: 6379
+            name: ray-port
           # this blocks internal traffic, which causes issues when tasks wait for each other
-          # readinessProbe:
-          #   httpGet:
-          #     path: /health
-          #     port: 8080
-          #   initialDelaySeconds: 5
-          #   periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
           resources:
             requests:
               cpu: {{ .Values.system.cpus}}
@@ -296,6 +298,7 @@ spec:
             rocm-smi;
             python -c "import torch; print(torch.cuda.device_count(), torch.cuda.get_device_name(0))";
           {{- end }}
+            PS_HOST={{ .Release.Name }}-vllm-server-internal
             RAY_BACKEND_LOG_LEVEL=error /home/ray/workspace/ray_init.sh worker --ray_address=$PS_HOST --ray_port=6379 --ray_object_store_memory={{ .Values.vllm.sharedMemory}} --ray_block=1
           env:
           {{- range $key, $value := .Values.system.envFromSecrets }}

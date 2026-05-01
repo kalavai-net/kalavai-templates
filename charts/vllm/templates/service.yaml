@@ -1,3 +1,17 @@
+# This helps make server task available for workers before readiness probe succeeds
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-vllm-server-internal
+spec:
+  publishNotReadyAddresses: true # This is the magic key
+  clusterIP: None # Headless
+  selector:
+    role: leader
+    kalavai.job.name: {{ .Values.system.jobId }}
+  ports:
+    - port: 6379
+---
 # deploy NodePort to expose model (if not using LiteLLM registration)
 apiVersion: v1
 kind: Service

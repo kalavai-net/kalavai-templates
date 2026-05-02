@@ -73,6 +73,9 @@ spec:
               {{ end }}
             {{ end }}
         {{- end }}
+        {{- if .Values.billing.enabled }}
+        serviceAccountName: kalavai-downstream-api-reader-sa
+        {{- end }}
         containers:
         - name: llamacpp-leader
         {{ if eq .Values.system.backend "cuda" }}
@@ -144,6 +147,125 @@ spec:
           volumeMounts:
             - name: cache
               mountPath: /cache
+        {{- if or .Values.billing.enabled .Values.litellm.enabled }}
+        # REGISTRAR SIDECAR
+        - name: registrar-sidecar
+          image: ghcr.io/kalavai-net/kalavai-registrar:latest
+          imagePullPolicy: Always
+          command:
+          - sh
+          - -c
+          - |
+            PS_HOST=`cat /etc/volcano/server.host`;
+          {{- if .Values.litellm.enabled }}
+            # 1. register model
+            echo "REGISTER MODEL WITH GATEWAY..."
+            {{- if .Values.litellm.waitReady }}
+            /workspace/wait_for_service.sh --servers="$PS_HOST" --port=8080
+            {{- else }}
+            /workspace/wait_for_ping.sh --servers="$PS_HOST"
+            {{- end }}
+            export MODEL_API_BASE="http://"$PS_HOST"."$VC_NAMESPACE":8080/v1";
+            /workspace/start_point.sh \
+              --litellm_kalavai_extras='{{ .Values.litellm.kalavaiExtras }}' \
+              --litellm_access_group={{ .Values.litellm.accessGroup }}
+          {{- end }}
+          {{- if .Values.billing.enabled }}
+            # 2. Fetch node Info
+            echo "FETCH NODE INFO..."
+            REGION=$(python3 get_node_label_value.py --in-cluster --node-name $NODE_NAME --label-key kalavai/region)
+            INSTANCE=$(python3 get_node_label_value.py --in-cluster --node-name $NODE_NAME --label-key kalavai/instance)
+            echo "REGION: $REGION"
+            echo "INSTANCE: $INSTANCE"
+
+            # 3. Wait for model to be ready
+            echo "WAIT FOR MODEL TO BE READY at $PS_HOST:8080..."
+            /workspace/wait_for_service.sh --servers="$PS_HOST" --port=8080
+
+            # 4. start heartbeat
+            # VRAM USAGE / minute = billingInterval(mins) * gpuMemPerWorker  * NumWorkers
+            {{- $vramUsage := mul (mul .Values.billing.interval .Values.system.workerGpuMemory) .Values.system.workers }}
+            export EVENT_PROPERTIES='{"provider": "'$REGION'", "instance": "'$INSTANCE'", "vram_usage": '{{ $vramUsage }}'}' 
+            echo "START HEARTBEAT..."
+            python3 billing_heartbeat.py
+          {{- else }}
+            tail -f /dev/null
+          {{- end }}
+          env:
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: VC_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+        {{- if .Values.litellm.enabled }}
+          - name: LITELLM_MODEL_NAME
+          {{- if .Values.litellm.modelNameOverride }}
+            value: "{{ .Values.litellm.modelNameOverride }}"
+          {{- else }}
+            {{- if .Values.llamacpp.quant }}
+            value: "{{ .Values.llamacpp.repoId }}-{{ .Values.llamacpp.quant }}"
+            {{- else }}
+            value: "{{ .Values.llamacpp.repoId }}"
+            {{- end }}
+          {{- end }}
+          {{- if .Values.litellm.baseUrl}}
+          - name: LITELLM_BASE_URL
+            value: {{ .Values.litellm.baseUrl }}
+          {{- end }}
+          {{- if .Values.litellm.baseUrl}}
+          - name: LITELLM_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name }}-llamacpp-secret
+                key: litellm_key
+          {{- end }}
+          - name: MODEL_ID
+          {{- if .Values.llamacpp.quant }}
+            value: "{{ .Values.llamacpp.repoId }}-{{ .Values.llamacpp.quant }}"
+          {{- else }}
+            value: "{{ .Values.llamacpp.repoId }}"
+          {{- end }}
+          - name: DEPLOYMENT_ID
+            value: {{ .Release.Name }}
+          - name: PROVIDER
+            value: {{ .Values.litellm.provider }}
+        {{- end }}
+          {{- if .Values.billing.enabled }}
+          - name: FLEXPRICE_URL
+            value: {{ .Values.billing.url }}
+          - name: FLEXPRICE_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name }}-llamacpp-secret
+                key: billing_api_key
+          - name: EVENT_NAME
+            value: {{ .Values.billing.eventName }}
+          - name: EVENT_EXTERNAL_CUSTOMER_ID
+            value: {{ .Values.billing.externalCustomerId }}
+          - name: HEARTBEAT_INTERVAL
+            value: {{ .Values.billing.interval | quote }}
+          {{- end }}
+        {{- if .Values.litellm.enabled }}
+          lifecycle:
+            preStop:
+              exec:
+                command: 
+                - sh
+                - -c
+                - |
+                  /workspace/cleanup.sh
+        {{- end }}
+          resources:
+            requests:
+              cpu: 0.05
+              memory: 64Mi
+            limits:
+              cpu: 0.2
+              memory: 256Mi
+        {{- end }}
         volumes:
         - name: cache
           emptyDir: {}
@@ -259,128 +381,128 @@ spec:
             {{ end }}
               ephemeral-storage: {{ .Values.system.workingMemory}}Gi
         restartPolicy: {{ .Values.llamacpp.restartPolicy }}
-  {{ if .Values.litellm.enabled }}
-  - replicas: 1
-    name: registrar
-    policies:
-    - event: PodEvicted
-      action: RestartJob
-    - event: PodFailed
-      action: RestartJob
-    - event: TaskCompleted
-      action: RestartJob
-    - event: Unknown
-      action: RestartJob
-    template: # Definition of worker pods
-      metadata:
-        labels:
-          kalavai.job.name: {{ .Values.system.jobId}}
-      spec:
-        terminationGracePeriodSeconds: 60
-        {{ if or .Values.system.nodeSelectors }}
-        affinity:
-          nodeAffinity:
-            requiredDuringSchedulingIgnoredDuringExecution:
-              nodeSelectorTerms:
-            {{ if eq .Values.system.nodeSelectorsOps "OR" }}
-              {{ range $k, $v := .Values.system.nodeSelectors }}
-              - matchExpressions:
-                - key: {{$k}}
-                  operator: In
-                  values:
-                  {{ range $v }}
-                  - "{{ . }}"
-                  {{ end }}
-              {{ end }}
-            {{ else }}
-              - matchExpressions:
-              {{ range $k, $v := .Values.system.nodeSelectors }}
-                {{ range $v }}
-                - key: {{ $k }}
-                  operator: In
-                  values:
-                  - "{{ . }}"
-                {{ end }}
-              {{ end }}
-            {{ end }}
-        {{ end }}
-        containers:
-        - name: registrar-leader
-          image: ghcr.io/kalavai-net/kalavai-utils:latest
-          imagePullPolicy: Always
-          command:
-          - sh
-          - -c
-          - |
-            echo "Waiting for model to be served..."
-            echo "Namespace: "$VC_NAMESPACE;
-            PS_HOST=`cat /etc/volcano/server.host`;
-            {{- if .Values.litellm.waitReady }}
-            /workspace/wait_for_service.sh --servers="$PS_HOST" --port=8080
-            {{- else }}
-            /workspace/wait_for_ping.sh --servers="$PS_HOST"
-            {{- end }}
-            export MODEL_API_BASE="http://"$PS_HOST"."$VC_NAMESPACE":8080/v1";
-            /workspace/start_point.sh \
-              --litellm_kalavai_extras='{{ .Values.litellm.kalavaiExtras }}' \
-              --litellm_access_group={{ .Values.litellm.accessGroup }}
-          env:
-          {{- range $key, $value := .Values.system.envFromSecrets }}
-          - name: {{ $key }}
-            valueFrom:
-              secretKeyRef:
-                name: {{ $value }}
-                key: {{ $key }}
-          {{- end }}
-          - name: VC_NAMESPACE
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.namespace
-          - name: LITELLM_MODEL_NAME
-          {{- if .Values.litellm.modelNameOverride }}
-            value: "{{ .Values.litellm.modelNameOverride }}"
-          {{- else }}
-            {{- if .Values.llamacpp.quant }}
-            value: "{{ .Values.llamacpp.repoId }}-{{ .Values.llamacpp.quant }}"
-            {{- else }}
-            value: "{{ .Values.llamacpp.repoId }}"
-            {{- end }}
-          {{- end }}
-          {{- if .Values.litellm.baseUrl}}
-          - name: LITELLM_BASE_URL
-            value: {{ .Values.litellm.baseUrl }}
-          {{- end }}
-          {{- if .Values.litellm.baseUrl}}
-          - name: LITELLM_KEY
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Release.Name }}-llamacpp-secret
-                key: litellm_key
-          {{- end }}
-          - name: MODEL_ID
-          {{- if .Values.llamacpp.quant }}
-            value: "{{ .Values.llamacpp.repoId }}-{{ .Values.llamacpp.quant }}"
-          {{- else }}
-            value: "{{ .Values.llamacpp.repoId }}"
-          {{- end }}
-          - name: DEPLOYMENT_ID
-            value: {{ .Release.Name }}
-          - name: PROVIDER
-            value: {{ .Values.litellm.provider }}
-          lifecycle:
-            preStop:
-              exec:
-                command: 
-                - sh
-                - -c
-                - |
-                  /workspace/cleanup.sh
-          resources:
-            requests:
-              cpu: 0.05
-              memory: 0.05Gi
-            limits:
-              cpu: 0.05
-              memory: 0.05Gi
-        restartPolicy: Always
-  {{ end }}
+  # {{ if .Values.litellm.enabled }}
+  # - replicas: 1
+  #   name: registrar
+  #   policies:
+  #   - event: PodEvicted
+  #     action: RestartJob
+  #   - event: PodFailed
+  #     action: RestartJob
+  #   - event: TaskCompleted
+  #     action: RestartJob
+  #   - event: Unknown
+  #     action: RestartJob
+  #   template: # Definition of worker pods
+  #     metadata:
+  #       labels:
+  #         kalavai.job.name: {{ .Values.system.jobId}}
+  #     spec:
+  #       terminationGracePeriodSeconds: 60
+  #       {{ if or .Values.system.nodeSelectors }}
+  #       affinity:
+  #         nodeAffinity:
+  #           requiredDuringSchedulingIgnoredDuringExecution:
+  #             nodeSelectorTerms:
+  #           {{ if eq .Values.system.nodeSelectorsOps "OR" }}
+  #             {{ range $k, $v := .Values.system.nodeSelectors }}
+  #             - matchExpressions:
+  #               - key: {{$k}}
+  #                 operator: In
+  #                 values:
+  #                 {{ range $v }}
+  #                 - "{{ . }}"
+  #                 {{ end }}
+  #             {{ end }}
+  #           {{ else }}
+  #             - matchExpressions:
+  #             {{ range $k, $v := .Values.system.nodeSelectors }}
+  #               {{ range $v }}
+  #               - key: {{ $k }}
+  #                 operator: In
+  #                 values:
+  #                 - "{{ . }}"
+  #               {{ end }}
+  #             {{ end }}
+  #           {{ end }}
+  #       {{ end }}
+  #       containers:
+  #       - name: registrar-leader
+  #         image: ghcr.io/kalavai-net/kalavai-utils:latest
+  #         imagePullPolicy: Always
+  #         command:
+  #         - sh
+  #         - -c
+  #         - |
+  #           echo "Waiting for model to be served..."
+  #           echo "Namespace: "$VC_NAMESPACE;
+  #           PS_HOST=`cat /etc/volcano/server.host`;
+  #           {{- if .Values.litellm.waitReady }}
+  #           /workspace/wait_for_service.sh --servers="$PS_HOST" --port=8080
+  #           {{- else }}
+  #           /workspace/wait_for_ping.sh --servers="$PS_HOST"
+  #           {{- end }}
+  #           export MODEL_API_BASE="http://"$PS_HOST"."$VC_NAMESPACE":8080/v1";
+  #           /workspace/start_point.sh \
+  #             --litellm_kalavai_extras='{{ .Values.litellm.kalavaiExtras }}' \
+  #             --litellm_access_group={{ .Values.litellm.accessGroup }}
+  #         env:
+  #         {{- range $key, $value := .Values.system.envFromSecrets }}
+  #         - name: {{ $key }}
+  #           valueFrom:
+  #             secretKeyRef:
+  #               name: {{ $value }}
+  #               key: {{ $key }}
+  #         {{- end }}
+  #         - name: VC_NAMESPACE
+  #           valueFrom:
+  #             fieldRef:
+  #               fieldPath: metadata.namespace
+  #         - name: LITELLM_MODEL_NAME
+  #         {{- if .Values.litellm.modelNameOverride }}
+  #           value: "{{ .Values.litellm.modelNameOverride }}"
+  #         {{- else }}
+  #           {{- if .Values.llamacpp.quant }}
+  #           value: "{{ .Values.llamacpp.repoId }}-{{ .Values.llamacpp.quant }}"
+  #           {{- else }}
+  #           value: "{{ .Values.llamacpp.repoId }}"
+  #           {{- end }}
+  #         {{- end }}
+  #         {{- if .Values.litellm.baseUrl}}
+  #         - name: LITELLM_BASE_URL
+  #           value: {{ .Values.litellm.baseUrl }}
+  #         {{- end }}
+  #         {{- if .Values.litellm.baseUrl}}
+  #         - name: LITELLM_KEY
+  #           valueFrom:
+  #             secretKeyRef:
+  #               name: {{ .Release.Name }}-llamacpp-secret
+  #               key: litellm_key
+  #         {{- end }}
+  #         - name: MODEL_ID
+  #         {{- if .Values.llamacpp.quant }}
+  #           value: "{{ .Values.llamacpp.repoId }}-{{ .Values.llamacpp.quant }}"
+  #         {{- else }}
+  #           value: "{{ .Values.llamacpp.repoId }}"
+  #         {{- end }}
+  #         - name: DEPLOYMENT_ID
+  #           value: {{ .Release.Name }}
+  #         - name: PROVIDER
+  #           value: {{ .Values.litellm.provider }}
+  #         lifecycle:
+  #           preStop:
+  #             exec:
+  #               command: 
+  #               - sh
+  #               - -c
+  #               - |
+  #                 /workspace/cleanup.sh
+  #         resources:
+  #           requests:
+  #             cpu: 0.05
+  #             memory: 0.05Gi
+  #           limits:
+  #             cpu: 0.05
+  #             memory: 0.05Gi
+  #       restartPolicy: Always
+  # {{ end }}

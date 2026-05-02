@@ -8,14 +8,6 @@ llamacpp:
   version: b8941-1
   restartPolicy: OnFailure
 
-lago:
-  enabled: false
-  apiKey: null
-  eventCode: null
-  eventInterval: null
-  externalSubscriptionId: null
-  url: null
-
 litellm:
   enabled: false
   provider: openai
@@ -25,6 +17,14 @@ litellm:
   baseUrl: null
   kalavaiExtras: '{}'
   key: null
+
+billing:
+  enabled: false
+  url: ""
+  apiKey: ""
+  eventName: ""
+  interval: 0
+  externalCustomerId: ""
 
 system:
   jobId: null

@@ -103,43 +103,33 @@
             }
          }
       },
-      "lago": {
+      "billing": {
          "type": "object",
          "properties": {
+            "enabled": {
+               "description": "Enable billing integration",
+               "type": "boolean",
+               "default": false
+            },
             "url": {
-               "description": "Base URL of the Lago service (payment system)",
-               "type": [
-                  "string",
-                  "null"
-               ]
+               "description": "Base URL of the Billing service (payment system)",
+               "type": "string"
             },
             "apiKey": {
-               "description": "Master key of the Lago service",
-               "type": [
-                  "string",
-                  "null"
-               ]
+               "description": "Master key of the Billing service",
+               "type": "string"
             },
-            "externalSubscriptionId": {
-               "description": "ID of the Lago subscription to send events to",
-               "type": [
-                  "string",
-                  "null"
-               ]
+            "externalCustomerId": {
+               "description": "ID of the Billing customer to send events to",
+               "type": "string"
             },
-            "eventCode": {
-               "description": "Event code to use when submitting event to Lago payment API",
-               "type": [
-                  "string",
-                  "null"
-               ]
+            "eventName": {
+               "description": "Event name to use when submitting event to Billing payment API",
+               "type": "string"
             },
-            "eventInterval": {
-               "description": "Interval in seconds to send the lago event",
-               "type": [
-                  "string",
-                  "null"
-               ]
+            "interval": {
+               "description": "Interval in seconds to send the billing event",
+               "type": "number"
             }
          }
       },

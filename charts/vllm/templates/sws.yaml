@@ -474,6 +474,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ .Release.Name }}-vllm-ingress
+  labels:
+    kalavai.job.name: {{ .Values.system.jobId }}
 spec:
   ingressClassName: traefik
   rules:

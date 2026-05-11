@@ -48,3 +48,5 @@ if [ "$PUSH_LATEST" = true ]; then
     docker tag ghcr.io/kalavai-net/vllm-rocm:v$PIP_VLLM_VERSION ghcr.io/kalavai-net/vllm-rocm:latest
     docker push ghcr.io/kalavai-net/vllm-rocm:latest
 fi
+
+docker system prune -af

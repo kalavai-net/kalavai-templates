@@ -1,6 +1,6 @@
 apiVersion: v2
-appVersion: 0.1.26
-description: A high-throughput and memory-efficient inference and serving engine for LLMs (v0.18.1)
+appVersion: 0.2.0
+description: A high-throughput and memory-efficient inference and serving engine for LLMs
 icon: https://docs.vllm.ai/en/latest/assets/logos/vllm-logo-only-light.ico
 kubeVersion: '>= 1.25.0'
 maintainers:
@@ -10,7 +10,7 @@ maintainers:
 name: vllm
 sources:
 - https://docs.vllm.ai/
-version: 0.1.26
+version: 0.2.0
 annotations:
   status: beta
   category: llm

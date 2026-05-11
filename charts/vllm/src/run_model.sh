@@ -3,8 +3,8 @@
 cache_dir="/cache"
 tool_call_parser="llama3_json"
 template_url=""
-tensor_parallel_size=1
-pipeline_parallel_size=1
+tensor_parallel_size=""
+pipeline_parallel_size=""
 model_name=""
 
 
@@ -89,6 +89,20 @@ else
   template_str="--chat-template /home/ray/workspace/template.jinja"
 fi
 
+if [ -z "$tensor_parallel_size" ]
+then
+  tps_str=""
+else
+  tps_str="--tensor-parallel-size $tensor_parallel_size"
+fi
+if [ -z "$pipeline_parallel_size" ]
+then
+  pps_str=""
+else
+  pps_str="--pipeline-parallel-size $pipeline_parallel_size"
+fi
+
+
 if [ -z "$model_name" ]
 then
   name=$model_id
@@ -103,8 +117,8 @@ echo "----> [extra params] "$extra
 vllm serve $model_id \
   --served-model-name $name \
   --host 0.0.0.0 --port 8080 \
-  --tensor-parallel-size $tensor_parallel_size \
-  --pipeline-parallel-size $pipeline_parallel_size \
+  $tps_str \
+  $pps_str \
   --enable-auto-tool-choice \
   --tool-call-parser $tool_call_parser \
   --distributed-executor-backend="ray" \

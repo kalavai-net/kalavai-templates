@@ -3,7 +3,7 @@ hfToken: null
 
 vllm:
   image:
-    tag: v0.18.1
+    tag: v0.20.1
   forceVersion: null
   extra: --dtype float16 --enforce-eager
   toolCallParser: llama3_json
@@ -11,12 +11,17 @@ vllm:
   templateUrl: null
   modelNameOverride: null
   imagePullPolicy: IfNotPresent
-  restartPolicy: OnFailure
+  restartPolicy: Always
   debugLevel: INFO
   autoParallelism: true
   sharedMemory: 6
   githubUsername: null
   githubToken: null
+
+autoscaling:
+  enabled: false
+  minReplicas: 0
+  maxReplicas: 1
 
 ingress:
   enabled: false
@@ -24,11 +29,13 @@ ingress:
 
 litellm:
   enabled: false
+  provider: hosted_vllm
   waitReady: false
+  modelNameOverride: null
   accessGroup: null
   baseUrl: null
-  key: null
   kalavaiExtras: '{}'
+  key: null
 
 lmcache:
   chunkSize: 256
@@ -38,16 +45,17 @@ lmcache:
   maxLocalDiskSize: 0
   remoteUrl: null
 
-lago:
+billing:
   enabled: false
-  apiKey: null
-  eventCode: null
-  eventInterval: null
-  externalSubscriptionId: null
-  url: null
+  url: ""
+  apiKey: ""
+  eventName: ""
+  interval: 0
+  externalCustomerId: ""
 
 system:
   queue: default
+  replicas: 1
   priorityClassName: user-spot-priority
   nodeSelectors: null
   nodeSelectorsOps: OR

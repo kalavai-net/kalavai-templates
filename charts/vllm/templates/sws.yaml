@@ -40,6 +40,71 @@ spec:
       # concurrency:
       #   targetValue: 10
   {{- end }}
+{{- if .Values.litellm.enabled }}
+  initHook:
+    # Used for model registration
+    spec:
+      containers:
+      - name: registrar-sidecar
+        image: ghcr.io/kalavai-net/kalavai-registrar:latest
+        imagePullPolicy: Always
+        command:
+        - sh
+        - -c
+        - |
+          # 1. register model
+          echo "REGISTER MODEL WITH GATEWAY..."
+        {{- if .Values.litellm.waitReady }}
+          /workspace/wait_for_service.sh --servers="$GLOBAL_SERVICE_ADDRESS" --port=$GLOBAL_SERVICE_PORT
+        {{- else }}
+          /workspace/wait_for_ping.sh --servers="$GLOBAL_SERVICE_ADDRESS"
+        {{- end }}
+          export MODEL_API_BASE="http://$GLOBAL_SERVICE_ADDRESS:$GLOBAL_SERVICE_PORT/v1";
+          /workspace/start_point.sh \
+            --litellm_kalavai_extras='{{ .Values.litellm.kalavaiExtras }}' \
+            --litellm_access_group={{ .Values.litellm.accessGroup }}
+        env:
+        - name: LITELLM_MODEL_NAME
+        {{- if .Values.litellm.modelNameOverride }}
+          value: "{{ .Values.litellm.modelNameOverride }}"
+        {{- else }}
+          value: "{{ .Values.modelId }}"
+        {{- end }}
+        - name: LITELLM_BASE_URL
+          value: {{ .Values.litellm.baseUrl }}
+        - name: LITELLM_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-vllm-secret
+              key: litellm_key
+        - name: MODEL_ID
+          value: "{{ .Values.modelId }}"
+        - name: DEPLOYMENT_ID
+          value: {{ .Release.Name }}
+        - name: PROVIDER
+          value: {{ .Values.litellm.provider }}
+  finalizerHook:
+    # Used for model deregistration
+    spec:
+      containers:
+      - name: registrar-sidecar
+        image: ghcr.io/kalavai-net/kalavai-registrar:latest
+        imagePullPolicy: Always
+        command:
+        - sh
+        - -c
+        - |
+          # 1. deregister model
+          /workspace/cleanup.sh
+        env:
+        - name: LITELLM_BASE_URL
+          value: {{ .Values.litellm.baseUrl }}
+        # secret may be deleted before this is run, so hardcode the key
+        - name: LITELLM_KEY
+          value: {{ .Values.litellm.key }}
+        - name: DEPLOYMENT_ID
+          value: {{ .Release.Name }}
+{{- end }}
   server:
     spec:
       terminationGracePeriodSeconds: 60
@@ -200,49 +265,31 @@ spec:
         volumeMounts:
           - mountPath: /dev/shm
             name: dshm
-    {{- if or .Values.billing.enabled .Values.litellm.enabled }}  
-      - name: registrar-sidecar
+    {{- if .Values.billing.enabled }}  
+      - name: billing-sidecar
         image: ghcr.io/kalavai-net/kalavai-registrar:latest
         imagePullPolicy: Always
         command:
         - sh
         - -c
         - |
-          PS_HOST=`cat /etc/volcano/server.host`;
-        {{- if .Values.litellm.enabled }}
-          # 1. register model
-          echo "REGISTER MODEL WITH GATEWAY..."
-          {{- if .Values.litellm.waitReady }}
-          /workspace/wait_for_service.sh --servers="$PS_HOST" --port=8080
-          {{- else }}
-          /workspace/wait_for_ping.sh --servers="$PS_HOST"
-          {{- end }}
-          export MODEL_API_BASE="http://"$PS_HOST"."$VC_NAMESPACE":8080/v1";
-          /workspace/start_point.sh \
-            --litellm_kalavai_extras='{{ .Values.litellm.kalavaiExtras }}' \
-            --litellm_access_group={{ .Values.litellm.accessGroup }}
-        {{- end }}
-        {{- if .Values.billing.enabled }}
-          # 2. Fetch node Info
+          # 1. Fetch node Info
           echo "FETCH NODE INFO..."
           REGION=$(python3 get_node_label_value.py --in-cluster --node-name $NODE_NAME --label-key kalavai/region)
           INSTANCE=$(python3 get_node_label_value.py --in-cluster --node-name $NODE_NAME --label-key kalavai/instance)
           echo "REGION: $REGION"
           echo "INSTANCE: $INSTANCE"
 
-          # 3. Wait for model to be ready
-          echo "WAIT FOR MODEL TO BE READY at $PS_HOST:8080..."
-          /workspace/wait_for_service.sh --servers="$PS_HOST" --port=8080
+          # 2. Wait for model to be ready
+          echo "WAIT FOR MODEL TO BE READY at $GLOBAL_SERVICE_ADDRESS:$GLOBAL_SERVICE_PORT..."
+          /workspace/wait_for_service.sh --servers="$GLOBAL_SERVICE_ADDRESS" --port=$GLOBAL_SERVICE_PORT
 
-          # 4. start heartbeat
+          # 3. start heartbeat
           # VRAM USAGE / minute = billingInterval(mins) * gpuMemPerWorker  * NumWorkers
           {{- $vramUsage := mul (mul .Values.billing.interval .Values.system.workerGpuMemory) .Values.system.workers }}
           export EVENT_PROPERTIES='{"provider": "'$REGION'", "instance": "'$INSTANCE'", "vram_usage": '{{ $vramUsage }}'}' 
           echo "START HEARTBEAT..."
           python3 billing_heartbeat.py
-        {{- else }}
-          tail -f /dev/null
-        {{- end }}
         env:
         - name: NODE_NAME
           valueFrom:
@@ -252,32 +299,6 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-      {{- if .Values.litellm.enabled }}
-        - name: LITELLM_MODEL_NAME
-        {{- if .Values.litellm.modelNameOverride }}
-          value: "{{ .Values.litellm.modelNameOverride }}"
-        {{- else }}
-          value: "{{ .Values.modelId }}"
-        {{- end }}
-        {{- if .Values.litellm.baseUrl}}
-        - name: LITELLM_BASE_URL
-          value: {{ .Values.litellm.baseUrl }}
-        {{- end }}
-        {{- if .Values.litellm.baseUrl}}
-        - name: LITELLM_KEY
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Release.Name }}-vllm-secret
-              key: litellm_key
-        {{- end }}
-        - name: MODEL_ID
-          value: "{{ .Values.modelId }}"
-        - name: DEPLOYMENT_ID
-          value: {{ .Release.Name }}
-        - name: PROVIDER
-          value: {{ .Values.litellm.provider }}
-      {{- end }}
-      {{- if .Values.billing.enabled }}
         - name: FLEXPRICE_URL
           value: {{ .Values.billing.url }}
         - name: FLEXPRICE_API_KEY
@@ -291,17 +312,6 @@ spec:
           value: {{ .Values.billing.externalCustomerId }}
         - name: HEARTBEAT_INTERVAL
           value: {{ .Values.billing.interval | quote }}
-      {{- end }}
-      {{- if .Values.litellm.enabled }}
-        lifecycle:
-          preStop:
-            exec:
-              command: 
-              - sh
-              - -c
-              - |
-                /workspace/cleanup.sh
-      {{- end }}
         resources:
           requests:
             cpu: 0.05

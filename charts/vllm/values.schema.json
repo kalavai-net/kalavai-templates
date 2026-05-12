@@ -113,16 +113,29 @@
             }
          }
       },
-      "ingress": {
+      "service": {
          "type": "object",
          "properties": {
-            "enabled": {
+            "stickySession": {
                "type": "boolean",
-               "description": "Enable ingress for the vLLM service"
+               "description": "Enable sticky session for the vLLM service"
             },
-            "subdomain": {
-               "type": "string",
-               "description": "Subdomain for the ingress"
+            "stickySessionTimeoutSeconds": {
+               "type": "integer",
+               "description": "Sticky session timeout in seconds"
+            },
+            "ingress": {
+               "type": "object",
+               "properties": {
+                  "enabled": {
+                     "type": "boolean",
+                     "description": "Enable ingress for the vLLM service"
+                  },
+                  "subdomain": {
+                     "type": "string",
+                     "description": "Subdomain for the ingress"
+                  }
+               }
             }
          }
       },

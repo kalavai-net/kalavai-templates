@@ -55,9 +55,8 @@ spec:
           # 1. register model
           echo "REGISTER MODEL WITH GATEWAY..."
         {{- if .Values.litellm.waitReady }}
+          echo "Waiting for model service to be up..."
           /workspace/wait_for_service.sh --servers="$GLOBAL_SERVICE_ADDRESS" --port=$GLOBAL_SERVICE_PORT
-        {{- else }}
-          /workspace/wait_for_ping.sh --servers="$GLOBAL_SERVICE_ADDRESS"
         {{- end }}
           export MODEL_API_BASE="http://$GLOBAL_SERVICE_ADDRESS:$GLOBAL_SERVICE_PORT/v1";
           /workspace/start_point.sh \

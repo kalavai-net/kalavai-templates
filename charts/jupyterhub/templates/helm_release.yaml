@@ -193,7 +193,8 @@ spec:
       memory: {{ .Values.singleuser.memory }}
     system:
       priorityClassName: {{ .Values.system.priorityClassName }}
-      nodeSelectors: {{ .Values.system.nodeSelectors | toYaml }}
+      nodeSelectors:
+{{ .Values.system.nodeSelectors | toYaml | indent 8 }}
       nodeSelectorsOps: {{ .Values.system.nodeSelectorsOps }}
       jobId: {{ .Values.system.jobId | quote }}
     ingress:

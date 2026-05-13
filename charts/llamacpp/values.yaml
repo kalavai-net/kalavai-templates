@@ -6,7 +6,7 @@ llamacpp:
   serverExtra: null
   imagePullPolicy: IfNotPresent
   version: b8941-1
-  restartPolicy: OnFailure
+  restartPolicy: Always
 
 litellm:
   enabled: false
@@ -26,7 +26,14 @@ billing:
   interval: 0
   externalCustomerId: ""
 
+autoscaling:
+  enabled: false
+  minReplicas: 0
+  maxReplicas: 1
+
 system:
+  replicas: 1
+  workers: 1
   jobId: null
   priorityClassName: user-spot-priority
   nodeSelectors: null
@@ -35,7 +42,6 @@ system:
   envFromSecrets: {}
   workerGpuMemory: null
   backend: cpu
-  workers: 1
   workingMemory: 5
   cpus: 2
   memory: 8

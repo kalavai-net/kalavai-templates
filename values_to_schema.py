@@ -61,6 +61,10 @@ if __name__ == "__main__":
     # global system properties
     properties["system"] = {
         "properties": {
+            "replicas": {
+                "type": "integer",
+                "description": "Number of replicas to run"
+            },
             "envFromSecrets": {
                "type": "object",
                "description": "Dictionary mapping environment variable names to secret names"

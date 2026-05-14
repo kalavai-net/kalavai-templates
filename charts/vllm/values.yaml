@@ -3,10 +3,9 @@ hfToken: null
 
 vllm:
   image:
-    tag: v0.20.1
+    tag: v0.20.2
   forceVersion: null
   extra: --dtype float16 --enforce-eager
-  toolCallParser: llama3_json
   loraModules: null
   templateUrl: null
   modelNameOverride: null
@@ -14,7 +13,7 @@ vllm:
   restartPolicy: Always
   debugLevel: INFO
   autoParallelism: true
-  sharedMemory: 6
+  sharedMemory: 3
   githubUsername: null
   githubToken: null
 
@@ -24,7 +23,7 @@ autoscaling:
   maxReplicas: 1
 
 service:
-  stickySession: true
+  stickySession: false
   stickySessionTimeoutSeconds: 3600
   ingress:
     enabled: false
@@ -41,12 +40,14 @@ litellm:
   key: null
 
 lmcache:
+  enabled: false
   chunkSize: 256
   localCpu: true
   localDisk: null
-  maxLocalCpuSize: 5.0
+  maxLocalCpuSize: 3.0
   maxLocalDiskSize: 0
   remoteUrl: null
+  kvTransferConfig: '{"kv_connector":"LMCacheConnectorV1","kv_role":"kv_both"}'
 
 billing:
   enabled: false

@@ -25,7 +25,7 @@ spec:
     enabled: {{ .Values.autoscaling.enabled }}
   {{- if .Values.autoscaling.enabled }}   
     hosts:
-      - {{ .Release.Name }}-{{ .Release.Namespace }}-vllm.spaces.kalavai.net    
+      - {{ .Release.Name }}-{{ .Release.Namespace }}-vllm.{{ .Values.service.ingress.subdomain }}    
     pathPrefixes:
       - "/"              
     replicas:
@@ -163,7 +163,7 @@ spec:
           echo "Using auto-detected vllm version";
           pip show vllm;
         {{- end }}
-          RAY_BACKEND_LOG_LEVEL=error /home/ray/workspace/ray_init.sh leader --ray_cluster_size={{ .Values.system.workers}} --ray_object_store_memory={{ .Values.vllm.sharedMemory}};
+          RAY_memory_usage_threshold=0.99 RAY_BACKEND_LOG_LEVEL=error /home/ray/workspace/ray_init.sh leader --ray_cluster_size={{ .Values.system.workers}} --ray_object_store_memory=1;
           sleep 30;
         {{- if eq .Values.system.backend "cuda" }}
           nvidia-smi;
@@ -178,7 +178,11 @@ spec:
           {{- if .Values.vllm.modelNameOverride }}
             --model_name={{ .Values.vllm.modelNameOverride }} \
           {{- end }}
+          {{- if .Values.lmcache.enabled }}
+            --extra='{{ .Values.vllm.extra }} --no-disable-hybrid-kv-cache-manager --kv-transfer-config {{ .Values.lmcache.kvTransferConfig }}' \
+          {{- else }}
             --extra='{{ .Values.vllm.extra }}' \
+          {{- end }}
           {{- if .Values.vllm.templateUrl }}
             --template_url='{{ .Values.vllm.templateUrl }}' \
           {{- end }}
@@ -190,8 +194,7 @@ spec:
             --lora_modules="{{ .Values.vllm.loraModules }}";
           {{- end }}
             --model_path="/home/ray/cache/{{ .Values.modelId }}" \
-            --model_id={{ .Values.modelId}} \
-            --tool_call_parser={{ .Values.vllm.toolCallParser }};
+            --model_id={{ .Values.modelId}};
           exit 1
         env:
         {{- range $key, $value := .Values.system.envFromSecrets }}
@@ -218,18 +221,29 @@ spec:
           value: "{{ .Values.vllm.debugLevel }}"
         - name: VLLM_LOGGING_LEVEL
           value: "{{ .Values.vllm.debugLevel }}"
+        # LMCACHE config https://docs.lmcache.ai/api_reference/configurations.html
+      {{- if .Values.lmcache.enabled }}
+        - name: LMCACHE_USE_EXPERIMENTAL
+          value: "True"
         - name: LMCACHE_CHUNK_SIZE
           value: "{{ .Values.lmcache.chunkSize}}"
-        - name: LMCACHE_LOCAL_CPU
-          value: "{{ .Values.lmcache.localCpu}}"
-        - name: LMCACHE_MAX_LOCAL_CPU_SIZE
-          value: "{{ .Values.lmcache.maxLocalCpuSize}}"
-        - name: LMCACHE_MAX_LOCAL_DISK_SIZE
-          value: "{{ .Values.lmcache.maxLocalDiskSize}}"
+        {{- if .Values.lmcache.remoteUrl}}
         - name: LMCACHE_REMOTE_URL
           value: {{ .Values.lmcache.remoteUrl}}
+        {{- end }}
+        {{- if .Values.lmcache.localCpu}}
+        - name: LMCACHE_MAX_LOCAL_CPU_SIZE
+          value: "{{ .Values.lmcache.maxLocalCpuSize}}"
+        - name: LMCACHE_LOCAL_CPU
+          value: "true"
+        {{- end }}
+        {{- if .Values.lmcache.localDisk}}
+        - name: LMCACHE_MAX_LOCAL_DISK_SIZE
+          value: "{{ .Values.lmcache.maxLocalDiskSize}}"
         - name: LMCACHE_LOCAL_DISK
           value: {{ .Values.lmcache.localDisk}}
+        {{- end }}
+      {{- end }}
         ports:
         - containerPort: 8080
           name: model-port
@@ -397,7 +411,7 @@ spec:
           python -c "import torch; print(torch.cuda.device_count(), torch.cuda.get_device_name(0))";
         {{- end }}
           echo "Connecting to server at $SERVER_ADDRESS"
-          RAY_BACKEND_LOG_LEVEL=error /home/ray/workspace/ray_init.sh worker --ray_address=$SERVER_ADDRESS --ray_port=6379 --ray_object_store_memory={{ .Values.vllm.sharedMemory}} --ray_block=1
+          RAY_memory_usage_threshold=0.99 RAY_BACKEND_LOG_LEVEL=error /home/ray/workspace/ray_init.sh worker --ray_address=$SERVER_ADDRESS --ray_port=6379 --ray_object_store_memory=1 --ray_block=1
         env:
         {{- range $key, $value := .Values.system.envFromSecrets }}
         - name: {{ $key }}
@@ -423,18 +437,29 @@ spec:
           value: "{{ .Values.vllm.debugLevel }}"
         - name: VLLM_LOGGING_LEVEL
           value: "{{ .Values.vllm.debugLevel }}"
+        # LMCACHE config https://docs.lmcache.ai/api_reference/configurations.html
+      {{- if .Values.lmcache.enabled }}
+        - name: LMCACHE_USE_EXPERIMENTAL
+          value: "True"
         - name: LMCACHE_CHUNK_SIZE
           value: "{{ .Values.lmcache.chunkSize}}"
-        - name: LMCACHE_LOCAL_CPU
-          value: "{{ .Values.lmcache.localCpu}}"
-        - name: LMCACHE_MAX_LOCAL_CPU_SIZE
-          value: "{{ .Values.lmcache.maxLocalCpuSize}}"
-        - name: LMCACHE_MAX_LOCAL_DISK_SIZE
-          value: "{{ .Values.lmcache.maxLocalDiskSize}}"
+        {{- if .Values.lmcache.remoteUrl}}
         - name: LMCACHE_REMOTE_URL
           value: {{ .Values.lmcache.remoteUrl}}
+        {{- end }}
+        {{- if .Values.lmcache.localCpu}}
+        - name: LMCACHE_MAX_LOCAL_CPU_SIZE
+          value: "{{ .Values.lmcache.maxLocalCpuSize}}"
+        - name: LMCACHE_LOCAL_CPU
+          value: "true"
+        {{- end }}
+        {{- if .Values.lmcache.localDisk}}
+        - name: LMCACHE_MAX_LOCAL_DISK_SIZE
+          value: "{{ .Values.lmcache.maxLocalDiskSize}}"
         - name: LMCACHE_LOCAL_DISK
           value: {{ .Values.lmcache.localDisk}}
+        {{- end }}
+      {{- end }}
         resources:
           requests:
             cpu: {{ .Values.system.cpus}}
@@ -488,7 +513,7 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-  - host: {{ .Release.Name }}-{{ .Release.Namespace }}-vllm.spaces.kalavai.net
+  - host: {{ .Release.Name }}-{{ .Release.Namespace }}-vllm.{{ .Values.service.ingress.subdomain }}
     http:
       paths:
       - backend:

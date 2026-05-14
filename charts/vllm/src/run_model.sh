@@ -1,7 +1,6 @@
 #!/bin/bash
 
 cache_dir="/cache"
-tool_call_parser="llama3_json"
 template_url=""
 tensor_parallel_size=""
 pipeline_parallel_size=""
@@ -33,9 +32,6 @@ while [ $# -gt 0 ]; do
       ;;
     --template_url=*)
       template_url="${1#*=}"
-      ;;
-    --tool_call_parser=*)
-      tool_call_parser="${1#*=}"
       ;;
     *)
       printf "***************************\n"
@@ -120,8 +116,7 @@ vllm serve $model_id \
   $tps_str \
   $pps_str \
   --enable-auto-tool-choice \
-  --tool-call-parser $tool_call_parser \
   --distributed-executor-backend="ray" \
   $lora \
-  $extra \
-  $template_str
+  $template_str \
+  $extra

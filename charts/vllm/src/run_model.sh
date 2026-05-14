@@ -106,16 +106,24 @@ else
   name=$model_name
 fi
 
+
 #HF_HUB_OFFLINE=1
 echo "----> [extra params] "$extra
 #python -m vllm.entrypoints.openai.api_server \
 #  --model $model_path \
+
+# Check if extra contains "tool-call-parser" and add enable-auto-tool-choice accordingly
+tool_choice=""
+if [[ $extra == *"tool-call-parser"* ]]; then
+  tool_choice="--enable-auto-tool-choice"
+fi
+
 vllm serve $model_id \
   --served-model-name $name \
   --host 0.0.0.0 --port 8080 \
   $tps_str \
   $pps_str \
-  --enable-auto-tool-choice \
+  $tool_choice \
   --distributed-executor-backend="ray" \
   $lora \
   $template_str \

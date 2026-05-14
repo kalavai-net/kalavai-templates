@@ -1,25 +1,29 @@
 #!/bin/bash
 
 PUSH_LATEST=false
+TEMPLATE_VERSION=1
 
 while [[ "$#" -gt 0 ]]; do
     case $1 in
         --latest) PUSH_LATEST=true ;;
         --version) PIP_VLLM_VERSION="$2" ;;
+        --template-version) TEMPLATE_VERSION="$2" ;;
     esac
     shift
 done
 
 PIP_VLLM_VERSION=${PIP_VLLM_VERSION:-"0.12.0"}
+IMAGE_TAG="v${PIP_VLLM_VERSION}-${TEMPLATE_VERSION}"
 
 echo "Building vLLM version: $PIP_VLLM_VERSION"
 echo "Pushing latest: $PUSH_LATEST"
+echo "Image tag: $IMAGE_TAG"
 
 # CUDA
-docker build --build-arg PIP_VLLM_VERSION=$PIP_VLLM_VERSION -t ghcr.io/kalavai-net/vllm-cuda:v$PIP_VLLM_VERSION -f src/Dockerfile_cuda src/
-docker push ghcr.io/kalavai-net/vllm-cuda:v$PIP_VLLM_VERSION
+docker build --build-arg PIP_VLLM_VERSION=$PIP_VLLM_VERSION -t ghcr.io/kalavai-net/vllm-cuda:$IMAGE_TAG -f src/Dockerfile_cuda src/
+docker push ghcr.io/kalavai-net/vllm-cuda:$IMAGE_TAG
 if [ "$PUSH_LATEST" = true ]; then
-    docker tag ghcr.io/kalavai-net/vllm-cuda:v$PIP_VLLM_VERSION ghcr.io/kalavai-net/vllm-cuda:latest
+    docker tag ghcr.io/kalavai-net/vllm-cuda:$IMAGE_TAG ghcr.io/kalavai-net/vllm-cuda:latest
     docker push ghcr.io/kalavai-net/vllm-cuda:latest
 fi
 
@@ -42,10 +46,10 @@ rm -rf vllm
 
 docker system prune -af
 
-docker build --build-arg VLLM_VERSION=v$PIP_VLLM_VERSION -t ghcr.io/kalavai-net/vllm-rocm:v$PIP_VLLM_VERSION -f src/Dockerfile_rocm src/
-docker push ghcr.io/kalavai-net/vllm-rocm:v$PIP_VLLM_VERSION
+docker build --build-arg VLLM_VERSION=v$PIP_VLLM_VERSION -t ghcr.io/kalavai-net/vllm-rocm:$IMAGE_TAG -f src/Dockerfile_rocm src/
+docker push ghcr.io/kalavai-net/vllm-rocm:$IMAGE_TAG
 if [ "$PUSH_LATEST" = true ]; then
-    docker tag ghcr.io/kalavai-net/vllm-rocm:v$PIP_VLLM_VERSION ghcr.io/kalavai-net/vllm-rocm:latest
+    docker tag ghcr.io/kalavai-net/vllm-rocm:$IMAGE_TAG ghcr.io/kalavai-net/vllm-rocm:latest
     docker push ghcr.io/kalavai-net/vllm-rocm:latest
 fi
 

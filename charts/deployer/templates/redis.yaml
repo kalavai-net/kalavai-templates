@@ -1,0 +1,159 @@
+{{- if .Values.redis.enabled }}
+# Redis for fault tolerance
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-deployer-redis-service
+  labels:
+    app: {{ .Release.Name }}-deployer-redis
+    kalavai.job.name: {{ .Values.system.jobId }}
+spec:
+  selector:
+    app: {{ .Release.Name }}-deployer-redis
+    kalavai.job.name: {{ .Values.system.jobId }}
+  type: ClusterIP
+  ports:
+  - name: redis
+    port: 6379
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-deployer-redis
+  labels:
+    app: {{ .Release.Name }}-deployer-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-deployer-redis
+      kalavai.job.name: {{ .Values.system.jobId }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-deployer-redis
+        kalavai.job.name: {{ .Values.system.jobId }}
+    spec:
+      terminationGracePeriodSeconds: 10
+      priorityClassName: "kalavai-system-priority"
+      tolerations:
+      - key: "node.kubernetes.io/not-ready"
+        operator: Exists
+        effect: NoExecute
+        tolerationSeconds: 10
+      - key: "node.kubernetes.io/unreachable"
+        operator: Exists
+        effect: NoExecute
+        tolerationSeconds: 10
+      - key: "node.kubernetes.io/unknown"
+        operator: Exists
+        effect: NoExecute
+        tolerationSeconds: 10
+      - key: "node.kubernetes.io/memory-pressure"
+        operator: Exists
+        effect: NoSchedule
+      - key: "node.kubernetes.io/disk-pressure"
+        operator: Exists
+        effect: NoSchedule
+      - key: "node.kubernetes.io/pid-pressure"
+        operator: Exists
+        effect: NoSchedule
+      - key: "node.kubernetes.io/network-unavailable"
+        operator: Exists
+        effect: NoSchedule
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: kalavai.job.name
+                  operator: In
+                  values:
+                  - {{ .Values.system.jobId | default .Release.Name }}
+              topologyKey: "kubernetes.io/hostname"
+      {{- if .Values.system.nodeSelectors }}
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+          {{- if eq .Values.system.nodeSelectorsOps "OR" }}
+            {{ range $k, $v := .Values.system.nodeSelectors }}
+            - matchExpressions:
+              - key: {{$k}}
+                operator: In
+                values:
+                {{- range $v }}
+                - "{{ . }}"
+                {{- end }}
+            {{ end }}
+          {{- else }}
+            - matchExpressions:
+            {{ range $k, $v := .Values.system.nodeSelectors }}
+              {{ range $v }}
+              - key: {{ $k }}
+                operator: In
+                values:
+                - "{{ . }}"
+              {{ end }}
+            {{ end }}
+          {{- end }}
+      {{- end }}
+      priorityClassName: "kalavai-system-priority"
+      containers:
+      - name: redis
+        image: redis:7.4.0
+        command:
+        - "sh"
+        - "-c"
+        - |
+          redis-server --requirepass $REDIS_PASSWORD
+        ports:
+        - containerPort: 6379
+        env:
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{.Release.Name }}-deployer-secrets
+              key: redis_password
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-deployer-worker
+  labels:
+    app: {{ .Release.Name }}-deployer-worker
+spec:
+  replicas: {{ .Values.redis.workers }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-deployer-worker
+      kalavai.job.name: {{ .Values.system.jobId }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-deployer-worker
+        kalavai.job.name: {{ .Values.system.jobId }}
+    spec:
+      priorityClassName: "kalavai-system-priority"
+      containers:
+      - name: redis-worker
+        image: ghcr.io/kalavai-net/kalavai-deployer:latest
+        command:
+        - "sh"
+        - "-c"
+        - |
+          python worker_main.py
+        ports:
+        - containerPort: 6379
+        env:
+        - name: REDIS_URL
+          value: redis://{{ .Release.Name }}-deployer-redis-service.{{ .Release.Namespace }}:6379
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{.Release.Name }}-deployer-secrets
+              key: redis_password
+        - name: REDIS_RESULTS_TTL
+          value: {{ .Values.redis.resultsTTL | quote }}
+{{- end }}

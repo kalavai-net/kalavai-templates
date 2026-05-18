@@ -47,6 +47,12 @@ autoscaling:
     targetCPUUtilization: 70
     targetMemoryUtilization: 80
 
+redis:
+  enabled: true
+  password: dummy
+  workers: 1
+  resultsTTL: 86400
+
 # System Configuration
 system:
   priorityClassName: user-spot-priority

@@ -151,6 +151,15 @@ spec:
           value: {{ .Release.Namespace }}
         - name: MEMORY_CAP_PERCENTAGE
           value: {{ .Values.deployer.memoryCapPercentage | quote }}
+      {{- if .Values.redis.enabled }}
+        - name: REDIS_URL
+          value: redis://{{ .Release.Name }}-deployer-redis-service.{{ .Release.Namespace }}:6379
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{.Release.Name }}-deployer-secrets
+              key: redis_password
+      {{- end }}
         ports:
         - containerPort: 8000
           name: container-port

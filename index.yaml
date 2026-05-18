@@ -5,6 +5,26 @@ entries:
       category: development
       status: beta
     apiVersion: v2
+    appVersion: 0.1.5
+    created: "2026-05-18T10:48:32.718995968Z"
+    description: Deployer application for multi tenant LLM deployments
+    digest: 3bf03099f8cb0ac7cf6b44c27472255dd1bf17794301cff4c76728e599bc17aa
+    icon: https://docs.vllm.ai/en/latest/assets/logos/vllm-logo-only-light.ico
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: deployer
+    sources:
+    - https://docs.ray.io/en/latest/cluster/kubernetes/examples/rayserve-llm-example.html
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/deployer-0.1.5/deployer-0.1.5.tgz
+    version: 0.1.5
+  - annotations:
+      category: development
+      status: beta
+    apiVersion: v2
     appVersion: 0.1.4
     created: "2026-04-21T22:22:07.501670188Z"
     description: Deployer application for multi tenant LLM deployments
@@ -4622,4 +4642,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-05-14T21:58:32.902233622Z"
+generated: "2026-05-18T10:48:32.719790269Z"

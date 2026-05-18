@@ -21,15 +21,15 @@ resources:
 
 # Custom Vector configuration
 customConfig:
-  # Global data directory
-  data_dir: /tmp/vector
+  # Global data directory (persisted on host)
+  data_dir: /var/lib/vector
   
   # Sources
   sources:
     kubernetes_logs:
       type: kubernetes_logs
       auto_partial_merge: true
-      data_dir: /tmp/vector
+      data_dir: /var/lib/vector
       # Filter by pod labels (only collect from pods matching these labels)
       extra_label_selector: "billing=true"
       
@@ -88,7 +88,11 @@ customConfig:
       source: |
         # Application-specific fields (passed through from JSON logs)
         .user_id = .user_id || ""
-        .timestamp = .timestamp || now()
+        # Parse timestamp string to proper timestamp type for ClickHouse DateTime64
+        .timestamp, err = parse_timestamp(.timestamp || now(), "%Y-%m-%dT%H:%M:%S%.3Z")
+        if err != null {
+          .timestamp = now()
+        }
         .model_id = .model_id || ""
         .job_name = .job_name || ""
         .event_id = .event_id || ""
@@ -117,9 +121,11 @@ customConfig:
       table: events
       format: json_each_row
       compression: gzip
+      skip_unknown_fields: true
       batch:
+        # per node flushing strategy - flush every 20 minutes or 1000 events
         max_events: 1000
-        timeout_secs: 300
+        timeout_secs: 1200
       auth:
         strategy: basic
         user: default
@@ -160,6 +166,9 @@ hostVolumes:
   - name: varlibdockercontainers
     hostPath:
       path: /var/lib/docker/containers
+  - name: vector-data
+    hostPath:
+      path: /var/lib/vector
 
 hostVolumeMounts:
   - name: varlog
@@ -168,6 +177,8 @@ hostVolumeMounts:
   - name: varlibdockercontainers
     mountPath: /var/lib/docker/containers
     readOnly: true
+  - name: vector-data
+    mountPath: /var/lib/vector
 
 # Environment variables
 env: []

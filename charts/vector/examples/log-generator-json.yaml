@@ -31,7 +31,7 @@ spec:
             # for python, use python-json-logger
             while true; do
               # Generate INFO logs with JSON (GPU/Machine learning metrics)
-              echo "{\"timestamp\":\"$(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)\",\"level\":\"INFO\",\"message\":\"Application is running normally\",\"user_id\":\"user-$((RANDOM % 1000))\",\"model_id\":\"model-$((RANDOM % 10))\",\"event_id\":\"event-$RANDOM\",\"job_name\":\"test-job\",\"vram_usage\":$((RANDOM % 16000)),\"memory_usage\":$((RANDOM % 32000)),\"cpu_usage\":$((RANDOM % 100)),\"gpu_type\":\"A100\",\"interval_seconds\":5,\"gpu_provider\":\"nvidia\"}"
+              echo "{\"timestamp\":\"$(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)\",\"level\":\"INFO\",\"message\":\"Application is running normally\",\"user_id\":\"user-1\",\"model_id\":\"model-$((RANDOM % 10))\",\"event_id\":\"event-$RANDOM\",\"job_name\":\"test-job\",\"vram_usage\":$((RANDOM % 16000)),\"memory_usage\":$((RANDOM % 32000)),\"cpu_usage\":$((RANDOM % 100)),\"gpu_type\":\"A100\",\"interval_seconds\":5,\"gpu_provider\":\"nvidia\"}"
               
               # Generate other type of los (should be ignored)
               echo "{\"timestamp\":\"$(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)\",\"level\":\"DEBUG\",\"message\":\"Memory usage check\",\"user_id\":\"IGNORE\",\"model_id\":\"model-$((RANDOM % 10))\",\"event_id\":\"event-$RANDOM\",\"job_name\":\"test-job\",\"vram_usage\":$((RANDOM % 16000)),\"memory_usage\":$((RANDOM % 32000)),\"cpu_usage\":$((RANDOM % 100))}"

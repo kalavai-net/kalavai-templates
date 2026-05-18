@@ -1,0 +1,194 @@
+# Helm values for Vector with ClickHouse sink
+# Use this file with: helm install vector vector/vector -n vector -f examples/helm-values.yaml
+
+# Vector role: Agent (DaemonSet) or Aggregator (StatefulSet)
+role: "Agent"
+
+# Vector image configuration
+image:
+  repository: timberio/vector
+  tag: "0.55.0-distroless-libc"
+  pullPolicy: IfNotPresent
+
+# Resource limits
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+# Custom Vector configuration
+customConfig:
+  # Global data directory
+  data_dir: /tmp/vector
+  
+  # Sources
+  sources:
+    kubernetes_logs:
+      type: kubernetes_logs
+      auto_partial_merge: true
+      data_dir: /tmp/vector
+      # Filter by pod labels (only collect from pods matching these labels)
+      extra_label_selector: "billing=true"
+      
+  # Transforms
+  transforms:
+    # Step 1: Parse JSON from the message field
+    parse_json:
+      type: remap
+      inputs: ["kubernetes_logs"]
+      source: |
+        # Try to parse the message as JSON
+        .parsed, err = parse_json(.message)
+        if err != null {
+          # Not valid JSON - drop the log
+          abort
+        }
+
+        # Validate required core fields exist
+        if !exists(.parsed.user_id) || .parsed.user_id == null {
+          abort
+        }
+        if !exists(.parsed.vram_usage) || .parsed.vram_usage == null {
+          abort
+        }
+        if !exists(.parsed.memory_usage) || .parsed.memory_usage == null {
+          abort
+        }
+        if !exists(.parsed.cpu_usage) || .parsed.cpu_usage == null {
+          abort
+        }
+        if !exists(.parsed.gpu_provider) || .parsed.gpu_provider == null {
+          abort
+        }
+        if !exists(.parsed.interval_seconds) || .parsed.interval_seconds == null {
+          abort
+        }
+
+        # Valid JSON with all required fields - extract application fields
+        .timestamp = .parsed.timestamp
+        .user_id = .parsed.user_id
+        .model_id = .parsed.model_id
+        .event_id = .parsed.event_id
+        .job_name = .parsed.job_name
+        .vram_usage = .parsed.vram_usage
+        .memory_usage = .parsed.memory_usage
+        .cpu_usage = .parsed.cpu_usage
+        .gpu_type = .parsed.gpu_type
+        .interval_seconds = .parsed.interval_seconds
+        .gpu_provider = .parsed.gpu_provider
+        del(.parsed)
+    
+    # Step 2: Reshape data to match ClickHouse schema
+    reshape_for_clickhouse:
+      type: remap
+      inputs: ["parse_json"]
+      source: |
+        # Application-specific fields (passed through from JSON logs)
+        .user_id = .user_id || ""
+        .timestamp = .timestamp || now()
+        .model_id = .model_id || ""
+        .job_name = .job_name || ""
+        .event_id = .event_id || ""
+        .vram_usage = .vram_usage || 0
+        .memory_usage = .memory_usage || 0
+        .cpu_usage = .cpu_usage || 0
+        .gpu_type = .gpu_type || ""
+        .interval_seconds = .interval_seconds || 0
+        .gpu_provider = .gpu_provider || ""
+  
+  # Sinks
+  sinks:
+    # Debug sink to see what data is being produced
+    # stdout:
+    #   type: console
+    #   inputs: ["reshape_for_clickhouse"]
+    #   encoding:
+    #     codec: json
+    
+    clickhouse:
+      type: clickhouse
+      inputs:
+      - "reshape_for_clickhouse" # match the vector pipeline final input for clickhouse
+      endpoint: "https://acmpvq21xs.europe-west2.gcp.clickhouse.cloud:8443"
+      database: logs
+      table: events
+      format: json_each_row
+      compression: gzip
+      batch:
+        max_events: 1000
+        timeout_secs: 300
+      auth:
+        strategy: basic
+        user: default
+        password: "" # match the password of the Clickhouse service (go to All services > Service settings > Reset password)
+
+# Service account configuration
+serviceAccount:
+  create: true
+  name: vector
+
+# RBAC configuration
+rbac:
+  create: true
+
+# Pod annotations
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "9598"
+
+# Pod labels
+podLabels:
+  app: vector
+
+# Node selector (optional)
+nodeSelector: {}
+
+# Tolerations (optional)
+tolerations: []
+
+# Affinity (optional)
+affinity: {}
+
+# Host volumes for log access (required for kubernetes_logs source)
+hostVolumes:
+  - name: varlog
+    hostPath:
+      path: /var/log
+  - name: varlibdockercontainers
+    hostPath:
+      path: /var/lib/docker/containers
+
+hostVolumeMounts:
+  - name: varlog
+    mountPath: /var/log
+    readOnly: true
+  - name: varlibdockercontainers
+    mountPath: /var/lib/docker/containers
+    readOnly: true
+
+# Environment variables
+env: []
+  # - name: VECTOR_SELF_NODE_NAME
+  #   valueFrom:
+  #     fieldRef:
+  #       fieldPath: spec.nodeName
+
+# Security context
+securityContext:
+  runAsUser: 0
+  runAsGroup: 0
+
+# Service configuration (for Aggregator role)
+service:
+  enabled: false
+  type: ClusterIP
+  port: 6000
+
+# Metrics
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: false

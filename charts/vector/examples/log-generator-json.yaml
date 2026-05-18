@@ -1,0 +1,48 @@
+# Example workload that generates JSON logs to stdout
+# These logs will be automatically collected by Vector and parsed as JSON
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-generator-json
+  namespace: default
+  labels:
+    app: log-generator-json
+    billing: "true"
+    kalavai.job.name: "test-job"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: log-generator-json
+  template:
+    metadata:
+      labels:
+        app: log-generator-json
+        billing: "true"
+        kalavai.job.name: "test-job"
+    spec:
+      containers:
+      - name: log-generator
+        image: busybox:latest
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            # for python, use python-json-logger
+            while true; do
+              # Generate INFO logs with JSON (GPU/Machine learning metrics)
+              echo "{\"timestamp\":\"$(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)\",\"level\":\"INFO\",\"message\":\"Application is running normally\",\"user_id\":\"user-$((RANDOM % 1000))\",\"model_id\":\"model-$((RANDOM % 10))\",\"event_id\":\"event-$RANDOM\",\"job_name\":\"test-job\",\"vram_usage\":$((RANDOM % 16000)),\"memory_usage\":$((RANDOM % 32000)),\"cpu_usage\":$((RANDOM % 100)),\"gpu_type\":\"A100\",\"interval_seconds\":5,\"gpu_provider\":\"nvidia\"}"
+              
+              # Generate other type of los (should be ignored)
+              echo "{\"timestamp\":\"$(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)\",\"level\":\"DEBUG\",\"message\":\"Memory usage check\",\"user_id\":\"IGNORE\",\"model_id\":\"model-$((RANDOM % 10))\",\"event_id\":\"event-$RANDOM\",\"job_name\":\"test-job\",\"vram_usage\":$((RANDOM % 16000)),\"memory_usage\":$((RANDOM % 32000)),\"cpu_usage\":$((RANDOM % 100))}"
+              
+              sleep 10
+              
+            done
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"

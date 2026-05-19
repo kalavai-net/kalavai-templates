@@ -124,7 +124,6 @@ vllm serve $model_id \
   $tps_str \
   $pps_str \
   $tool_choice \
-  --distributed-executor-backend="ray" \
   $lora \
   $template_str \
   $extra

@@ -166,8 +166,12 @@ spec:
           echo "Using auto-detected vllm version";
           pip show vllm;
         {{- end }}
+        {{- if gt (int .Values.system.workers) 1 }}
           RAY_memory_usage_threshold=0.99 RAY_BACKEND_LOG_LEVEL=error /home/ray/workspace/ray_init.sh leader --ray_cluster_size={{ .Values.system.workers}} --ray_object_store_memory=1;
           sleep 30;
+        {{- else }}
+          echo "Skipping ray init"
+        {{- end }}
         {{- if eq .Values.system.backend "cuda" }}
           nvidia-smi;
         {{- else }}
@@ -261,21 +265,21 @@ spec:
             cpu: {{ .Values.system.cpus}}
             memory: {{ .Values.system.memory}}Gi
           {{ if eq .Values.system.backend "cuda" }}
-            nvidia.com/gpu: 1
+            nvidia.com/gpu: {{ .Values.system.gpus }}
           {{ else if eq .Values.system.backend "rocm" }}
-            amd.com/gpu: 1
+            amd.com/gpu: {{ .Values.system.gpus }}
           {{ end }}
             ephemeral-storage: {{ .Values.system.workingMemory}}Gi
           limits:
             cpu: {{ .Values.system.cpus}}
             memory: {{ add .Values.system.memory .Values.vllm.sharedMemory }}Gi
           {{ if eq .Values.system.backend "cuda" }}
-            nvidia.com/gpu: 1
+            nvidia.com/gpu: {{ .Values.system.gpus }}
             # {{ if .Values.system.workerGpuMemory }}
             # nvidia.com/gpumem: {{ .Values.system.workerGpuMemory}}
             # {{ end }}
           {{ else if eq .Values.system.backend "rocm" }}
-            amd.com/gpu: 1
+            amd.com/gpu: {{ .Values.system.gpus }}
           {{ end }}
             ephemeral-storage: {{ .Values.system.workingMemory}}Gi
         volumeMounts:
@@ -464,21 +468,21 @@ spec:
             cpu: {{ .Values.system.cpus}}
             memory: {{ .Values.system.memory}}Gi
           {{ if eq .Values.system.backend "cuda" }}
-            nvidia.com/gpu: 1
+            nvidia.com/gpu: {{ .Values.system.gpus }}
           {{ else if eq .Values.system.backend "rocm" }}
-            amd.com/gpu: 1
+            amd.com/gpu: {{ .Values.system.gpus }}
           {{ end }}
             ephemeral-storage: {{ .Values.system.workingMemory}}Gi
           limits:
             cpu: {{ .Values.system.cpus}}
             memory: {{ add .Values.system.memory .Values.vllm.sharedMemory }}Gi
           {{ if eq .Values.system.backend "cuda" }}
-            nvidia.com/gpu: 1
+            nvidia.com/gpu: {{ .Values.system.gpus }}
             # {{ if .Values.system.workerGpuMemory }}
             # nvidia.com/gpumem: {{ .Values.system.workerGpuMemory}}
             # {{ end }}
           {{ else if eq .Values.system.backend "rocm" }}
-            amd.com/gpu: 1
+            amd.com/gpu: {{ .Values.system.gpus }}
           {{ end }}
             ephemeral-storage: {{ .Values.system.workingMemory}}Gi
         volumeMounts:

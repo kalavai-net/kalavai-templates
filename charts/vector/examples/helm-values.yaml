@@ -60,7 +60,7 @@ customConfig:
         if !exists(.parsed.cpu_usage) || .parsed.cpu_usage == null {
           abort
         }
-        if !exists(.parsed.gpu_provider) || .parsed.gpu_provider == null {
+        if !exists(.parsed.provider) || .parsed.provider == null {
           abort
         }
         if !exists(.parsed.interval_seconds) || .parsed.interval_seconds == null {
@@ -70,15 +70,14 @@ customConfig:
         # Valid JSON with all required fields - extract application fields
         .timestamp = .parsed.timestamp
         .user_id = .parsed.user_id
-        .model_id = .parsed.model_id
         .event_id = .parsed.event_id
-        .job_name = .parsed.job_name
+        .job_id = .parsed.job_id
         .vram_usage = .parsed.vram_usage
         .memory_usage = .parsed.memory_usage
         .cpu_usage = .parsed.cpu_usage
         .gpu_type = .parsed.gpu_type
         .interval_seconds = .parsed.interval_seconds
-        .gpu_provider = .parsed.gpu_provider
+        .provider = .parsed.provider
         del(.parsed)
     
     # Step 2: Reshape data to match ClickHouse schema
@@ -93,15 +92,14 @@ customConfig:
         if err != null {
           .timestamp = now()
         }
-        .model_id = .model_id || ""
-        .job_name = .job_name || ""
+        .job_id = .job_id || ""
         .event_id = .event_id || ""
         .vram_usage = .vram_usage || 0
         .memory_usage = .memory_usage || 0
         .cpu_usage = .cpu_usage || 0
         .gpu_type = .gpu_type || ""
         .interval_seconds = .interval_seconds || 0
-        .gpu_provider = .gpu_provider || ""
+        .provider = .provider || ""
   
   # Sinks
   sinks:

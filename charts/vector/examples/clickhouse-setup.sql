@@ -14,15 +14,14 @@ CREATE TABLE IF NOT EXISTS logs.events (
 
   -- Application-specific fields (examples - add/remove as needed)
   user_id String,
-  model_id String,
-  job_name String,
+  job_id String,
   event_id String,
   vram_usage UInt16,
   memory_usage UInt16,
   cpu_usage UInt16,
   gpu_type String,
   interval_seconds UInt16,
-  gpu_provider String
+  provider String
 ) 
 ENGINE = MergeTree()
 ORDER BY (timestamp, user_id)
@@ -35,20 +34,20 @@ SETTINGS index_granularity = 8192;
 CREATE MATERIALIZED VIEW IF NOT EXISTS logs.hourly_resource_usage_mv
 REFRESH EVERY 1 HOUR
 ENGINE = MergeTree()
-ORDER BY (hour, user_id, gpu_type, gpu_provider, job_name)
+ORDER BY (hour, user_id, gpu_type, gpu_provider, job_id)
 PARTITION BY toYYYYMM(hour)
 AS SELECT
   toStartOfHour(timestamp) AS hour,
   user_id,
   gpu_type,
   gpu_provider,
-  job_name,
+  job_id,
   sum(vram_usage * interval_seconds) / 60.0 AS vram_minutes,
   sum(cpu_usage * interval_seconds) / 60.0 AS cpu_minutes,
   sum(memory_usage * interval_seconds) / 60.0 AS memory_minutes,
   count() AS event_count
 FROM logs.events
-GROUP BY hour, user_id, gpu_type, gpu_provider, job_name;
+GROUP BY hour, user_id, gpu_type, gpu_provider, job_id;
 
 -- Verify table creation
 SHOW TABLES FROM logs;

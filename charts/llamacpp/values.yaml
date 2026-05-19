@@ -20,11 +20,8 @@ litellm:
 
 billing:
   enabled: false
-  url: ""
-  apiKey: ""
-  eventName: ""
-  interval: 0
-  externalCustomerId: ""
+  interval: 60
+  userId: ""
 
 autoscaling:
   enabled: false
@@ -46,6 +43,9 @@ system:
   cpus: 2
   memory: 8
 
-ingress:
-  enabled: false
-  subdomain: spaces.kalavai.net
+service:
+  stickySession: false
+  stickySessionTimeoutSeconds: 3600
+  ingress:
+    enabled: false
+    subdomain: spaces.kalavai.net

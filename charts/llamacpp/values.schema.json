@@ -61,16 +61,29 @@
             }
          }
       },
-      "ingress": {
+      "service": {
          "type": "object",
          "properties": {
-            "enabled": {
+            "stickySession": {
                "type": "boolean",
-               "description": "Enable ingress for the model"
+               "description": "Enable sticky session for the model"
             },
-            "subdomain": {
-               "type": "string",
-               "description": "Subdomain to use for the model"
+            "stickySessionTimeoutSeconds": {
+               "type": "integer",
+               "description": "Sticky session timeout in seconds"
+            },
+            "ingress": {
+               "type": "object",
+               "properties": {
+                  "enabled": {
+                     "type": "boolean",
+                     "description": "Enable ingress for the model"
+                  },
+                  "subdomain": {
+                     "type": "string",
+                     "description": "Subdomain to use for the model"
+                  }
+               }
             }
          }
       },
@@ -124,29 +137,21 @@
          "type": "object",
          "properties": {
             "enabled": {
-               "description": "Enable billing integration",
-               "type": "boolean",
-               "default": false
+               "type": "boolean"
             },
-            "url": {
-               "description": "Base URL of the Billing service (payment system)",
-               "type": "string"
-            },
-            "apiKey": {
-               "description": "Master key of the Billing service",
-               "type": "string"
-            },
-            "externalCustomerId": {
-               "description": "ID of the Billing customer to send events to",
-               "type": "string"
-            },
-            "eventName": {
-               "description": "Event name to use when submitting event to Billing payment API",
-               "type": "string"
+            "userId": {
+               "description": "User ID to associate with the billing events",
+               "type": [
+                  "string",
+                  "null"
+               ]
             },
             "interval": {
                "description": "Interval in seconds to send the billing event",
-               "type": "number"
+               "type": [
+                  "integer",
+                  "null"
+               ]
             }
          }
       },

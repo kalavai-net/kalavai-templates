@@ -14,9 +14,9 @@ spec:
     name: {{ .Release.Name }}-llamacpp-service
     port: 8080           
     targetPort: 8080     
-    stickySession: true  
-    stickySessionTimeoutSeconds: 10800
-  {{- if .Values.ingress.enabled }}
+    stickySession: {{ .Values.service.stickySession }}
+    stickySessionTimeoutSeconds: {{ .Values.service.stickySessionTimeoutSeconds }}
+  {{- if .Values.service.ingress.enabled }}
     type: ClusterIP
   {{- else }}
     type: NodePort
@@ -25,7 +25,7 @@ spec:
     enabled: {{ .Values.autoscaling.enabled }}
   {{- if .Values.autoscaling.enabled }}   
     hosts:
-      - {{ .Release.Name }}-{{ .Release.Namespace }}-llamacpp.spaces.kalavai.net    
+      - {{ .Release.Name }}-{{ .Release.Namespace }}-llamacpp.{{ .Values.service.ingress.subdomain }}   
     pathPrefixes:
       - "/"              
     replicas:
@@ -40,8 +40,83 @@ spec:
       # concurrency:
       #   targetValue: 10
   {{- end }}
+{{- if .Values.litellm.enabled }}
+  initHook:
+    # Used for model registration
+    spec:
+      containers:
+      - name: registrar-sidecar
+        image: ghcr.io/kalavai-net/kalavai-registrar:latest
+        imagePullPolicy: Always
+        command:
+        - sh
+        - -c
+        - |
+          # 1. register model
+          echo "REGISTER MODEL WITH GATEWAY..."
+        {{- if .Values.litellm.waitReady }}
+          echo "Waiting for model service to be up..."
+          /workspace/wait_for_service.sh --servers="$GLOBAL_SERVICE_ADDRESS" --port=$GLOBAL_SERVICE_PORT
+        {{- end }}
+          export MODEL_API_BASE="http://$GLOBAL_SERVICE_ADDRESS:$GLOBAL_SERVICE_PORT/v1";
+          /workspace/start_point.sh \
+            --litellm_kalavai_extras='{{ .Values.litellm.kalavaiExtras }}' \
+            --litellm_access_group={{ .Values.litellm.accessGroup }}
+        env:
+        - name: LITELLM_MODEL_NAME
+        {{- if .Values.litellm.modelNameOverride }}
+          value: "{{ .Values.litellm.modelNameOverride }}"
+        {{- else }}
+          {{- if .Values.llamacpp.quant }}
+          value: "{{ .Values.llamacpp.repoId }}-{{ .Values.llamacpp.quant }}"
+          {{- else }}
+          value: "{{ .Values.llamacpp.repoId }}"
+          {{- end }}
+        {{- end }}
+        - name: LITELLM_BASE_URL
+          value: {{ .Values.litellm.baseUrl }}
+        - name: LITELLM_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-llamacpp-secret
+              key: litellm_key
+        - name: MODEL_ID
+        {{- if .Values.llamacpp.quant }}
+          value: "{{ .Values.llamacpp.repoId }}-{{ .Values.llamacpp.quant }}"
+        {{- else }}
+          value: "{{ .Values.llamacpp.repoId }}"
+        {{- end }}
+        - name: DEPLOYMENT_ID
+          value: {{ .Release.Name }}
+        - name: PROVIDER
+          value: {{ .Values.litellm.provider }}
+  finalizerHook:
+    # Used for model deregistration
+    spec:
+      containers:
+      - name: registrar-sidecar
+        image: ghcr.io/kalavai-net/kalavai-registrar:latest
+        imagePullPolicy: Always
+        command:
+        - sh
+        - -c
+        - |
+          # 1. deregister model
+          /workspace/cleanup.sh
+        env:
+        - name: LITELLM_BASE_URL
+          value: {{ .Values.litellm.baseUrl }}
+        # secret may be deleted before this is run, so hardcode the key
+        - name: LITELLM_KEY
+          value: {{ .Values.litellm.key }}
+        - name: DEPLOYMENT_ID
+          value: {{ .Release.Name }}
+{{- end }}
   server:
     spec:
+      metadata:
+        labels:
+          billing: {{ .Values.billing.enabled | quote }}
       terminationGracePeriodSeconds: 60
     {{- if eq .Values.system.backend "cuda" }}
       runtimeClassName: nvidia
@@ -153,49 +228,36 @@ spec:
             amd.com/gpu: 1
           {{ end }}
             ephemeral-storage: {{ .Values.system.workingMemory}}Gi
-    {{- if or .Values.billing.enabled .Values.litellm.enabled }}  
-      - name: registrar-sidecar
+    {{- if .Values.billing.enabled }}  
+      - name: billing-sidecar
         image: ghcr.io/kalavai-net/kalavai-registrar:latest
         imagePullPolicy: Always
         command:
         - sh
         - -c
         - |
-          PS_HOST=`cat /etc/volcano/server.host`;
-        {{- if .Values.litellm.enabled }}
-          # 1. register model
-          echo "REGISTER MODEL WITH GATEWAY..."
-          {{- if .Values.litellm.waitReady }}
-          /workspace/wait_for_service.sh --servers="$PS_HOST" --port=8080
-          {{- else }}
-          /workspace/wait_for_ping.sh --servers="$PS_HOST"
-          {{- end }}
-          export MODEL_API_BASE="http://"$PS_HOST"."$VC_NAMESPACE":8080/v1";
-          /workspace/start_point.sh \
-            --litellm_kalavai_extras='{{ .Values.litellm.kalavaiExtras }}' \
-            --litellm_access_group={{ .Values.litellm.accessGroup }}
-        {{- end }}
-        {{- if .Values.billing.enabled }}
-          # 2. Fetch node Info
+          # 1. Fetch node Info
           echo "FETCH NODE INFO..."
-          REGION=$(python3 get_node_label_value.py --in-cluster --node-name $NODE_NAME --label-key kalavai/region)
-          INSTANCE=$(python3 get_node_label_value.py --in-cluster --node-name $NODE_NAME --label-key kalavai/instance)
-          echo "REGION: $REGION"
-          echo "INSTANCE: $INSTANCE"
+          PROVIDER=$(python3 get_node_label_value.py --in-cluster --node-name $NODE_NAME --label-key kalavai/region)
+          GPU_TYPE=$(python3 get_node_label_value.py --in-cluster --node-name $NODE_NAME --label-key kalavai/instance)
+          echo "PROVIDER: $PROVIDER"
+          echo "GPU_TYPE: $GPU_TYPE"
 
-          # 3. Wait for model to be ready
-          echo "WAIT FOR MODEL TO BE READY at $PS_HOST:8080..."
-          /workspace/wait_for_service.sh --servers="$PS_HOST" --port=8080
+          # 2. Wait for model to be ready
+          echo "WAIT FOR MODEL TO BE READY at $GLOBAL_SERVICE_ADDRESS:$GLOBAL_SERVICE_PORT..."
+          /workspace/wait_for_service.sh --servers="$GLOBAL_SERVICE_ADDRESS" --port=$GLOBAL_SERVICE_PORT
 
-          # 4. start heartbeat
+          # 3. start heartbeat
           # VRAM USAGE / minute = billingInterval(mins) * gpuMemPerWorker  * NumWorkers
           {{- $vramUsage := mul (mul .Values.billing.interval .Values.system.workerGpuMemory) .Values.system.workers }}
-          export EVENT_PROPERTIES='{"provider": "'$REGION'", "instance": "'$INSTANCE'", "vram_usage": '{{ $vramUsage }}'}' 
+          {{- $cpuUsage := mul (mul .Values.billing.interval .Values.system.cpus) .Values.system.workers }}
+          {{- $memoryUsage := mul (mul .Values.billing.interval .Values.system.memory) .Values.system.workers }}
+          VRAM_USAGE={{ $vramUsage }}
+          CPU_USAGE={{ $cpuUsage }}
+          MEMORY_USAGE={{ $memoryUsage }}
+          JOB_ID={{ .Values.system.jobId }}
           echo "START HEARTBEAT..."
-          python3 billing_heartbeat.py
-        {{- else }}
-          tail -f /dev/null
-        {{- end }}
+          python3 usage_event_generator.py
         env:
         - name: NODE_NAME
           valueFrom:
@@ -205,71 +267,17 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-      {{- if .Values.litellm.enabled }}
-        - name: LITELLM_MODEL_NAME
-        {{- if .Values.litellm.modelNameOverride }}
-          value: "{{ .Values.litellm.modelNameOverride }}"
-        {{- else }}
-          {{- if .Values.llamacpp.quant }}
-          value: "{{ .Values.llamacpp.repoId }}-{{ .Values.llamacpp.quant }}"
-          {{- else }}
-          value: "{{ .Values.llamacpp.repoId }}"
-          {{- end }}
-        {{- end }}
-        {{- if .Values.litellm.baseUrl}}
-        - name: LITELLM_BASE_URL
-          value: {{ .Values.litellm.baseUrl }}
-        {{- end }}
-        {{- if .Values.litellm.baseUrl}}
-        - name: LITELLM_KEY
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Release.Name }}-llamacpp-secret
-              key: litellm_key
-        {{- end }}
-        - name: MODEL_ID
-        {{- if .Values.llamacpp.quant }}
-          value: "{{ .Values.llamacpp.repoId }}-{{ .Values.llamacpp.quant }}"
-        {{- else }}
-          value: "{{ .Values.llamacpp.repoId }}"
-        {{- end }}
-        - name: DEPLOYMENT_ID
-          value: {{ .Release.Name }}
-        - name: PROVIDER
-          value: {{ .Values.litellm.provider }}
-      {{- end }}
-      {{- if .Values.billing.enabled }}
-        - name: FLEXPRICE_URL
-          value: {{ .Values.billing.url }}
-        - name: FLEXPRICE_API_KEY
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Release.Name }}-llamacpp-secret
-              key: billing_api_key
-        - name: EVENT_NAME
-          value: {{ .Values.billing.eventName }}
-        - name: EVENT_EXTERNAL_CUSTOMER_ID
-          value: {{ .Values.billing.externalCustomerId }}
-        - name: HEARTBEAT_INTERVAL
+        - name: USER_ID
+          value: {{ .Values.billing.userId }}
+        - name: INTERVAL_SECONDS
           value: {{ .Values.billing.interval | quote }}
-      {{- end }}
-      {{- if .Values.litellm.enabled }}
-        lifecycle:
-          preStop:
-            exec:
-              command: 
-              - sh
-              - -c
-              - |
-                /workspace/cleanup.sh
-      {{- end }}
         resources:
           requests:
             cpu: 0.05
             memory: 64Mi
           limits:
-            cpu: 0.2
-            memory: 256Mi
+            cpu: 0.1
+            memory: 128Mi
     {{- end }}
     policy:
     - event: PodFailed
@@ -386,7 +394,7 @@ spec:
     - event: Unknown
       action: ReplacePod
 ---
-{{- if .Values.ingress.enabled }}
+{{- if .Values.service.ingress.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -396,7 +404,7 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-  - host: {{ .Release.Name }}-{{ .Release.Namespace }}-llamacpp.spaces.kalavai.net
+  - host: {{ .Release.Name }}-{{ .Release.Namespace }}-llamacpp.{{ .Values.service.ingress.subdomain }}
     http:
       paths:
       - backend:

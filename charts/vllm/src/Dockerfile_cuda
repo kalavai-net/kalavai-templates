@@ -20,7 +20,7 @@ COPY common_requirements.txt .
 #RUN . /home/ray/workspace/env/bin/activate && \
 
 RUN pip install -r common_requirements.txt --no-cache-dir
-RUN pip install --timeout 300 --retries 3 vllm[audio,video,grpc,flashinfer]==$PIP_VLLM_VERSION --no-cache-dir && \
+RUN pip install --timeout 300 --retries 3 vllm[audio,video]==$PIP_VLLM_VERSION --no-cache-dir && \
     pip install -U scipy --no-cache-dir
 
 # Fix for Gemma 4 models requiring newer transformers

@@ -235,38 +235,17 @@
             "enabled": {
                "type": "boolean"
             },
-            "url": {
-               "description": "Base URL of the billing service (payment system)",
+            "userId": {
+               "description": "User ID to associate with the billing events",
                "type": [
                   "string",
                   "null"
                ]
             },
-            "apiKey": {
-               "description": "Master key of the billing service",
-               "type": [
-                  "string",
-                  "null"
-               ]
-            },
-            "externalSubscriptionId": {
-               "description": "ID of the billing subscription to send events to",
-               "type": [
-                  "string",
-                  "null"
-               ]
-            },
-            "eventCode": {
-               "description": "Event code to use when submitting event to billing payment API",
-               "type": [
-                  "string",
-                  "null"
-               ]
-            },
-            "eventInterval": {
+            "interval": {
                "description": "Interval in seconds to send the billing event",
                "type": [
-                  "string",
+                  "integer",
                   "null"
                ]
             }

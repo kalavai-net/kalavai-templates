@@ -51,11 +51,8 @@ lmcache:
 
 billing:
   enabled: false
-  url: ""
-  apiKey: ""
-  eventName: ""
-  interval: 0
-  externalCustomerId: ""
+  interval: 60
+  userId: ""
 
 system:
   queue: default

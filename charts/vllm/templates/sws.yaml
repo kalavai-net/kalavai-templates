@@ -106,6 +106,9 @@ spec:
 {{- end }}
   server:
     spec:
+      metadata:
+        labels:
+          billing: {{ .Values.billing.enabled | quote }}
       terminationGracePeriodSeconds: 60
     {{- if eq .Values.system.backend "cuda" }}
       runtimeClassName: nvidia
@@ -288,10 +291,10 @@ spec:
         - |
           # 1. Fetch node Info
           echo "FETCH NODE INFO..."
-          REGION=$(python3 get_node_label_value.py --in-cluster --node-name $NODE_NAME --label-key kalavai/region)
-          INSTANCE=$(python3 get_node_label_value.py --in-cluster --node-name $NODE_NAME --label-key kalavai/instance)
-          echo "REGION: $REGION"
-          echo "INSTANCE: $INSTANCE"
+          PROVIDER=$(python3 get_node_label_value.py --in-cluster --node-name $NODE_NAME --label-key kalavai/region)
+          GPU_TYPE=$(python3 get_node_label_value.py --in-cluster --node-name $NODE_NAME --label-key kalavai/instance)
+          echo "PROVIDER: $PROVIDER"
+          echo "GPU_TYPE: $GPU_TYPE"
 
           # 2. Wait for model to be ready
           echo "WAIT FOR MODEL TO BE READY at $GLOBAL_SERVICE_ADDRESS:$GLOBAL_SERVICE_PORT..."
@@ -300,9 +303,14 @@ spec:
           # 3. start heartbeat
           # VRAM USAGE / minute = billingInterval(mins) * gpuMemPerWorker  * NumWorkers
           {{- $vramUsage := mul (mul .Values.billing.interval .Values.system.workerGpuMemory) .Values.system.workers }}
-          export EVENT_PROPERTIES='{"provider": "'$REGION'", "instance": "'$INSTANCE'", "vram_usage": '{{ $vramUsage }}'}' 
+          {{- $cpuUsage := mul (mul .Values.billing.interval .Values.system.cpus) .Values.system.workers }}
+          {{- $memoryUsage := mul (mul .Values.billing.interval .Values.system.memory) .Values.system.workers }}
+          VRAM_USAGE={{ $vramUsage }}
+          CPU_USAGE={{ $cpuUsage }}
+          MEMORY_USAGE={{ $memoryUsage }}
+          JOB_ID={{ .Values.system.jobId }}
           echo "START HEARTBEAT..."
-          python3 billing_heartbeat.py
+          python3 usage_event_generator.py
         env:
         - name: NODE_NAME
           valueFrom:
@@ -312,26 +320,17 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        - name: FLEXPRICE_URL
-          value: {{ .Values.billing.url }}
-        - name: FLEXPRICE_API_KEY
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Release.Name }}-vllm-secret
-              key: billing_api_key
-        - name: EVENT_NAME
-          value: {{ .Values.billing.eventName }}
-        - name: EVENT_EXTERNAL_CUSTOMER_ID
-          value: {{ .Values.billing.externalCustomerId }}
-        - name: HEARTBEAT_INTERVAL
+        - name: USER_ID
+          value: {{ .Values.billing.userId }}
+        - name: INTERVAL_SECONDS
           value: {{ .Values.billing.interval | quote }}
         resources:
           requests:
             cpu: 0.05
             memory: 64Mi
           limits:
-            cpu: 0.2
-            memory: 256Mi
+            cpu: 0.1
+            memory: 128Mi
     {{- end }}
       volumes:
       - name: dshm

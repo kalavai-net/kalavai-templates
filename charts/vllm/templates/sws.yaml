@@ -169,6 +169,7 @@ spec:
         {{- if gt (int .Values.system.workers) 1 }}
           RAY_memory_usage_threshold=0.99 RAY_BACKEND_LOG_LEVEL=error /home/ray/workspace/ray_init.sh leader --ray_cluster_size={{ .Values.system.workers}} --ray_object_store_memory=1;
           sleep 30;
+          ray status;
         {{- else }}
           echo "Skipping ray init"
         {{- end }}
@@ -178,7 +179,6 @@ spec:
           rocm-smi;
           python -c "import torch; print(torch.cuda.device_count(), torch.cuda.get_device_name(0))";
         {{- end }}
-          ray status;
           # Run model
           echo "Total parallelism: {{ mul .Values.system.workers .Values.system.gpus }}";
           /home/ray/workspace/run_model.sh \

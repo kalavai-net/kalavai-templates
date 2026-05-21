@@ -99,7 +99,6 @@ spec:
             {{ end }}
           {{- end }}
       {{- end }}
-      priorityClassName: "kalavai-system-priority"
       containers:
       - name: redis
         image: redis:7.4.0

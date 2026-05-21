@@ -168,7 +168,7 @@ spec:
         {{- end }}
         {{- if gt (int .Values.system.workers) 1 }}
           RAY_memory_usage_threshold=0.99 RAY_BACKEND_LOG_LEVEL=error /home/ray/workspace/ray_init.sh leader --ray_cluster_size={{ .Values.system.workers}} --ray_object_store_memory=1;
-          sleep 30;
+          sleep 10;
           ray status;
         {{- else }}
           echo "Skipping ray init"
@@ -306,13 +306,14 @@ spec:
 
           # 3. start heartbeat
           # VRAM USAGE / minute = billingInterval(mins) * gpuMemPerWorker  * NumWorkers
-          {{- $vramUsage := mul (mul .Values.billing.interval .Values.system.workerGpuMemory) .Values.system.workers }}
-          {{- $cpuUsage := mul (mul .Values.billing.interval .Values.system.cpus) .Values.system.workers }}
-          {{- $memoryUsage := mul (mul .Values.billing.interval .Values.system.memory) .Values.system.workers }}
-          VRAM_USAGE={{ $vramUsage }}
-          CPU_USAGE={{ $cpuUsage }}
-          MEMORY_USAGE={{ $memoryUsage }}
+          {{- $vramAmount := mul (mul .Values.billing.interval .Values.system.workerGpuMemory) .Values.system.workers }}
+          {{- $cpuAmount := mul (mul .Values.billing.interval .Values.system.cpus) .Values.system.workers }}
+          {{- $memoryAmount := mul (mul .Values.billing.interval .Values.system.memory) .Values.system.workers }}
+          VRAM_AMOUNT={{ $vramAmount }}
+          CPU_AMOUNT={{ $cpuAmount }}
+          MEMORY_AMOUNT={{ $memoryAmount }}
           JOB_ID={{ .Values.system.jobId }}
+          EVENT_TYPE=usage
           echo "START HEARTBEAT..."
           python3 usage_event_generator.py
         env:

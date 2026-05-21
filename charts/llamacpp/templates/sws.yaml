@@ -249,12 +249,13 @@ spec:
 
           # 3. start heartbeat
           # VRAM USAGE / minute = billingInterval(mins) * gpuMemPerWorker  * NumWorkers
-          {{- $vramUsage := mul (mul .Values.billing.interval .Values.system.workerGpuMemory) .Values.system.workers }}
-          {{- $cpuUsage := mul (mul .Values.billing.interval .Values.system.cpus) .Values.system.workers }}
-          {{- $memoryUsage := mul (mul .Values.billing.interval .Values.system.memory) .Values.system.workers }}
-          VRAM_USAGE={{ $vramUsage }}
-          CPU_USAGE={{ $cpuUsage }}
-          MEMORY_USAGE={{ $memoryUsage }}
+          {{- $vramAmount := mul (mul .Values.billing.interval .Values.system.workerGpuMemory) .Values.system.workers }}
+          {{- $cpuAmount := mul (mul .Values.billing.interval .Values.system.cpus) .Values.system.workers }}
+          {{- $memoryAmount := mul (mul .Values.billing.interval .Values.system.memory) .Values.system.workers }}
+          EVENT_TYPE=usage
+          VRAM_AMOUNT={{ $vramAmount }}
+          CPU_AMOUNT={{ $cpuAmount }}
+          MEMORY_AMOUNT={{ $memoryAmount }}
           JOB_ID={{ .Values.system.jobId }}
           echo "START HEARTBEAT..."
           python3 usage_event_generator.py

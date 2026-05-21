@@ -128,7 +128,7 @@ spec:
         {{- end }}
         {{- end }}
         - name: NEXT_PUBLIC_API_BASE_URL
-          value: http://{{ .Release.Name }}-deployer-backend-service:8000
+          value: http://{{ .Release.Name }}-deployer-backend-service.{{ .Release.Namespace }}:8000
           #value: https://{{ .Release.Name}}-{{ .Release.Namespace }}-deployer-backend.{{ .Values.ingress.subdomain }} #http://{{ .Release.Name }}-deployer-backend-service:8000
         - name: NEXT_PUBLIC_API_KEY
           valueFrom:

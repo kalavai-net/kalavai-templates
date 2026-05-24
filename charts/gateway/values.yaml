@@ -24,6 +24,8 @@ postgres:
 
 redis:
   enabled: false
+  cache_ttl: 3600
+  maxmemory: 1
 
 # Ingress Configuration
 ingress:

@@ -17,6 +17,7 @@ data:
       cache: true
       cache_params:
         type: redis
+        ttl: {{ .Values.redis.cache_ttl | default 3600 }}
         host: {{ .Release.Name }}-gateway-redis-service
         port: 6379
         password: os.environ/REDIS_PASSWORD

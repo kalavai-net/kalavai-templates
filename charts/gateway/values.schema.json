@@ -102,6 +102,16 @@
                "type": "boolean",
                "default": false,
                "description": "Enable redis for caching"
+            },
+            "cache_ttl": {
+               "type": "integer",
+               "default": 3600,
+               "description": "Cache TTL in seconds (cache keys cleared after this time)"
+            },
+            "maxmemory": {
+               "type": "integer",
+               "default": 2,
+               "description": "Maximum memory for redis in GB"
             }
          }
       },

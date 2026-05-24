@@ -42,7 +42,7 @@ spec:
         - "sh"
         - "-c"
         - |
-          redis-server --requirepass $REDIS_PASSWORD
+          redis-server --requirepass $REDIS_PASSWORD --maxmemory {{ .Values.redis.maxmemory }}gb
         ports:
         - containerPort: 6379
         env:
@@ -51,4 +51,11 @@ spec:
             secretKeyRef:
               name: {{.Release.Name }}-gateway-secret
               key: redis_password
+        resources:
+          requests:
+            memory: {{ .Values.redis.maxmemory}}
+            cpu: "100m"
+          limits:
+            memory: {{ .Values.redis.maxmemory}}
+            cpu: "1000m"
 {{- end }}

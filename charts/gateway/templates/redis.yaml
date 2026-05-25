@@ -53,9 +53,9 @@ spec:
               key: redis_password
         resources:
           requests:
-            memory: {{ .Values.redis.maxmemory}}
+            memory: {{ .Values.redis.maxmemory}}Gi
             cpu: "100m"
           limits:
-            memory: {{ .Values.redis.maxmemory}}
+            memory: {{ .Values.redis.maxmemory}}Gi
             cpu: "1000m"
 {{- end }}

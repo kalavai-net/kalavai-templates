@@ -5,6 +5,11 @@
       "litellm": {
          "type": "object",
          "properties": {
+            "tag": {
+               "type": "string",
+               "default": "v1.83.3-stable",
+               "description": "LiteLLM image tag"
+            },
             "replicas": {
                "type": "integer",
                "default": 1,

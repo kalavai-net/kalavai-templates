@@ -88,7 +88,7 @@ spec:
       {{- end }}
       containers:
       - name: service
-        image: "litellm/litellm:v1.83.3-stable"
+        image: "litellm/litellm:{{ .Values.litellm.tag }}"
         imagePullPolicy: IfNotPresent
         command:
         - sh

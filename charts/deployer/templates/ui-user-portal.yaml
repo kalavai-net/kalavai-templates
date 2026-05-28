@@ -92,7 +92,7 @@ spec:
         imagePullPolicy: {{ .Values.deployer.ui.image.pullPolicy }}
         ports:
         - containerPort: 3001
-          name: user-portal-port
+          name: portal-port
         env:
         {{- if .Values.system.envFromSecrets }}
         {{- range .Values.system.envFromSecrets }}

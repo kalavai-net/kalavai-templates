@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}-deployer-backend-service
+  name: {{ .Release.Name }}-deployer-backend-svc
   labels:
     kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
 spec:
@@ -20,7 +20,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}-deployer-ui-service
+  name: {{ .Release.Name }}-deployer-ui-svc
   labels:
     # must have this!
     kalavai.job.name: {{ .Values.system.jobId }}
@@ -32,6 +32,29 @@ spec:
     - name: main
       port: 3000
       targetPort: 3000
+      protocol: TCP
+  {{- if .Values.ingress.enabled }}
+  type: ClusterIP
+  {{- else }}
+  type: NodePort
+  {{- end }}
+---
+# deploy NodePort to expose model (if not using LiteLLM registration)
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-deployer-user-portal-svc
+  labels:
+    # must have this!
+    kalavai.job.name: {{ .Values.system.jobId }}
+spec:
+  selector:
+    component: user-portal
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+  ports:
+    - name: main
+      port: 3001
+      targetPort: 3001
       protocol: TCP
   {{- if .Values.ingress.enabled }}
   type: ClusterIP
@@ -56,9 +79,31 @@ spec:
       paths:
       - backend:
           service:
-            name: {{ .Release.Name }}-deployer-ui-service
+            name: {{ .Release.Name }}-deployer-ui-svc
             port:
               number: 3000 # match internal port
+        path: /
+        pathType: Prefix
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  # annotations:
+  #   traefik.ingress.kubernetes.io/router.middlewares: "{{ .Release.Namespace }}-{{ .Release.Name }}-large-body@kubernetescrd"
+  labels:
+    kalavai.job.name: {{ .Values.system.jobId }}
+  name: {{ .Release.Name }}-deployer-user-portal-ingress
+spec:
+  ingressClassName: traefik
+  rules:
+  - host: {{ .Release.Name }}-{{ .Release.Namespace }}-deployer-user-portal.{{ .Values.ingress.subdomain }}
+    http:
+      paths:
+      - backend:
+          service:
+            name: {{ .Release.Name }}-deployer-user-portal-svc
+            port:
+              number: 3001 # match internal port
         path: /
         pathType: Prefix
 {{- end }}

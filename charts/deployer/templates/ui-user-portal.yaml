@@ -2,22 +2,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-deployer-ui
+  name: {{ .Release.Name }}-deployer-user-portal
   labels:
     kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
-    component: ui
+    component: user-portal
 spec:
   replicas: {{ .Values.deployer.ui.replicas }}
   selector:
     matchLabels:
       kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
-      component: ui
+      component: user-portal
   template:
     metadata:
       labels:
         kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
-        component: ui
-        role: ui
+        component: user-portal
+        role: user-portal
     spec:
       terminationGracePeriodSeconds: 10
       {{- if .Values.system.priorityClassName }}
@@ -87,36 +87,12 @@ spec:
           {{- end }}
       {{- end }}
       containers:
-      - name: ui
-        image: "ghcr.io/kalavai-net/kalavai-deployer-ui:latest"
+      - name: user-portal
+        image: "ghcr.io/kalavai-net/kalavai-deployer-user-portal:latest"
         imagePullPolicy: {{ .Values.deployer.ui.image.pullPolicy }}
         ports:
-        - containerPort: 3000
-          name: ui-port
-        # startupProbe:
-        #   httpGet:
-        #     path: /_stcore/health
-        #     port: 3000
-        #   initialDelaySeconds: 30
-        #   periodSeconds: 60
-        #   timeoutSeconds: 3
-        #   failureThreshold: 6
-        # livenessProbe:
-        #   httpGet:
-        #     path: /_stcore/health
-        #     port: 3000
-        #   initialDelaySeconds: 40
-        #   periodSeconds: 120
-        #   timeoutSeconds: 2
-        #   failureThreshold: 2
-        # readinessProbe:
-        #   httpGet:
-        #     path: /_stcore/health
-        #     port: 3000
-        #   initialDelaySeconds: 20
-        #   periodSeconds: 180
-        #   timeoutSeconds: 2
-        #   failureThreshold: 2
+        - containerPort: 3001
+          name: user-portal-port
         env:
         {{- if .Values.system.envFromSecrets }}
         {{- range .Values.system.envFromSecrets }}
@@ -127,13 +103,8 @@ spec:
               key: {{ . }}
         {{- end }}
         {{- end }}
-        - name: NEXT_PUBLIC_API_BASE_URL
-          value: http://{{ .Release.Name }}-deployer-backend-svc.{{ .Release.Namespace }}:8000
-        - name: NEXT_PUBLIC_API_KEY
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Release.Name }}-deployer-secrets
-              key: deployer_master_key
+        - name: PUBLIC_LITELLM_URL
+          value: {{ .Values.deployer.gateway.publicUrl | quote }}
         resources:
           requests:
             cpu: 1

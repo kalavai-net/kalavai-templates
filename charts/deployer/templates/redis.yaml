@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}-deployer-redis-service
+  name: {{ .Release.Name }}-deployer-redis-svc
   labels:
     app: {{ .Release.Name }}-deployer-redis
     kalavai.job.name: {{ .Values.system.jobId }}
@@ -147,7 +147,7 @@ spec:
         - containerPort: 6379
         env:
         - name: REDIS_URL
-          value: redis://{{ .Release.Name }}-deployer-redis-service.{{ .Release.Namespace }}:6379
+          value: redis://{{ .Release.Name }}-deployer-redis-svc.{{ .Release.Namespace }}:6379
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:

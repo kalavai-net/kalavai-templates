@@ -153,7 +153,7 @@ spec:
           value: {{ .Values.deployer.memoryCapPercentage | quote }}
       {{- if .Values.redis.enabled }}
         - name: REDIS_URL
-          value: redis://{{ .Release.Name }}-deployer-redis-service.{{ .Release.Namespace }}:6379
+          value: redis://{{ .Release.Name }}-deployer-redis-svc.{{ .Release.Namespace }}:6379
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:

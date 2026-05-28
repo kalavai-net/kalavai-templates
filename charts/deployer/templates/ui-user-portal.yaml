@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-deployer-user-portal
+  name: {{ .Release.Name }}-deployer-portal
   labels:
     kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
     component: user-portal

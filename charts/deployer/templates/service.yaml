@@ -43,7 +43,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}-deployer-user-portal-svc
+  name: {{ .Release.Name }}-deployer-portal-svc
   labels:
     # must have this!
     kalavai.job.name: {{ .Values.system.jobId }}
@@ -92,16 +92,16 @@ metadata:
   #   traefik.ingress.kubernetes.io/router.middlewares: "{{ .Release.Namespace }}-{{ .Release.Name }}-large-body@kubernetescrd"
   labels:
     kalavai.job.name: {{ .Values.system.jobId }}
-  name: {{ .Release.Name }}-deployer-user-portal-ingress
+  name: {{ .Release.Name }}-deployer-portal-ingress
 spec:
   ingressClassName: traefik
   rules:
-  - host: {{ .Release.Name }}-{{ .Release.Namespace }}-deployer-user-portal.{{ .Values.ingress.subdomain }}
+  - host: {{ .Release.Name }}-{{ .Release.Namespace }}-deployer-portal.{{ .Values.ingress.subdomain }}
     http:
       paths:
       - backend:
           service:
-            name: {{ .Release.Name }}-deployer-user-portal-svc
+            name: {{ .Release.Name }}-deployer-portal-svc
             port:
               number: 3001 # match internal port
         path: /

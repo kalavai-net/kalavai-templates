@@ -10,6 +10,9 @@ spec:
     {{- if .Values.system.workerGpuMemory }}
     kalavai/vram: {{ .Values.system.workerGpuMemory | quote }}
     {{- end }}
+    {{- if .Values.billing.enabled }}
+    billing: "true"
+    {{- end }}
   service:
     name: {{ .Release.Name }}-vllm-service
     port: 8080
@@ -106,9 +109,6 @@ spec:
 {{- end }}
   server:
     spec:
-      metadata:
-        labels:
-          billing: {{ .Values.billing.enabled | quote }}
       terminationGracePeriodSeconds: 60
     {{- if eq .Values.system.backend "cuda" }}
       runtimeClassName: nvidia

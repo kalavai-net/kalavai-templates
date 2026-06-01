@@ -2157,6 +2157,26 @@ entries:
       category: llm
       status: beta
     apiVersion: v2
+    appVersion: 0.2.3
+    created: "2026-06-01T12:44:37.164126195Z"
+    description: LLM inference in C/C++
+    digest: 71a68e4e713191f0a7c8eeb10ec37f9f519cd5c695e4e1f08f17edc2b5ea6943
+    icon: https://user-images.githubusercontent.com/1991296/230134379-7181e485-c521-4d23-a0d6-f7b3b61ba524.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: llama.cpp
+    sources:
+    - https://github.com/ggml-org/llama.cpp
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/llama.cpp-0.2.3/llama.cpp-0.2.3.tgz
+    version: 0.2.3
+  - annotations:
+      category: llm
+      status: beta
+    apiVersion: v2
     appVersion: 0.2.2
     created: "2026-05-21T04:11:10.796225283Z"
     description: LLM inference in C/C++
@@ -3717,6 +3737,27 @@ entries:
       category: llm
       status: beta
     apiVersion: v2
+    appVersion: 0.2.9
+    created: "2026-06-01T12:44:37.320278927Z"
+    description: A high-throughput and memory-efficient inference and serving engine
+      for LLMs
+    digest: e46c2c3aadc415771cc2384fdef6f0c0641a8f6d26f3d6e443fdce8c35cfcfa1
+    icon: https://docs.vllm.ai/en/latest/assets/logos/vllm-logo-only-light.ico
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: vllm
+    sources:
+    - https://docs.vllm.ai/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.2.9/vllm-0.2.9.tgz
+    version: 0.2.9
+  - annotations:
+      category: llm
+      status: beta
+    apiVersion: v2
     appVersion: 0.2.8
     created: "2026-05-21T04:11:11.046855988Z"
     description: A high-throughput and memory-efficient inference and serving engine
@@ -4907,4 +4948,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-05-28T04:57:10.114433533Z"
+generated: "2026-06-01T12:44:37.321011563Z"

@@ -171,3 +171,20 @@ This script will:
 
 
 
+
+
+## vLLM CUDA test
+
+docker run -it --rm \
+    --entrypoint /bin/bash \
+    --gpus all \
+    --network=host \
+    --privileged \
+    --shm-size=3gb \
+    ghcr.io/kalavai-net/vllm-cuda:v0.20.2-2
+# or v0.20.2-cu129-ubuntu2404
+
+LMCACHE_USE_EXPERIMENTAL=true LMCACHE_CHUNK_SIZE=256 LMCACHE_MAX_LOCAL_CPU_SIZE=3.0 LMCACHE_LOCAL_CPU=true vllm serve unsloth/Mistral-Small-3.2-24B-Instruct-2506-FP8     --host 0.0.0.0 --port 8000  --kv-cache-dtype fp8     --tensor-parallel-size 2     --enable-chunked-prefill --max-num-seqs 32 --max-model-len 2000 --tool-call-parser mistral --tokenizer-mode mistral --config-format mistral --load-format mistral --kv-transfer-config '{"kv_connector":"LMCacheConnectorV1","kv_role":"kv_both"}'
+
+
+

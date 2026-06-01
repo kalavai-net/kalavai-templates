@@ -295,8 +295,8 @@ spec:
         - |
           # 1. Fetch node Info
           echo "FETCH NODE INFO..."
-          PROVIDER=$(python3 get_node_label_value.py --in-cluster --node-name $NODE_NAME --label-key kalavai/region)
-          GPU_TYPE=$(python3 get_node_label_value.py --in-cluster --node-name $NODE_NAME --label-key kalavai/instance)
+          export PROVIDER=$(python3 get_node_label_value.py --in-cluster --node-name $NODE_NAME --label-key kalavai/region)
+          export GPU_TYPE=$(python3 get_node_label_value.py --in-cluster --node-name $NODE_NAME --label-key kalavai/instance)
           echo "PROVIDER: $PROVIDER"
           echo "GPU_TYPE: $GPU_TYPE"
 
@@ -309,11 +309,6 @@ spec:
           {{- $vramAmount := mul (mul .Values.billing.interval .Values.system.workerGpuMemory) .Values.system.workers }}
           {{- $cpuAmount := mul (mul .Values.billing.interval .Values.system.cpus) .Values.system.workers }}
           {{- $memoryAmount := mul (mul .Values.billing.interval .Values.system.memory) .Values.system.workers }}
-          VRAM_AMOUNT={{ $vramAmount }}
-          CPU_AMOUNT={{ $cpuAmount }}
-          MEMORY_AMOUNT={{ $memoryAmount }}
-          JOB_ID={{ .Values.system.jobId }}
-          EVENT_TYPE=usage
           echo "START HEARTBEAT..."
           python3 usage_event_generator.py
         env:
@@ -329,6 +324,16 @@ spec:
           value: {{ .Values.billing.userId }}
         - name: INTERVAL_SECONDS
           value: {{ .Values.billing.interval | quote }}
+        - name: EVENT_TYPE
+          value: usage
+        - name: VRAM_AMOUNT
+          value: {{ $vramAmount | quote }}
+        - name: CPU_AMOUNT
+          value: {{ $cpuAmount | quote }}
+        - name: MEMORY_AMOUNT
+          value: {{ $memoryAmount | quote }}
+        - name: JOB_ID
+          value: {{ .Values.system.jobId }}
         resources:
           requests:
             cpu: 0.05

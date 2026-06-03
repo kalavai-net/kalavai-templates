@@ -189,6 +189,32 @@
       },
       "required": ["enabled"]
     },
+    "redis": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable Redis"
+        },
+        "password": {
+          "type": "string",
+          "default": "dummy",
+          "description": "Redis password"
+        },
+        "workers": {
+          "type": "integer",
+          "default": 1,
+          "description": "Number of Redis workers"
+        },
+        "resultsTTL": {
+          "type": "integer",
+          "default": 86400,
+          "description": "Results TTL in seconds"
+        }
+      },
+      "required": ["enabled", "password", "workers", "resultsTTL"]
+    },
     "system": {
       "type": "object",
       "properties": {

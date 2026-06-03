@@ -76,6 +76,13 @@ spec:
     {{- if .Values.kalavaiApi.forcedPriority }}
       forcedPriority: {{ .Values.kalavaiApi.forcedPriority }}
     {{- end }}
+    {{- if and .Values.kalavaiApi.clickhouse.endpoint }}
+      clickhouse:
+        endpoint: {{ .Values.kalavaiApi.clickhouse.endpoint }}
+        port: {{ .Values.kalavaiApi.clickhouse.port }}
+        username: {{ .Values.kalavaiApi.clickhouse.username }}
+        password: {{ .Values.kalavaiApi.clickhouse.password }}
+    {{- end }}
       # service:
       #   type: ClusterIP
 {{- end }}

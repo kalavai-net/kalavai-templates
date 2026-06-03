@@ -8,6 +8,11 @@ kalavaiApi:
   ringfenceNodeLabelValue: null
   forcedNamespace: true
   forcedPriority: null
+  clickhouse:
+    endpoint: null
+    port: 8443
+    username: default
+    password: null
 
 watcher:
   enabled: true

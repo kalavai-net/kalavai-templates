@@ -334,6 +334,8 @@ spec:
           value: {{ $memoryAmount | quote }}
         - name: JOB_ID
           value: {{ .Values.system.jobId }}
+        - name: JOB_NAME
+          value: {{ .Release.Name }}
         resources:
           requests:
             cpu: 0.05

@@ -159,12 +159,17 @@ spec:
         - sh
         - -c
         - |
+          . /home/ray/workspace/env/bin/activate
         {{- if .Values.vllm.forceVersion }}
           echo "Forcing vllm version to {{ .Values.vllm.forceVersion }}";
           pip install vllm=={{ .Values.vllm.forceVersion }} --no-cache-dir;
         {{- else }}
           echo "Using auto-detected vllm version";
           pip show vllm;
+        {{- if .Values.pip_installs }}
+          echo "Installing additional pip packages: {{ .Values.pip_installs }}";
+          pip install {{ .Values.pip_installs }} --no-cache-dir;
+        {{- end }}
         {{- end }}
         {{- if gt (int .Values.system.workers) 1 }}
           RAY_memory_usage_threshold=0.99 RAY_BACKEND_LOG_LEVEL=error /home/ray/workspace/ray_init.sh leader --ray_cluster_size={{ .Values.system.workers}} --ray_object_store_memory=1;
@@ -200,7 +205,6 @@ spec:
           {{- if .Values.vllm.loraModules }}
             --lora_modules="{{ .Values.vllm.loraModules }}";
           {{- end }}
-            --model_path="/home/ray/cache/{{ .Values.modelId }}" \
             --model_id={{ .Values.modelId}};
           exit 1
         env:
@@ -218,6 +222,8 @@ spec:
               name: {{ .Release.Name}}-vllm-secret
               key: hf_token
         {{- end }}
+        - name: VLLM_DISABLE_COMPILE_CACHE
+          value: "1"
         - name: VLLM_ENGINE_READY_TIMEOUT_S
           value: "1200"
         - name: VLLM_ENGINE_ITERATION_TIMEOUT_S
@@ -408,12 +414,17 @@ spec:
         - sh
         - -c
         - |
+          . /home/ray/workspace/env/bin/activate
         {{- if .Values.vllm.forceVersion }}
           echo "Forcing vllm version to {{ .Values.vllm.forceVersion }}";
           pip install vllm=={{ .Values.vllm.forceVersion }} --no-cache-dir;
         {{- else }}
           echo "Using auto-detected vllm version";
           pip show vllm;
+        {{- if .Values.pip_installs }}
+          echo "Installing additional pip packages: {{ .Values.pip_installs }}";
+          pip install {{ .Values.pip_installs }} --no-cache-dir;
+        {{- end }}
         {{- end }}
         {{- if eq .Values.system.backend "cuda" }}
           nvidia-smi;
@@ -438,6 +449,8 @@ spec:
               name: {{ .Release.Name}}-vllm-secret
               key: hf_token
         {{- end }}
+        - name: VLLM_DISABLE_COMPILE_CACHE
+          value: "1"
         - name: VLLM_ENGINE_READY_TIMEOUT_S
           value: "1200"
         - name: VLLM_ENGINE_ITERATION_TIMEOUT_S

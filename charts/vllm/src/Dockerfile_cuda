@@ -1,6 +1,8 @@
 FROM ghcr.io/kalavai-net/ray-base:latest AS base
 
-FROM rayproject/ray:2.54.1-py312-cu124
+FROM nvidia/cuda:12.9.2-devel-ubuntu24.04
+#FROM nvidia/cuda:13.0.0-devel-ubuntu24.04
+#FROM rayproject/ray:2.54.1-py312-cu129
 
 ARG PIP_VLLM_VERSION=0.14.0
 WORKDIR /home/ray/workspace
@@ -8,31 +10,32 @@ WORKDIR /home/ray/workspace
 # copy over ray scripts
 COPY --from=base /home/ray/workspace/ .
 
-RUN sudo apt update && sudo apt install bc wget ffmpeg curl -y && \
-    sudo rm -rf /var/lib/apt/lists/*
+RUN apt update && apt install bc wget ffmpeg curl python3-dev python3 python3-pip python3-venv git  -y && \
+    rm -rf /var/lib/apt/lists/*
 
 # install dependencies
 COPY common_requirements.txt .
 
-#pip3 install lmcache --prefer-binary --no-cache-dir && \
-# reinstalling Ray after vllm so we pin the version and submodules (otherwise vllm brings its own)
-#RUN python3 -m venv /home/ray/workspace/env
-#RUN . /home/ray/workspace/env/bin/activate && \
+RUN python3 -m venv /home/ray/workspace/env
 
-RUN pip install -r common_requirements.txt --no-cache-dir
-RUN pip install --timeout 300 --retries 3 vllm[audio,video]==$PIP_VLLM_VERSION vllm-omni --no-cache-dir && \
-    pip install -U scipy --no-cache-dir
+RUN . /home/ray/workspace/env/bin/activate && \
+    pip install -r common_requirements.txt --no-cache-dir
 
-# Fix for Gemma 4 models requiring newer transformers
-RUN pip install --upgrade transformers
+RUN . /home/ray/workspace/env/bin/activate && \
+    pip install vllm[audio,video]==$PIP_VLLM_VERSION --no-cache-dir
 
+# vllm-omni from source to ensure version compatibility
+RUN . /home/ray/workspace/env/bin/activate && \
+    git clone https://github.com/vllm-project/vllm-omni.git && \
+    cd vllm-omni && \
+    pip install -e .
 
-# install torchdec https://github.com/QwenLM/Qwen2.5-VL?tab=readme-ov-file#installing-cuda-enabled-torchcodec 
-#pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118 --no-cache-dir && \
-#RUN . /home/ray/workspace/env/bin/activate && \
-#RUN pip install torchcodec --index-url=https://download.pytorch.org/whl/cu124 --no-cache-dir
+# Voxtral / Gemma 4 issue (might be solved in >0.22.1)
+# Also seems to make inference faster for Quen3.6 35B?
+RUN . /home/ray/workspace/env/bin/activate && \
+    pip install --force-reinstall "transformers==5.9.0" --no-cache-dir
 
 COPY run_model.sh .
-RUN sudo chmod +x /home/ray/workspace/run_model.sh
+RUN chmod +x /home/ray/workspace/run_model.sh
 
 ENTRYPOINT [ "/bin/bash" ]

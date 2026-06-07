@@ -17,6 +17,8 @@ vllm:
   githubUsername: null
   githubToken: null
 
+pip_installs: null
+
 autoscaling:
   enabled: false
   minReplicas: 0

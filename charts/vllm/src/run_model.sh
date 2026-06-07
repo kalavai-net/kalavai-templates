@@ -9,9 +9,6 @@ model_name=""
 
 while [ $# -gt 0 ]; do
   case "$1" in
-    --model_path=*)
-      model_path="${1#*=}"
-      ;;
     --model_id=*)
       model_id="${1#*=}"
       ;;

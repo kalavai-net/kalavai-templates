@@ -7,7 +7,7 @@ kalavaiApi:
   ringfenceNodeLabel: null
   ringfenceNodeLabelValue: null
   forcedNamespace: true
-  forcedPriority: null
+  forcedPriority: "user-spot-priority"
   clickhouse:
     endpoint: null
     port: 8443

@@ -96,6 +96,21 @@
                      "description": "Router timeout"
                   }
                }
+            },
+            "resources": {
+               "type": "object",
+               "properties": {
+                  "cpu": {
+                     "type": "string",
+                     "default": "2",
+                     "description": "CPU resources for the LiteLLM proxy (recommended +1 for high concurrency)"
+                  },
+                  "memory": {
+                     "type": "string",
+                     "default": "2Gi",
+                     "description": "Memory resources for the LiteLLM proxy (recommended 4Gi for high concurrency)"
+                  }
+               }
             }
          },
          "required": ["ui_password", "master_key", "salt_key"]

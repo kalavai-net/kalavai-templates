@@ -19,6 +19,9 @@ litellm:
     disable_spend_logs: false
   router_settings:
     timeout: 9000
+  resources:
+    cpu: 2
+    memory: 2Gi
 
 postgres:
   external_url: null

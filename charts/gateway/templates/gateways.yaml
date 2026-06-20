@@ -157,11 +157,11 @@ spec:
           name: container-port
         resources:
           requests:
-            cpu: 1
-            memory: 1.5Gi
+            cpu: {{ .Values.litellm.resources.cpu }}
+            memory: {{ .Values.litellm.resources.memory }}
           limits:
-            cpu: 1
-            memory: 1.5Gi
+            cpu: {{ .Values.litellm.resources.cpu }}
+            memory: {{ .Values.litellm.resources.memory }}
         volumeMounts:
         - name: config-volume
           mountPath: /workspace/config.yaml

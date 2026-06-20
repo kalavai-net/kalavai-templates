@@ -205,8 +205,8 @@
                "description": "Id to tag spawned objects."
             },
             "nodeAffinityPreferenceKey": {
-               "type": "string",
-               "description": "Key to prioritise group scheduling on nodes with a matching label key value"
+               "type": ["null", "string"],
+               "description": "Node affinity preference key to use for the deployment"
             }
          }
       }

@@ -13,7 +13,7 @@
             "replicas": {
                "type": "integer",
                "default": 1,
-               "description": "Number of replicas for the frontend gateway"
+               "description": "Number of replicas for the LiteLLM proxy (+2 for high concurrency)"
             },
             "ui_password": {
                "type": "string",
@@ -103,12 +103,12 @@
                   "cpu": {
                      "type": "number",
                      "default": 1,
-                     "description": "CPU resources for the LiteLLM proxy (recommended +1 for high concurrency)"
+                     "description": "CPU resources for the LiteLLM proxy (recommended 1)"
                   },
                   "memory": {
                      "type": "number",
                      "default": 2,
-                     "description": "Memory resources for the LiteLLM proxy (recommended 4Gi for high concurrency)"
+                     "description": "Memory resources for the LiteLLM proxy (recommended 2Gi)"
                   }
                }
             }

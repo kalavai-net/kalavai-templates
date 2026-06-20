@@ -87,7 +87,7 @@
                   },
                   "database_connection_pool_limit": {
                      "type": "integer",
-                     "default": 25,
+                     "default": 10,
                      "description": "Database connection pool limit"
                   }
                }

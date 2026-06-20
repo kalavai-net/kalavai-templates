@@ -158,10 +158,10 @@ spec:
         resources:
           requests:
             cpu: {{ .Values.litellm.resources.cpu }}
-            memory: {{ .Values.litellm.resources.memory }}
+            memory: {{ .Values.litellm.resources.memory }}Gi
           limits:
             cpu: {{ .Values.litellm.resources.cpu }}
-            memory: {{ .Values.litellm.resources.memory }}
+            memory: {{ .Values.litellm.resources.memory }}Gi
         volumeMounts:
         - name: config-volume
           mountPath: /workspace/config.yaml

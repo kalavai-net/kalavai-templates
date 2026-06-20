@@ -20,8 +20,8 @@ litellm:
   router_settings:
     timeout: 9000
   resources:
-    cpu: 2
-    memory: 2Gi
+    cpu: 1
+    memory: 2
 
 postgres:
   external_url: null

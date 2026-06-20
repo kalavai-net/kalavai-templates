@@ -101,13 +101,13 @@
                "type": "object",
                "properties": {
                   "cpu": {
-                     "type": "string",
-                     "default": "2",
+                     "type": "number",
+                     "default": 1,
                      "description": "CPU resources for the LiteLLM proxy (recommended +1 for high concurrency)"
                   },
                   "memory": {
-                     "type": "string",
-                     "default": "2Gi",
+                     "type": "number",
+                     "default": 2,
                      "description": "Memory resources for the LiteLLM proxy (recommended 4Gi for high concurrency)"
                   }
                }

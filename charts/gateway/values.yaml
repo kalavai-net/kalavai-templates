@@ -45,5 +45,6 @@ system:
   priorityClassName: user-spot-priority
   nodeSelectors: null
   nodeSelectorsOps: OR
+  nodeAffinityPreferenceKey: null
   jobId: null
   envFromSecrets: {}

@@ -34,6 +34,41 @@ spec:
         app: {{ .Release.Name }}-gateway-redis
         kalavai.job.name: {{ .Values.system.jobId }}
     spec:
+      affinity:
+      {{- if .Values.system.nodeAffinityPreferenceKey }}
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  kalavai.job.name: {{ .Values.system.jobId }}
+              topologyKey: {{ .Values.system.nodeAffinityPreferenceKey }}
+      {{- end }}
+      {{- if .Values.system.nodeSelectors }}
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+          {{ if eq .Values.system.nodeSelectorsOps "OR" }}
+            {{ range $k, $v := .Values.system.nodeSelectors }}
+            - matchExpressions:
+              - key: {{$k}}
+                operator: In
+                values:
+                {{ range $v }}
+                - "{{ . }}"
+                {{ end }}
+            {{ end }}
+          {{ else }}
+            - matchExpressions:
+            {{ range $k, $v := .Values.system.nodeSelectors }}
+              {{ range $v }}
+              - key: {{ $k }}
+                operator: In
+                values:
+                - "{{ . }}"
+              {{ end }}
+            {{ end }}
+          {{ end }}
+      {{- end }}
       priorityClassName: "kalavai-system-priority"
       containers:
       - name: redis

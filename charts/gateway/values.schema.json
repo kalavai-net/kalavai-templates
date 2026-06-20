@@ -84,6 +84,11 @@
                      "type": "boolean",
                      "default": false,
                      "description": "Disable spend logs"
+                  },
+                  "database_connection_pool_limit": {
+                     "type": "integer",
+                     "default": 25,
+                     "description": "Database connection pool limit"
                   }
                }
             },

@@ -17,6 +17,7 @@ litellm:
     disable_prisma_schema_update: false
     disable_error_logs: false
     disable_spend_logs: false
+    database_connection_pool_limit: 25
   router_settings:
     timeout: 9000
   resources:

@@ -46,7 +46,7 @@ data:
       disable_spend_logs: {{ .Values.litellm.general_settings.disable_spend_logs | default false }}
       #maximum_spend_logs_retention_period: "90d"  # Delete logs older than X days
       #enforce_user_param: true
-      # database_connection_pool_limit: {{ .Values.litellm.general_settings.database_connection_pool_limit }}
+      database_connection_pool_limit: {{ .Values.litellm.general_settings.database_connection_pool_limit }}
       # database_connection_timeout: {{ .Values.litellm.general_settings.database_connection_timeout }}
       # allow_requests_on_db_unavailable: {{ .Values.litellm.general_settings.allow_requests_on_db_unavailable }}
 

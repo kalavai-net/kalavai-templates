@@ -28,6 +28,10 @@ autoscaling:
   minReplicas: 0
   maxReplicas: 1
 
+loadBalancer:
+  enabled: true
+  trafficPolicy: LEAST_REQUEST
+
 system:
   replicas: 1
   workers: 1

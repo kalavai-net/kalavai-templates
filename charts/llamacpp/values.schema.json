@@ -44,6 +44,20 @@
             }
          }
       },
+      "loadBalancer": {
+         "type": "object",
+         "properties": {
+            "enabled": {
+               "type": "boolean",
+               "description": "Enable load balancer for the model"
+            },
+            "trafficPolicy": {
+               "type": "string",
+               "description": "Traffic policy for the load balancer",
+               "enum": ["ROUND_ROBIN", "LEAST_REQUEST", "RANDOM"]
+            }
+         }
+      },
       "autoscaling": {
          "type": "object",
          "properties": {
@@ -156,6 +170,7 @@
          }
       },
       "system": {
+         "type": "object",
          "properties": {
             "replicas": {
                "type": "integer",

@@ -24,6 +24,9 @@ spec:
   {{- else }}
     type: NodePort
   {{- end }}  
+  loadBalancer:
+    enabled: {{ .Values.loadBalancer.enabled }}
+    trafficPolicy: {{ .Values.loadBalancer.trafficPolicy }}
   autoScaling:
     enabled: {{ .Values.autoscaling.enabled }}
   {{- if .Values.autoscaling.enabled }}   
@@ -149,7 +152,7 @@ spec:
           {{ end }}
       {{- end }}
       {{- if .Values.billing.enabled }}
-      serviceAccountName: kalavai-downstream-api-reader-sa
+      serviceAccountName: reader-sa
       {{- end }}
       containers:
       - name: vllm-leader
@@ -281,9 +284,9 @@ spec:
             memory: {{ add .Values.system.memory .Values.vllm.sharedMemory }}Gi
           {{ if eq .Values.system.backend "cuda" }}
             nvidia.com/gpu: {{ .Values.system.gpus }}
-            # {{ if .Values.system.workerGpuMemory }}
-            # nvidia.com/gpumem: {{ .Values.system.workerGpuMemory}}
-            # {{ end }}
+            {{ if .Values.system.workerGpuMemory }}
+            nvidia.com/gpumem: {{ mul .Values.system.workerGpuMemory 1000 }}
+            {{ end }}
           {{ else if eq .Values.system.backend "rocm" }}
             amd.com/gpu: {{ .Values.system.gpus }}
           {{ end }}
@@ -499,9 +502,9 @@ spec:
             memory: {{ add .Values.system.memory .Values.vllm.sharedMemory }}Gi
           {{ if eq .Values.system.backend "cuda" }}
             nvidia.com/gpu: {{ .Values.system.gpus }}
-            # {{ if .Values.system.workerGpuMemory }}
-            # nvidia.com/gpumem: {{ .Values.system.workerGpuMemory}}
-            # {{ end }}
+            {{ if .Values.system.workerGpuMemory }}
+            nvidia.com/gpumem: {{ mul .Values.system.workerGpuMemory 1000 }}
+            {{ end }}
           {{ else if eq .Values.system.backend "rocm" }}
             amd.com/gpu: {{ .Values.system.gpus }}
           {{ end }}

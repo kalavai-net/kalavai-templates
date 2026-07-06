@@ -10,3 +10,8 @@ Must have the jupyterhub package installed to match the deployment chart version
 
 docker build -t ghcr.io/kalavai-net/jupyterhub-cpu:latest .
 docker push ghcr.io/kalavai-net/jupyterhub-cpu:latest
+
+docker build -t ghcr.io/kalavai-net/jupyterhub-gpu:latest -f Dockerfile_cuda .
+docker push ghcr.io/kalavai-net/jupyterhub-gpu:latest
+
+

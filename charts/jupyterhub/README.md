@@ -28,3 +28,25 @@ helm install coder oci://ghcr.io/coder/chart/coder \
     --values coder_values.yaml \
     --version 2.29.5
 ```
+
+
+## Expose local services
+
+
+To expose local services within the jupyter instance, we use jupyter-server-proxy. Bind the local service to a port, then access it via:
+
+```bash
+http://<jupyter hub address>/user/<username>/proxy/<port>
+```
+
+The requests from external clients will need authentication:
+
+1. Open your JupyterHub interface in your web browser.
+
+2. In the top menu, go to File -> Hub Control Panel (or navigate directly to http://localhost:32190/hub/token).
+
+3. Click on Request new API token.
+
+4. Copy the long string of characters it generates.
+
+Then authenticate with a header "Authorization: token XXXXXXXXX" where XXXXXXXXX is the token you copied.

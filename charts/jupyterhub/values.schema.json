@@ -145,6 +145,10 @@
             "jobId": {
                "type": "string",
                "description": "Id to tag spawned objects."
+            },
+            "workerGpuMemory": {
+               "type": ["number", "null"],
+               "description": "Worker GPU memory limit in GB (multiplied by 1000 for nvidia.com/gpumem resource)"
             }
          }
       }

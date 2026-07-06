@@ -44,6 +44,7 @@ spec:
         name: jupyterhub/k8s-hub
         tag: "4.3.1"
     singleuser:
+      allowPrivilegeEscalation: false
       networkPolicy:
         enabled: true
         egress:
@@ -71,9 +72,8 @@ spec:
       startTimeout: 7200
       # Allocate GPU resources
       profileList:
-      {{- if .Values.distributed.enabled }}
         - display_name: "CPU only"
-          description: "Spawns a notebook server (connect to Ray to access GPUs)"
+          description: "Spawns a notebook server (cpu only)"
           kubespawner_override:
           {{- if .Values.singleuser.image.imagePullSecrets }}
             imagePullSecrets:
@@ -82,7 +82,10 @@ spec:
             {{- end }}
           {{- end }}
             image: {{ .Values.singleuser.image.cpu.name }}
-      {{- else }}
+            args:
+            - "--allow-root"
+            uid: 0
+            privileged: false
         - display_name: "GPU Server"
           default: true
           description: "Spawns a notebook server with access to a GPU"
@@ -95,15 +98,14 @@ spec:
           {{- end }}
             image: {{ .Values.singleuser.image.gpu.name }}
             extra_resource_limits:
-              nvidia.com/gpu: "1"
-            # Allow sudo access
-            environment:
-              GRANT_SUDO: "yes"
+              nvidia.com/gpu: "{{ .Values.singleuser.gpuCount }}"
+            {{ if .Values.system.workerGpuMemory }}
+              nvidia.com/gpumem: {{ mul .Values.system.workerGpuMemory 1000 }}
+            {{ end }}
             args:
             - "--allow-root"
             uid: 0
-            privileged: false # error allowPrivilegeEscalation: false
-      {{- end }}
+            privileged: false
       # establish resource limits
       memory:
         limit: {{ .Values.singleuser.memory }}G

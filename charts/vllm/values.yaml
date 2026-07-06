@@ -24,6 +24,10 @@ autoscaling:
   minReplicas: 0
   maxReplicas: 1
 
+loadBalancer:
+  enabled: true
+  trafficPolicy: LEAST_REQUEST
+
 service:
   stickySession: false
   stickySessionTimeoutSeconds: 3600

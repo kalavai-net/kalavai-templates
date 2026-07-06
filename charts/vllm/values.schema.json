@@ -95,6 +95,20 @@
          "type": ["string", "null"],
          "description": "Additional pip packages to install"
       },
+      "loadBalancer": {
+         "type": "object",
+         "properties": {
+            "enabled": {
+               "type": "boolean",
+               "description": "Enable load balancer for the vLLM service"
+            },
+            "trafficPolicy": {
+               "type": "string",
+               "enum": ["LEAST_REQUEST", "ROUND_ROBIN", "RANDOM"],
+               "description": "Traffic policy for the load balancer"
+            }
+         }
+      },
       "autoscaling": {
          "type": "object",
          "properties": {
@@ -294,9 +308,9 @@
                "type": ["null", "string"],
                "description": "Node affinity preference key to use for the deployment"
             },
-            "workingGpuMemory": {
+            "workerGpuMemory": {
                "type": ["number", "null"],
-               "description": "Working GPU memory to be used per single worker (final one = working_gpu_memory * workers). Workers should have these many GB of working GPU memory available."
+               "description": "Worker GPU memory limit in GB (multiplied by 1000 for nvidia.com/gpumem resource)"
             },
             "workingMemory": {
                "description": "Temporary storage to use to cache model weights (in GB), should be big enough to hold the model weights. All workers should have enough free disk to accommodate the weights.",

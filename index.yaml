@@ -898,6 +898,26 @@ entries:
       category: development
       status: release
     apiVersion: v2
+    appVersion: 0.2.0
+    created: "2026-07-06T13:54:14.776903606Z"
+    description: Access to JupyterHub instance for terminal and jupyter notebooks
+    digest: 28a8628367904267bbbd1d80e30a2d3302a18b41ee046afab5faca1c9709a37c
+    icon: https://jupyter.org/assets/homepage/hublogo.svg
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: jupyterhub
+    sources:
+    - https://jupyter.org/hub
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/jupyterhub-0.2.0/jupyterhub-0.2.0.tgz
+    version: 0.2.0
+  - annotations:
+      category: development
+      status: release
+    apiVersion: v2
     appVersion: 0.1.16
     created: "2026-05-13T10:04:03.750175481Z"
     description: Access to JupyterHub instance for terminal and jupyter notebooks
@@ -4044,6 +4064,27 @@ entries:
       category: llm
       status: beta
     apiVersion: v2
+    appVersion: 0.2.15
+    created: "2026-07-06T13:54:15.220370481Z"
+    description: A high-throughput and memory-efficient inference and serving engine
+      for LLMs
+    digest: 1d195725306910b1052b69935222d6eb325ff10581029645a67037e2541f7b8b
+    icon: https://docs.vllm.ai/en/latest/assets/logos/vllm-logo-only-light.ico
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: vllm
+    sources:
+    - https://docs.vllm.ai/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.2.15/vllm-0.2.15.tgz
+    version: 0.2.15
+  - annotations:
+      category: llm
+      status: beta
+    apiVersion: v2
     appVersion: 0.2.14
     created: "2026-06-07T16:58:11.369029152Z"
     description: A high-throughput and memory-efficient inference and serving engine
@@ -5360,4 +5401,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-07-01T20:29:50.92312351Z"
+generated: "2026-07-06T13:54:15.222060594Z"

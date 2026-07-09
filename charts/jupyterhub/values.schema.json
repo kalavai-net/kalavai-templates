@@ -133,6 +133,7 @@
          }
       },
       "resources": {
+         "type": "object",
          "properties": {
             "workerGpuMemory": {
                "type": ["number", "null"],

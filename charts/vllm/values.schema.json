@@ -303,6 +303,7 @@
          }
       },
       "resources": {
+         "type": "object",
          "properties": {
             "replicas": {
                "type": "integer",

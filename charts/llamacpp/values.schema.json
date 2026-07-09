@@ -194,6 +194,10 @@
                ],
                "description": "Logical operation to use to apply to nodeSelectors. Accepted values: 'OR', 'AND'"
             },
+            "nodeAffinityPreferenceKey": {
+               "type": ["string", "null"],
+               "description": "Key to prioritise group scheduling on nodes with a matching label key value"
+            },
             "jobId": {
                "type": "string",
                "description": "Id to tag spawned objects."
@@ -201,15 +205,10 @@
          }
       },
       "resources": {
-         "type": "object",
          "properties": {
             "replicas": {
                "type": "integer",
                "description": "Number of replicas to run"
-            },
-            "nodeAffinityPreferenceKey": {
-               "type": ["string", "null"],
-               "description": "Key to prioritise group scheduling on nodes with a matching label key value"
             },
             "workerGpuMemory": {
                "type": ["number", "null"],
@@ -234,6 +233,10 @@
             },
             "memory": {
                "description": "RAM memory to be used per single worker (final one = memory * workers). Workers should have these much RAM available.",
+               "type": "integer"
+            },
+            "gpus": {
+               "description": "GPUs to be used per single worker (final one = gpus * workers). Workers should have these many GPUs available.",
                "type": "integer"
             }
          }

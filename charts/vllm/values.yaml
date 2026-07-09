@@ -64,12 +64,12 @@ system:
   priorityClassName: user-spot-priority
   nodeSelectors: null
   nodeSelectorsOps: OR
+  nodeAffinityPreferenceKey: null
   jobId: null
   envFromSecrets: {}
 
 resources:
   replicas: 1
-  nodeAffinityPreferenceKey: null
   workerGpuMemory: null
   workers: 1
   backend: cuda

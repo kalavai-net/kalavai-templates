@@ -98,9 +98,9 @@ spec:
           {{- end }}
             image: {{ .Values.singleuser.image.gpu.name }}
             extra_resource_limits:
-              nvidia.com/gpu: "{{ .Values.singleuser.gpuCount }}"
-            {{ if .Values.system.workerGpuMemory }}
-              nvidia.com/gpumem: {{ mul .Values.system.workerGpuMemory 1000 }}
+              nvidia.com/gpu: "{{ .Values.resources.gpus }}"
+            {{ if .Values.resources.workerGpuMemory }}
+              nvidia.com/gpumem: {{ mul .Values.resources.workerGpuMemory 1000 }}
             {{ end }}
             args:
             - "--allow-root"
@@ -108,14 +108,14 @@ spec:
             privileged: false
       # establish resource limits
       memory:
-        limit: {{ .Values.singleuser.memory }}G
-        guarantee: {{ .Values.singleuser.memory }}G
+        limit: {{ .Values.resources.memory }}G
+        guarantee: {{ .Values.resources.memory }}G
       cpu:
-        limit: {{ .Values.singleuser.cpu }}
-        guarantee: {{ .Values.singleuser.cpu }}
+        limit: {{ .Values.resources.cpus }}
+        guarantee: {{ .Values.resources.cpus }}
       # define persistent storage
       storage:
-        capacity: "{{ .Values.singleuser.storageCapacity }}Gi"
+        capacity: "{{ .Values.resources.workingMemoru }}Gi"
         dynamic:
           storageClass: {{ .Values.singleuser.storageClass }}
         homeMountPath: /home/user
@@ -190,9 +190,9 @@ spec:
       rayVersion: "{{ .Values.distributed.rayVersion }}"
       upscalingMode: Default
     deployment:
-      cpus: {{ .Values.singleuser.cpu }}
+      cpus: {{ .Values.resources.cpus }}
       gpuMemory: null
-      memory: {{ .Values.singleuser.memory }}
+      memory: {{ .Values.resources.memory }}
     system:
       priorityClassName: {{ .Values.system.priorityClassName }}
       nodeSelectors:

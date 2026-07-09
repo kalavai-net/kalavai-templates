@@ -44,14 +44,15 @@ system:
   priorityClassName: user-spot-priority
   nodeSelectors: null
   nodeSelectorsOps: OR
+  nodeAffinityPreferenceKey: null
   envFromSecrets: {}
   
 resources:
   replicas: 1
   workers: 1
-  nodeAffinityPreferenceKey: null
   workerGpuMemory: null
   backend: cpu
   workingMemory: 5
   cpus: 2
   memory: 8
+  gpus: 1

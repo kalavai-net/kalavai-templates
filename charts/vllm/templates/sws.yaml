@@ -3,12 +3,12 @@ kind: ServerWorkerSet
 metadata:
   name: {{ .Release.Name }}-vllm
 spec:
-  replicas: {{ .Values.system.replicas }}
-  workersPerInstance: {{ sub .Values.system.workers 1 }}
+  replicas: {{ .Values.resources.replicas }}
+  workersPerInstance: {{ sub .Values.resources.workers 1 }}
   labels:
     kalavai.job.name: {{ .Values.system.jobId}}
-    {{- if .Values.system.workerGpuMemory }}
-    kalavai/vram: {{ .Values.system.workerGpuMemory | quote }}
+    {{- if .Values.resources.workerGpuMemory }}
+    kalavai/vram: {{ .Values.resources.workerGpuMemory | quote }}
     {{- end }}
     {{- if .Values.billing.enabled }}
     billing: "true"
@@ -113,17 +113,17 @@ spec:
   server:
     spec:
       terminationGracePeriodSeconds: 60
-    {{- if eq .Values.system.backend "cuda" }}
+    {{- if eq .Values.resources.backend "cuda" }}
       runtimeClassName: nvidia
     {{- end }}
       affinity:
-      {{- if .Values.system.nodeAffinityPreferenceKey }}
+      {{- if .Values.resources.nodeAffinityPreferenceKey }}
         podAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
                 matchLabels:
                   kalavai.job.name: {{ .Values.system.jobId }}
-              topologyKey: {{ .Values.system.nodeAffinityPreferenceKey }}
+              topologyKey: {{ .Values.resources.nodeAffinityPreferenceKey }}
       {{- end }}
       {{- if .Values.system.nodeSelectors }}
         nodeAffinity:
@@ -156,7 +156,7 @@ spec:
       {{- end }}
       containers:
       - name: vllm-leader
-        image: ghcr.io/kalavai-net/vllm-{{ .Values.system.backend}}:{{ .Values.vllm.image.tag }}
+        image: ghcr.io/kalavai-net/vllm-{{ .Values.resources.backend}}:{{ .Values.vllm.image.tag }}
         imagePullPolicy: {{ .Values.vllm.imagePullPolicy }}
         command:
         - sh
@@ -174,21 +174,21 @@ spec:
           pip install {{ .Values.pip_installs }} --no-cache-dir;
         {{- end }}
         {{- end }}
-        {{- if gt (int .Values.system.workers) 1 }}
-          RAY_memory_usage_threshold=0.99 RAY_BACKEND_LOG_LEVEL=error /home/ray/workspace/ray_init.sh leader --ray_cluster_size={{ .Values.system.workers}} --ray_object_store_memory=1;
+        {{- if gt (int .Values.resources.workers) 1 }}
+          RAY_memory_usage_threshold=0.99 RAY_BACKEND_LOG_LEVEL=error /home/ray/workspace/ray_init.sh leader --ray_cluster_size={{ .Values.resources.workers}} --ray_object_store_memory=1;
           sleep 10;
           ray status;
         {{- else }}
           echo "Skipping ray init"
         {{- end }}
-        {{- if eq .Values.system.backend "cuda" }}
+        {{- if eq .Values.resources.backend "cuda" }}
           nvidia-smi;
         {{- else }}
           rocm-smi;
           python -c "import torch; print(torch.cuda.device_count(), torch.cuda.get_device_name(0))";
         {{- end }}
           # Run model
-          echo "Total parallelism: {{ mul .Values.system.workers .Values.system.gpus }}";
+          echo "Total parallelism: {{ mul .Values.resources.workers .Values.resources.gpus }}";
           /home/ray/workspace/run_model.sh \
           {{- if .Values.vllm.modelNameOverride }}
             --model_name={{ .Values.vllm.modelNameOverride }} \
@@ -202,8 +202,8 @@ spec:
             --template_url='{{ .Values.vllm.templateUrl }}' \
           {{- end }}
           {{- if .Values.vllm.autoParallelism}}
-            --tensor_parallel_size={{ .Values.system.gpus }} \
-            --pipeline_parallel_size={{ .Values.system.workers }} \
+            --tensor_parallel_size={{ .Values.resources.gpus }} \
+            --pipeline_parallel_size={{ .Values.resources.workers }} \
           {{- end}}
           {{- if .Values.vllm.loraModules }}
             --lora_modules="{{ .Values.vllm.loraModules }}";
@@ -271,26 +271,26 @@ spec:
           periodSeconds: 10
         resources:
           requests:
-            cpu: {{ .Values.system.cpus}}
-            memory: {{ .Values.system.memory}}Gi
-          {{ if eq .Values.system.backend "cuda" }}
-            nvidia.com/gpu: {{ .Values.system.gpus }}
-          {{ else if eq .Values.system.backend "rocm" }}
-            amd.com/gpu: {{ .Values.system.gpus }}
+            cpu: {{ .Values.resources.cpus}}
+            memory: {{ .Values.resources.memory}}Gi
+          {{ if eq .Values.resources.backend "cuda" }}
+            nvidia.com/gpu: {{ .Values.resources.gpus }}
+          {{ else if eq .Values.resources.backend "rocm" }}
+            amd.com/gpu: {{ .Values.resources.gpus }}
           {{ end }}
-            ephemeral-storage: {{ .Values.system.workingMemory}}Gi
+            ephemeral-storage: {{ .Values.resources.workingMemory}}Gi
           limits:
-            cpu: {{ .Values.system.cpus}}
-            memory: {{ add .Values.system.memory .Values.vllm.sharedMemory }}Gi
-          {{ if eq .Values.system.backend "cuda" }}
-            nvidia.com/gpu: {{ .Values.system.gpus }}
-            {{ if .Values.system.workerGpuMemory }}
-            nvidia.com/gpumem: {{ mul .Values.system.workerGpuMemory 1000 }}
+            cpu: {{ .Values.resources.cpus}}
+            memory: {{ add .Values.resources.memory .Values.vllm.sharedMemory }}Gi
+          {{ if eq .Values.resources.backend "cuda" }}
+            nvidia.com/gpu: {{ .Values.resources.gpus }}
+            {{ if .Values.resources.workerGpuMemory }}
+            nvidia.com/gpumem: {{ mul .Values.resources.workerGpuMemory 1000 }}
             {{ end }}
-          {{ else if eq .Values.system.backend "rocm" }}
-            amd.com/gpu: {{ .Values.system.gpus }}
+          {{ else if eq .Values.resources.backend "rocm" }}
+            amd.com/gpu: {{ .Values.resources.gpus }}
           {{ end }}
-            ephemeral-storage: {{ .Values.system.workingMemory}}Gi
+            ephemeral-storage: {{ .Values.resources.workingMemory}}Gi
         volumeMounts:
           - mountPath: /dev/shm
             name: dshm
@@ -315,9 +315,9 @@ spec:
 
           # 3. start heartbeat
           # VRAM USAGE / minute = billingInterval(mins) * gpuMemPerWorker  * NumWorkers
-          {{- $vramAmount := mul (mul .Values.billing.interval .Values.system.workerGpuMemory) .Values.system.workers }}
-          {{- $cpuAmount := mul (mul .Values.billing.interval .Values.system.cpus) .Values.system.workers }}
-          {{- $memoryAmount := mul (mul .Values.billing.interval .Values.system.memory) .Values.system.workers }}
+          {{- $vramAmount := mul (mul .Values.billing.interval .Values.resources.workerGpuMemory) .Values.resources.workers }}
+          {{- $cpuAmount := mul (mul .Values.billing.interval .Values.resources.cpus) .Values.resources.workers }}
+          {{- $memoryAmount := mul (mul .Values.billing.interval .Values.resources.memory) .Values.resources.workers }}
           echo "START HEARTBEAT..."
           python3 usage_event_generator.py
         env:
@@ -371,17 +371,17 @@ spec:
   worker:
     spec:
       terminationGracePeriodSeconds: 60
-    {{- if eq .Values.system.backend "cuda" }}
+    {{- if eq .Values.resources.backend "cuda" }}
       runtimeClassName: nvidia
     {{- end }}
       affinity:
-      {{- if .Values.system.nodeAffinityPreferenceKey }}
+      {{- if .Values.resources.nodeAffinityPreferenceKey }}
         podAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
                 matchLabels:
                   kalavai.job.name: {{ .Values.system.jobId }}
-              topologyKey: {{ .Values.system.nodeAffinityPreferenceKey }}
+              topologyKey: {{ .Values.resources.nodeAffinityPreferenceKey }}
       {{- end }}
       {{- if .Values.system.nodeSelectors }}
         nodeAffinity:
@@ -411,7 +411,7 @@ spec:
       {{- end }}
       containers:
       - name: vllm-worker
-        image: ghcr.io/kalavai-net/vllm-{{ .Values.system.backend}}:{{ .Values.vllm.image.tag }}
+        image: ghcr.io/kalavai-net/vllm-{{ .Values.resources.backend}}:{{ .Values.vllm.image.tag }}
         imagePullPolicy: {{ .Values.vllm.imagePullPolicy }}
         command:
         - sh
@@ -429,7 +429,7 @@ spec:
           pip install {{ .Values.pip_installs }} --no-cache-dir;
         {{- end }}
         {{- end }}
-        {{- if eq .Values.system.backend "cuda" }}
+        {{- if eq .Values.resources.backend "cuda" }}
           nvidia-smi;
         {{- else }}
           rocm-smi;
@@ -489,26 +489,26 @@ spec:
       {{- end }}
         resources:
           requests:
-            cpu: {{ .Values.system.cpus}}
-            memory: {{ .Values.system.memory}}Gi
-          {{ if eq .Values.system.backend "cuda" }}
-            nvidia.com/gpu: {{ .Values.system.gpus }}
-          {{ else if eq .Values.system.backend "rocm" }}
-            amd.com/gpu: {{ .Values.system.gpus }}
+            cpu: {{ .Values.resources.cpus}}
+            memory: {{ .Values.resources.memory}}Gi
+          {{ if eq .Values.resources.backend "cuda" }}
+            nvidia.com/gpu: {{ .Values.resources.gpus }}
+          {{ else if eq .Values.resources.backend "rocm" }}
+            amd.com/gpu: {{ .Values.resources.gpus }}
           {{ end }}
-            ephemeral-storage: {{ .Values.system.workingMemory}}Gi
+            ephemeral-storage: {{ .Values.resources.workingMemory}}Gi
           limits:
-            cpu: {{ .Values.system.cpus}}
-            memory: {{ add .Values.system.memory .Values.vllm.sharedMemory }}Gi
-          {{ if eq .Values.system.backend "cuda" }}
-            nvidia.com/gpu: {{ .Values.system.gpus }}
-            {{ if .Values.system.workerGpuMemory }}
-            nvidia.com/gpumem: {{ mul .Values.system.workerGpuMemory 1000 }}
+            cpu: {{ .Values.resources.cpus}}
+            memory: {{ add .Values.resources.memory .Values.vllm.sharedMemory }}Gi
+          {{ if eq .Values.resources.backend "cuda" }}
+            nvidia.com/gpu: {{ .Values.resources.gpus }}
+            {{ if .Values.resources.workerGpuMemory }}
+            nvidia.com/gpumem: {{ mul .Values.resources.workerGpuMemory 1000 }}
             {{ end }}
-          {{ else if eq .Values.system.backend "rocm" }}
-            amd.com/gpu: {{ .Values.system.gpus }}
+          {{ else if eq .Values.resources.backend "rocm" }}
+            amd.com/gpu: {{ .Values.resources.gpus }}
           {{ end }}
-            ephemeral-storage: {{ .Values.system.workingMemory}}Gi
+            ephemeral-storage: {{ .Values.resources.workingMemory}}Gi
         volumeMounts:
           - mountPath: /dev/shm
             name: dshm

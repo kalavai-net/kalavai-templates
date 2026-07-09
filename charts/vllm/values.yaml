@@ -61,13 +61,14 @@ billing:
   userId: ""
 
 system:
-  queue: default
-  replicas: 1
   priorityClassName: user-spot-priority
   nodeSelectors: null
   nodeSelectorsOps: OR
   jobId: null
   envFromSecrets: {}
+
+resources:
+  replicas: 1
   nodeAffinityPreferenceKey: null
   workerGpuMemory: null
   workers: 1

@@ -3,12 +3,12 @@ kind: ServerWorkerSet
 metadata:
   name: {{ .Release.Name }}-llamacpp
 spec:
-  replicas: {{ .Values.system.replicas }}
-  workersPerInstance: {{ sub .Values.system.workers 1 }}
+  replicas: {{ .Values.resources.replicas }}
+  workersPerInstance: {{ sub .Values.resources.workers 1 }}
   labels:
     kalavai.job.name: {{ .Values.system.jobId}}
-    {{- if .Values.system.workerGpuMemory }}
-    kalavai/vram: {{ .Values.system.workerGpuMemory | quote }}
+    {{- if .Values.resources.workerGpuMemory }}
+    kalavai/vram: {{ .Values.resources.workerGpuMemory | quote }}
     {{- end }}
     {{- if .Values.billing.enabled }}
     billing: "true"
@@ -121,17 +121,17 @@ spec:
   server:
     spec:
       terminationGracePeriodSeconds: 60
-    {{- if eq .Values.system.backend "cuda" }}
+    {{- if eq .Values.resources.backend "cuda" }}
       runtimeClassName: nvidia
     {{- end }}
       affinity:
-      {{- if .Values.system.nodeAffinityPreferenceKey }}
+      {{- if .Values.resources.nodeAffinityPreferenceKey }}
         podAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
                 matchLabels:
                   kalavai.job.name: {{ .Values.system.jobId }}
-              topologyKey: {{ .Values.system.nodeAffinityPreferenceKey }}
+              topologyKey: {{ .Values.resources.nodeAffinityPreferenceKey }}
       {{- end }}
       {{- if .Values.system.nodeSelectors }}
         nodeAffinity:
@@ -164,9 +164,9 @@ spec:
       {{- end }}
       containers:
       - name: llamacpp-leader
-      {{ if eq .Values.system.backend "cuda" }}
+      {{ if eq .Values.resources.backend "cuda" }}
         image: ghcr.io/kalavai-net/llamacpp-cuda:{{ .Values.llamacpp.version }}
-      {{ else if eq .Values.system.backend "rocm" }}
+      {{ else if eq .Values.resources.backend "rocm" }}
         image: ghcr.io/kalavai-net/llamacpp-rocm:{{ .Values.llamacpp.version }}
       {{ else }}
         image: ghcr.io/kalavai-net/llamacpp-cpu:{{ .Values.llamacpp.version }}
@@ -211,26 +211,26 @@ spec:
           periodSeconds: 10
         resources:
           requests:
-            cpu: {{ .Values.system.cpus}}
-            memory: {{ .Values.system.memory}}Gi
-          {{ if eq .Values.system.backend "cuda" }}
-            nvidia.com/gpu: 1
-          {{ else if eq .Values.system.backend "rocm" }}
-            amd.com/gpu: 1
+            cpu: {{ .Values.resources.cpus}}
+            memory: {{ .Values.resources.memory}}Gi
+          {{ if eq .Values.resources.backend "cuda" }}
+            nvidia.com/gpu: {{ .Values.resources.gpus }}
+          {{ else if eq .Values.resources.backend "rocm" }}
+            amd.com/gpu: {{ .Values.resources.gpus }}
           {{ end }}
-            ephemeral-storage: {{ .Values.system.workingMemory}}Gi
+            ephemeral-storage: {{ .Values.resources.workingMemory}}Gi
           limits:
-            cpu: {{ .Values.system.cpus}}
-            memory: {{ .Values.system.memory}}Gi
-          {{ if eq .Values.system.backend "cuda" }}
-            nvidia.com/gpu: 1
-            {{ if .Values.system.workerGpuMemory }}
-            nvidia.com/gpumem: {{ mul .Values.system.workerGpuMemory 1000 }}
+            cpu: {{ .Values.resources.cpus}}
+            memory: {{ .Values.resources.memory}}Gi
+          {{ if eq .Values.resources.backend "cuda" }}
+            nvidia.com/gpu: {{ .Values.resources.gpus }}
+            {{ if .Values.resources.workerGpuMemory }}
+            nvidia.com/gpumem: {{ mul .Values.resources.workerGpuMemory 1000 }}
             {{ end }}
-          {{ else if eq .Values.system.backend "rocm" }}
-            amd.com/gpu: 1
+          {{ else if eq .Values.resources.backend "rocm" }}
+            amd.com/gpu: {{ .Values.resources.gpus }}
           {{ end }}
-            ephemeral-storage: {{ .Values.system.workingMemory}}Gi
+            ephemeral-storage: {{ .Values.resources.workingMemory}}Gi
     {{- if .Values.billing.enabled }}  
       - name: billing-sidecar
         image: ghcr.io/kalavai-net/kalavai-registrar:latest
@@ -252,9 +252,9 @@ spec:
 
           # 3. start heartbeat
           # VRAM USAGE / minute = billingInterval(mins) * gpuMemPerWorker  * NumWorkers
-          {{- $vramAmount := mul (mul .Values.billing.interval .Values.system.workerGpuMemory) .Values.system.workers }}
-          {{- $cpuAmount := mul (mul .Values.billing.interval .Values.system.cpus) .Values.system.workers }}
-          {{- $memoryAmount := mul (mul .Values.billing.interval .Values.system.memory) .Values.system.workers }}
+          {{- $vramAmount := mul (mul .Values.billing.interval .Values.resources.workerGpuMemory) .Values.resources.workers }}
+          {{- $cpuAmount := mul (mul .Values.billing.interval .Values.resources.cpus) .Values.resources.workers }}
+          {{- $memoryAmount := mul (mul .Values.billing.interval .Values.resources.memory) .Values.resources.workers }}
           echo "START HEARTBEAT..."
           python3 usage_event_generator.py
         env:
@@ -302,17 +302,17 @@ spec:
   worker:
     spec:
       terminationGracePeriodSeconds: 60
-    {{- if eq .Values.system.backend "cuda" }}
+    {{- if eq .Values.resources.backend "cuda" }}
       runtimeClassName: nvidia
     {{- end }}
       affinity:
-      {{- if .Values.system.nodeAffinityPreferenceKey }}
+      {{- if .Values.resources.nodeAffinityPreferenceKey }}
         podAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
                 matchLabels:
                   kalavai.job.name: {{ .Values.system.jobId }}
-              topologyKey: {{ .Values.system.nodeAffinityPreferenceKey }}
+              topologyKey: {{ .Values.resources.nodeAffinityPreferenceKey }}
       {{- end }}
       {{- if .Values.system.nodeSelectors }}
         nodeAffinity:
@@ -342,9 +342,9 @@ spec:
       {{- end }}
       containers:
       - name: llamacpp-worker
-      {{ if eq .Values.system.backend "cuda" }}
+      {{ if eq .Values.resources.backend "cuda" }}
         image: ghcr.io/kalavai-net/llamacpp-cuda:{{ .Values.llamacpp.version }}
-      {{ else if eq .Values.system.backend "rocm" }}
+      {{ else if eq .Values.resources.backend "rocm" }}
         image: ghcr.io/kalavai-net/llamacpp-rocm:{{ .Values.llamacpp.version }}
       {{ else }}
         image: ghcr.io/kalavai-net/llamacpp-cpu:{{ .Values.llamacpp.version }}
@@ -372,26 +372,26 @@ spec:
         {{- end }}
         resources:
           requests:
-            cpu: {{ .Values.system.cpus}}
-            memory: {{ .Values.system.memory}}Gi
-          {{ if eq .Values.system.backend "cuda" }}
-            nvidia.com/gpu: 1
-          {{ else if eq .Values.system.backend "rocm" }}
-            amd.com/gpu: 1
+            cpu: {{ .Values.resources.cpus}}
+            memory: {{ .Values.resources.memory}}Gi
+          {{ if eq .Values.resources.backend "cuda" }}
+            nvidia.com/gpu: {{ .Values.resources.gpus }}
+          {{ else if eq .Values.resources.backend "rocm" }}
+            amd.com/gpu: {{ .Values.resources.gpus }}
           {{ end }}
-            ephemeral-storage: {{ .Values.system.workingMemory}}Gi
+            ephemeral-storage: {{ .Values.resources.workingMemory}}Gi
           limits:
-            cpu: {{ .Values.system.cpus}}
-            memory: {{ .Values.system.memory}}Gi
-          {{ if eq .Values.system.backend "cuda" }}
-            nvidia.com/gpu: 1
-            {{ if .Values.system.workerGpuMemory }}
-            nvidia.com/gpumem: {{ mul .Values.system.workerGpuMemory 1000 }}
+            cpu: {{ .Values.resources.cpus}}
+            memory: {{ .Values.resources.memory}}Gi
+          {{ if eq .Values.resources.backend "cuda" }}
+            nvidia.com/gpu: {{ .Values.resources.gpus }}
+            {{ if .Values.resources.workerGpuMemory }}
+            nvidia.com/gpumem: {{ mul .Values.resources.workerGpuMemory 1000 }}
             {{ end }}
-          {{ else if eq .Values.system.backend "rocm" }}
-            amd.com/gpu: 1
+          {{ else if eq .Values.resources.backend "rocm" }}
+            amd.com/gpu: {{ .Values.resources.gpus }}
           {{ end }}
-            ephemeral-storage: {{ .Values.system.workingMemory}}Gi
+            ephemeral-storage: {{ .Values.resources.workingMemory}}Gi
       restartPolicy: {{ .Values.llamacpp.restartPolicy }}
     policy:
     - event: PodFailed

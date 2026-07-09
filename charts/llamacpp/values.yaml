@@ -32,24 +32,26 @@ loadBalancer:
   enabled: true
   trafficPolicy: LEAST_REQUEST
 
-system:
-  replicas: 1
-  workers: 1
-  jobId: null
-  priorityClassName: user-spot-priority
-  nodeSelectors: null
-  nodeSelectorsOps: OR
-  nodeAffinityPreferenceKey: null
-  envFromSecrets: {}
-  workerGpuMemory: null
-  backend: cpu
-  workingMemory: 5
-  cpus: 2
-  memory: 8
-
 service:
   stickySession: false
   stickySessionTimeoutSeconds: 3600
   ingress:
     enabled: false
     subdomain: spaces.kalavai.net
+
+system:
+  jobId: null
+  priorityClassName: user-spot-priority
+  nodeSelectors: null
+  nodeSelectorsOps: OR
+  envFromSecrets: {}
+  
+resources:
+  replicas: 1
+  workers: 1
+  nodeAffinityPreferenceKey: null
+  workerGpuMemory: null
+  backend: cpu
+  workingMemory: 5
+  cpus: 2
+  memory: 8

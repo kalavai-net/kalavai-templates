@@ -270,19 +270,10 @@
          }
       },
       "system": {
-         "type": "object",
          "properties": {
-            "replicas": {
-               "type": "integer",
-               "description": "Number of replicas to run"
-            },
             "envFromSecrets": {
                "type": "object",
                "description": "Dictionary mapping environment variable names to secret names"
-            },
-            "queue": {
-                "type": "string",
-                "description": "Queue to use for the deployment"
             },
             "priorityClassName": {
                 "type": "string",
@@ -303,6 +294,15 @@
                "type": "string",
                "enum": ["OR", "AND"],
                "description": "Logical operation to use to apply to nodeSelectors. Accepted values: 'OR', 'AND'"
+            }
+         }
+      },
+      "resources": {
+         "type": "object",
+         "properties": {
+            "replicas": {
+               "type": "integer",
+               "description": "Number of replicas to run"
             },
             "nodeAffinityPreferenceKey": {
                "type": ["null", "string"],

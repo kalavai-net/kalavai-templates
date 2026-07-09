@@ -170,12 +170,7 @@
          }
       },
       "system": {
-         "type": "object",
          "properties": {
-            "replicas": {
-               "type": "integer",
-               "description": "Number of replicas to run"
-            },
             "envFromSecrets": {
                "type": "object",
                "description": "Dictionary mapping environment variable names to secret names"
@@ -202,6 +197,15 @@
             "jobId": {
                "type": "string",
                "description": "Id to tag spawned objects."
+            }
+         }
+      },
+      "resources": {
+         "type": "object",
+         "properties": {
+            "replicas": {
+               "type": "integer",
+               "description": "Number of replicas to run"
             },
             "nodeAffinityPreferenceKey": {
                "type": ["string", "null"],

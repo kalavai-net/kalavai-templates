@@ -310,7 +310,7 @@
                "description": "Number of replicas to run"
             },
             "workerGpuMemory": {
-               "type": ["number", "null"],
+               "type": ["integer", "null"],
                "description": "Worker GPU memory limit in GB (multiplied by 1000 for nvidia.com/gpumem resource)"
             },
             "workingMemory": {

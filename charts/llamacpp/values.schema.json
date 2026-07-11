@@ -212,7 +212,7 @@
                "description": "Number of replicas to run"
             },
             "workerGpuMemory": {
-               "type": ["number", "null"],
+               "type": ["integer", "null"],
                "description": "GPU memory (in GB) to request per worker pod"
             },
             "workingMemory": {

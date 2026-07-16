@@ -3,5 +3,5 @@ huggingface-hub
 bitsandbytes
 llmcompressor
 autoawq
-lmcache==0.4.2
+#lmcache==0.4.2
 ray[default]==2.54.1

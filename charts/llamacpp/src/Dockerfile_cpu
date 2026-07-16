@@ -30,7 +30,7 @@ RUN git clone https://github.com/ggerganov/llama.cpp.git && \
         -DCMAKE_BUILD_TYPE=Release \
         -DGGML_RPC=ON \
         -DGGML_BACKEND_DL=ON \
-        -DGGML_CPU_ALL_VARIANTS=ON \
+        -DGGML_CPU_ALL_VARIANTS=OFF \
         -DLLAMA_CURL=OFF \
         -DLLAMA_BUILD_TESTS=OFF \
         -DGGML_NATIVE=OFF \

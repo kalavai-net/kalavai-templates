@@ -6,7 +6,7 @@ singleuser:
     cpu:
       name: ghcr.io/kalavai-net/jupyterhub-cpu:latest
     gpu:
-      name: ghcr.io/kalavai-net/jupyterhub-gpu:latest #docker.io/cschranz/gpu-jupyter:v1.10_cuda-12.9_ubuntu-24.04_slim
+      name: ghcr.io/kalavai-net/jupyterhub-cuda:latest
     imagePullSecrets: null
   storageClass: "local-path"
   initScript: |

@@ -32,8 +32,8 @@ RUN . /home/ray/workspace/env/bin/activate && \
 
 # Voxtral / Gemma 4 issue (might be solved in >0.22.1)
 # Also seems to make inference faster for Quen3.6 35B?
-RUN . /home/ray/workspace/env/bin/activate && \
-    pip install --force-reinstall "transformers==5.9.0" --no-cache-dir
+# RUN . /home/ray/workspace/env/bin/activate && \
+#     pip install --force-reinstall "transformers==5.9.0" --no-cache-dir
 
 COPY run_model.sh .
 RUN chmod +x /home/ray/workspace/run_model.sh

@@ -3,6 +3,12 @@ Base: https://github.com/kalavai-net/kalavai-deployments/tree/main/kalavai-core/
 Chart default values: https://github.com/jupyterhub/zero-to-jupyterhub-k8s/blob/HEAD/jupyterhub/values.yaml
 
 
+## Build base images
+
+```bash
+bash build_images.sh --latest --version v1
+```
+
 # Install jupyterhub
 
 helm upgrade --cleanup-on-fail \

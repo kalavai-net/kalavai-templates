@@ -30,7 +30,7 @@
             "version": {
                "description": "Release of the llamacpp project to use",
                "type": "string",
-               "enum": ["latest", "b8783-1", "b8941-1"]
+               "enum": ["latest", "b8783-1", "b8941-1", "b10021-1"]
             },
             "imagePullPolicy": {
                "description": "Image pull policy for the workers",

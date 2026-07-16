@@ -6,6 +6,16 @@ Deploy LLM models across multiple worker nodes using the vLLM library. This temp
 
 This template makes heavy use of the [vLLM library](https://docs.vllm.ai/en/latest/index.html).
 
+## Build images
+
+```bash
+# DO ONCE
+docker buildx create --use --name arm64_builder
+
+# DO EVERY BUILD
+bash build_images.sh
+```
+
 ## Key template variables
 
 - `workers`: Number of workers per deployment (for tensor and pipeline parallelism, i.e. how many pieces to divide the model into)
@@ -110,7 +120,9 @@ vllm serve Qwen/Qwen2.5-3B \
 
 vllm serve Qwen/Qwen2.5-0.5B \
   --host 0.0.0.0 --port 8080 --tensor-parallel-size 1 --distributed-executor-backend ray --enforce-eager
-  
+
+
+/home/ray/workspace/run_model.sh --model_id Qwen/Qwen3.5-8B-NVFP4
 
 curl http://66.49.195.11:8080/v1/completions \
     -H "Content-Type: application/json" \

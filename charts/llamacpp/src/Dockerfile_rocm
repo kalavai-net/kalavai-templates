@@ -1,17 +1,40 @@
 # TODO: https://github.com/ggml-org/llama.cpp/blob/master/.devops/rocm.Dockerfile
 
 # syntax=docker/dockerfile:1
-#FROM debian:bullseye AS builder
-FROM rocm/dev-ubuntu-22.04:6.4.1
-
-RUN apt-get update && apt-get install --yes git cmake g++ libgomp1 iputils-ping wget curl hipblas && \
-    rm -rf /var/lib/apt/lists/*
+FROM rocm/dev-ubuntu-24.04:7.2.4
 
 WORKDIR /workspace
-RUN git clone https://github.com/ggerganov/llama.cpp.git
 
+# 1. Define the architectures you want to support
+# Defaulting to 30-series (86) up to Blackwell (100/120) if supported
+ARG GPU_TARGETS="gfx1100"
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install build dependencies
+RUN apt update && \
+    apt install -y python3 python3-pip python3-venv curl git cmake gcc g++ \
+    libgomp1 libbz2-dev libev-dev libffi-dev libgdbm-dev liblzma-dev \
+    libncurses-dev libreadline-dev libsqlite3-dev libssl-dev make tk-dev wget zlib1g-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install python dependencies
 COPY common_requirements.txt .
-RUN pip3 install -r common_requirements.txt --no-cache-dir
+RUN python3 -m venv /opt/venv && \
+    . /opt/venv/bin/activate && \
+    pip install -r common_requirements.txt --no-cache-dir
+
+ARG LLAMACPP_VERSION=master
+
+# Set environment paths
+ENV PATH="/opt/venv/bin:/usr/local/cuda/bin:$PATH"
+
+# Fetch and build llama.cpp
+RUN git clone https://github.com/ggerganov/llama.cpp.git && \
+    cd llama.cpp && \
+    git checkout --detach ${LLAMACPP_VERSION} && \
+    cmake -B build -DLLAMA_CURL=OFF -DGGML_HIP=ON -DGPU_TARGETS="${GPU_TARGETS}" -DCMAKE_BUILD_TYPE=Release -DLLAMA_BUILD_TESTS=OFF -DGGML_NATIVE=OFF && \
+    cmake --build build --config Release -j $(nproc)
 
 COPY run_rpc_worker.sh .
 COPY run_api_server.sh .

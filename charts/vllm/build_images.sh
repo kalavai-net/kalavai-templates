@@ -19,18 +19,16 @@ echo "Building vLLM version: $PIP_VLLM_VERSION"
 echo "Pushing latest: $PUSH_LATEST"
 echo "Image tag: $IMAGE_TAG"
 
-# CUDA
-docker build --build-arg PIP_VLLM_VERSION=$PIP_VLLM_VERSION -t ghcr.io/kalavai-net/vllm-cuda:$IMAGE_TAG -f src/Dockerfile_cuda src/
-docker push ghcr.io/kalavai-net/vllm-cuda:$IMAGE_TAG
+# CUDA (both arm64 and AMD64)
+docker buildx build --build-arg PIP_VLLM_VERSION=$PIP_VLLM_VERSION --push -t ghcr.io/kalavai-net/vllm-cuda:$IMAGE_TAG --platform=linux/amd64,linux/arm64 -f src/Dockerfile_cuda src/
 if [ "$PUSH_LATEST" = true ]; then
-    docker tag ghcr.io/kalavai-net/vllm-cuda:$IMAGE_TAG ghcr.io/kalavai-net/vllm-cuda:latest
-    docker push ghcr.io/kalavai-net/vllm-cuda:latest
+    docker buildx build --build-arg PIP_VLLM_VERSION=$PIP_VLLM_VERSION --push -t ghcr.io/kalavai-net/vllm-cuda:latest --platform=linux/amd64,linux/arm64 -f src/Dockerfile_cuda src/
 fi
 
 # free disk space
 docker system prune -af
 
-# ROCm
+# ROCm (amd64 only)
 # build base image first
 git clone https://github.com/vllm-project/vllm.git
 cd vllm
@@ -43,9 +41,6 @@ if [ "$PUSH_LATEST" = true ]; then
 fi
 cd ..
 rm -rf vllm
-
-docker system prune -af
-
 docker build --build-arg VLLM_VERSION=v$PIP_VLLM_VERSION -t ghcr.io/kalavai-net/vllm-rocm:$IMAGE_TAG -f src/Dockerfile_rocm src/
 docker push ghcr.io/kalavai-net/vllm-rocm:$IMAGE_TAG
 if [ "$PUSH_LATEST" = true ]; then

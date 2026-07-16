@@ -898,6 +898,26 @@ entries:
       category: development
       status: release
     apiVersion: v2
+    appVersion: 0.2.4
+    created: "2026-07-16T10:38:30.103279207Z"
+    description: Access to JupyterHub instance for terminal and jupyter notebooks
+    digest: 66dd2a2898577773bfd98aa455a34435856fe8ab39d0b199831ef63980b852a9
+    icon: https://jupyter.org/assets/homepage/hublogo.svg
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: jupyterhub
+    sources:
+    - https://jupyter.org/hub
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/jupyterhub-0.2.4/jupyterhub-0.2.4.tgz
+    version: 0.2.4
+  - annotations:
+      category: development
+      status: release
+    apiVersion: v2
     appVersion: 0.2.3
     created: "2026-07-11T23:22:02.701206573Z"
     description: Access to JupyterHub instance for terminal and jupyter notebooks
@@ -2460,6 +2480,26 @@ entries:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/kalavai-pool-0.0.1/kalavai-pool-0.0.1.tgz
     version: 0.0.1
   llama.cpp:
+  - annotations:
+      category: llm
+      status: beta
+    apiVersion: v2
+    appVersion: 0.3.4
+    created: "2026-07-16T10:38:30.323985662Z"
+    description: LLM inference in C/C++
+    digest: 4efec2d40b1a199e9284dabba8b9d426e7453f40a36477f9ac1b615d5a70eaec
+    icon: https://user-images.githubusercontent.com/1991296/230134379-7181e485-c521-4d23-a0d6-f7b3b61ba524.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: llama.cpp
+    sources:
+    - https://github.com/ggml-org/llama.cpp
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/llama.cpp-0.3.4/llama.cpp-0.3.4.tgz
+    version: 0.3.4
   - annotations:
       category: llm
       status: beta
@@ -4204,6 +4244,27 @@ entries:
       category: llm
       status: beta
     apiVersion: v2
+    appVersion: 0.3.4
+    created: "2026-07-16T10:38:30.569985199Z"
+    description: A high-throughput and memory-efficient inference and serving engine
+      for LLMs
+    digest: 2e834549e42d8a326f1755bba9db51b874e2860c92a3b73d9c3678d4503ae2ce
+    icon: https://docs.vllm.ai/en/latest/assets/logos/vllm-logo-only-light.ico
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: vllm
+    sources:
+    - https://docs.vllm.ai/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.3.4/vllm-0.3.4.tgz
+    version: 0.3.4
+  - annotations:
+      category: llm
+      status: beta
+    apiVersion: v2
     appVersion: 0.3.3
     created: "2026-07-11T23:22:03.014947162Z"
     description: A high-throughput and memory-efficient inference and serving engine
@@ -5625,4 +5686,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-07-11T23:22:03.015680282Z"
+generated: "2026-07-16T10:38:30.571597423Z"

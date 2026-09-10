@@ -12,8 +12,8 @@ spec:
   type: NodePort
   {{- end }}
   selector:
-    ray.io/cluster: {{ .Release.Name }}
-    ray.io/identifier: {{ .Release.Name }}-head
+    ray.io/cluster: {{ .Release.Name }}-raycluster
+    ray.io/identifier: {{ .Release.Name }}-raycluster-head
     ray.io/node-type: head
   ports:
     # TODO: this port need gRPC access, traefik does not work, see: https://github.com/ray-project/kuberay/blob/master/ray-operator/config/samples/ingress-rayclient-tls.yaml

@@ -7,19 +7,6 @@ metadata:
     # must have this label
     kalavai.job.name: {{ .Values.system.jobId }}
 spec:
-  # gcsFaultToleranceOptions:
-  #   # fault tolerance https://docs.ray.io/en/latest/cluster/kubernetes/user-guides/kuberay-gcs-ft.html
-  #   # example: https://github.com/ray-project/kuberay/blob/master/ray-operator/config/samples/ray-cluster.external-redis.yaml
-  #   {{ if .Values.externalRedisUrl }}
-  #   redisAddress: "{{.Values.externalRedisUrl}}"
-  #   {{ else }}
-  #   redisAddress: "{{ .Release.Name }}-redis-service:6379"
-  #   {{ end }}
-  #   redisPassword: # <- Add redis password from a Kubernetes secret.
-  #     valueFrom:
-  #       secretKeyRef:
-  #         name: {{ .Release.Name }}-secret
-  #         key: redis_password
   rayVersion: "{{ .Values.ray.rayVersion }}"
   autoscalerOptions:
     upscalingMode: {{ .Values.ray.upscalingMode }}
@@ -80,7 +67,6 @@ spec:
         - name: ray-head
           image: docker.io/rayproject/ray:{{ .Values.ray.rayVersion }}-py{{ .Values.ray.pythonVersion }}-cu{{ .Values.ray.cudaVersion }}
           imagePullPolicy: IfNotPresent
-          {{- if .Values.auth.enabled }}
           env:
           {{- range $key, $value := .Values.system.envFromSecrets }}
           - name: {{ $key }}
@@ -89,6 +75,7 @@ spec:
                 name: {{ $value }}
                 key: {{ $key }}
           {{- end }}
+          {{- if .Values.auth.enabled }}
           - name: RAY_AUTH_MODE
             value: token
           - name: RAY_AUTH_TOKEN
@@ -192,9 +179,9 @@ spec:
           resources:
             limits:
               nvidia.com/gpu: 1
-              # {{ if .Values.system.workerGpuMemory }}
-              # nvidia.com/gpumem: {{ .Values.system.workerGpuMemory}}
-              # {{ end }}
+              {{ if .Values.system.workerGpuMemory }}
+              nvidia.com/gpumem: {{ .Values.system.workerGpuMemory}}
+              {{ end }}
               cpu: {{ .Values.deployment.cpus }}
               memory: {{ .Values.deployment.memory }}Gi
             requests:

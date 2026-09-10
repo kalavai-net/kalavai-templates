@@ -3664,6 +3664,27 @@ entries:
       category: development
       status: beta
     apiVersion: v2
+    appVersion: 0.1.16
+    created: "2026-09-10T16:32:34.076396334Z"
+    description: An open source framework to build and scale your ML and Python applications
+      easily
+    digest: 250b411facc994de8e2f50560ee91519d29c05318c0203ee7fcec17328609bb2
+    icon: https://github.com/ray-project/ray/raw/master/doc/source/images/ray_header_logo.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: ray-cluster
+    sources:
+    - https://docs.ray.io/en/latest
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/ray-cluster-0.1.16/ray-cluster-0.1.16.tgz
+    version: 0.1.16
+  - annotations:
+      category: development
+      status: beta
+    apiVersion: v2
     appVersion: 0.1.15
     created: "2026-09-10T16:03:22.194863287Z"
     description: An open source framework to build and scale your ML and Python applications
@@ -5768,4 +5789,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-09-10T16:03:22.195627277Z"
+generated: "2026-09-10T16:32:34.077093327Z"

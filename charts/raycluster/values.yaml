@@ -23,7 +23,8 @@ system:
   jobId: null
   envFromSecrets: {}
   workerGpuMemory: null
-
+  nodeAffinityPreferenceKey: null
+  
 ingress:
   enabled: false
   subdomain: spaces.kalavai.net

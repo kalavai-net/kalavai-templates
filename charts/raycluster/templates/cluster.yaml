@@ -13,11 +13,7 @@ spec:
     idleTimeoutSeconds: {{ .Values.ray.idleTimeoutSeconds }}
   enableInTreeAutoscaling: true
   headGroupSpec:
-  {{- if .Values.ingress.enabled }}
     serviceType: ClusterIP
-  {{- else }}
-    serviceType: NodePort
-  {{- end }}
     rayStartParams:
       dashboard-host: "0.0.0.0"
       num-cpus: "0" # avoid workload on head

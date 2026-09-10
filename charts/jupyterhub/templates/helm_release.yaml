@@ -115,7 +115,7 @@ spec:
         guarantee: {{ .Values.resources.cpus }}
       # define persistent storage
       storage:
-        capacity: "{{ .Values.resources.workingMemoru }}Gi"
+        capacity: "{{ .Values.resources.workingMemory }}Gi"
         dynamic:
           storageClass: {{ .Values.singleuser.storageClass }}
         homeMountPath: /home/user

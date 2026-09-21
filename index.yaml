@@ -4332,6 +4332,26 @@ entries:
       category: voice
       status: dev
     apiVersion: v2
+    appVersion: 0.1.0
+    created: "2026-09-21T10:23:30.242140618Z"
+    description: speaches is an OpenAI API-compatible server supporting streaming
+      transcription, translation, and speech generation
+    digest: efe10d8b9ec615bfb7af6f563bbc488aad41115434522c50a58ba1aa7936dc40
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: speaches
+    sources:
+    - https://speaches.ai/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/speaches-0.1.0/speaches-0.1.0.tgz
+    version: 0.1.0
+  - annotations:
+      category: voice
+      status: dev
+    apiVersion: v2
     appVersion: 0.0.4
     created: "2026-04-15T14:02:12.55952999Z"
     description: speaches is an OpenAI API-compatible server supporting streaming
@@ -5852,4 +5872,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-09-10T18:18:48.046834253Z"
+generated: "2026-09-21T10:23:30.242939713Z"

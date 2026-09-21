@@ -1,20 +1,15 @@
 speaches:
   model: speaches-ai/Kokoro-82M-v1.0-ONNX-int8
 
-deployment:
-  cpus: 2
-  cudaGpuMemPercentage: 100
-  gpuBackend: cuda
-  gpus: 1
-  memory: 4
-
 litellm:
-  accessGroup: null
-  baseUrl: http://litellm.default.svc.cluster.local:4000
   enabled: false
+  provider: hosted_vllm
+  waitReady: false
+  modelNameOverride: null
+  accessGroup: null
+  baseUrl: null
   kalavaiExtras: '{}'
   key: null
-  waitReady: false
 
 system:
   jobId: null
@@ -25,3 +20,12 @@ system:
   nodeAffinityPreferenceKey: null
   workerGpuMemory: null
 
+resources:
+  replicas: 1
+  workerGpuMemory: null
+  workers: 1
+  backend: cuda
+  workingMemory: 16
+  memory: 8
+  cpus: 2
+  gpus: 1

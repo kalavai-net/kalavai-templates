@@ -477,103 +477,61 @@
             }
          }
       },
-      "cpus": {
-         "description": "CPUs to be used. Workers should have these many CPUs available.",
-         "type": "integer"
-      },
-      "gpus": {
-         "description": "GPUs to be used. Workers should have these many GPUs available.",
-         "type": "integer"
-      },
-      "memory": {
-         "description": "RAM memory to be used. Workers should have these much RAM available.",
-         "type": "integer"
-      },
-      "cudaGpuMemPercentage": {
-         "description": "Maximum memory fraction allowed to be used from the GPU vRAM.",
-         "type": "integer"
-      },
-      "modelId": {
-         "description": "Model ID. hexagrad/Kokoro-82M for TTS and one of the following for STT: tiny.en, tiny, base.en, base, small.en, small, medium.en, medium, large-v1, large-v2, large-v3, large, distil-large-v2, distil-medium.en, distil-small.en, distil-large-v3, large-v3-turbo, turbo",
-         "type": "string"
-      },
-      "mode": {
-         "description": "Mode of the model: audio_speech for TTS, audio_transcription for STT",
-         "type": "string"
-      },
-      "nodeport": {
-         "description": "Specify the node port for the service that exposes the job",
-         "type": [
-            "string",
-            "null"
-         ]
-      },
       "litellm": {
          "type": "object",
          "properties": {
+            "enabled": {
+               "type": "boolean",
+               "description": "Enable LiteLLM API Gateway"
+            },
+            "baseUrl": {
+               "description": "Base URL of the LiteLLM service (central model registry). This can be an external LiteLLM instance or an internal deployment in the pool (default)",
+               "type": [
+                  "string",
+                  "null"
+               ]
+            },
+            "key": {
+               "description": "Master key of the LiteLLM service (central model registry)",
+               "type": [
+                  "string",
+                  "null"
+               ]
+            },
+            "accessGroup": {
+               "description": "What access group to assign the model to (ringfencing)",
+               "type": [
+                  "string",
+                  "null"
+               ]
+            },
+            "kalavaiExtras": {
+               "description": "Extra information to store in the LiteLLM model registration (must be a dictionary)",
+               "type": [
+                  "string",
+                  "null"
+               ]
+            },
             "waitReady": {
                "description": "Wait for the model to be ready before registering it in LiteLLM",
                "type": "boolean"
+            },
+            "modelNameOverride": {
+               "description": "Override the model name when registering in LiteLLM",
+               "type": [
+                  "string",
+                  "null"
+               ]
+            },
+            "provider": {
+               "description": "Provider of the model (e.g., openai, anthropic, etc.)",
+               "default": "hosted_vllm",
+               "type": [
+                  "string",
+                  "null"
+               ]
             }
-         },
-         "baseUrl": {
-            "description": "Base URL of the LiteLLM service (central model registry). This can be an external LiteLLM instance or an internal deployment in the pool (default)",
-            "type": "string"
-         },
-         "key": {
-            "description": "Master key of the LiteLLM service (central model registry)",
-            "type": [
-               "string",
-               "null"
-            ]
-         },
-         "accessGroup": {
-            "description": "What access group to assign the model to (ringfencing)",
-            "type": [
-               "string",
-               "null"
-            ]
-         },
-         "kalavaiExtras": {
-            "description": "Extra information to store in the LiteLLM model registration (must be a dictionary)",
-            "type": "string"
          }
-      },
-      
-      "lagoUrl": {
-         "description": "Base URL of the Lago service (payment system)",
-         "type": [
-            "string",
-            "null"
-         ]
-      },
-      "lagoApiKey": {
-         "description": "Master key of the Lago service",
-         "type": [
-            "string",
-            "null"
-         ]
-      },
-      "lagoExternalSubscriptionId": {
-         "description": "ID of the Lago subscription to send events to",
-         "type": [
-            "string",
-            "null"
-         ]
-      },
-      "lagoEventCode": {
-         "description": "Event code to use when submitting event to Lago payment API",
-         "type": [
-            "string",
-            "null"
-         ]
-      },
-      "lagoEventInterval": {
-         "description": "Interval in seconds to send the lago event",
-         "type": [
-            "string",
-            "null"
-         ]
       },
       "system": {
          "properties": {
@@ -582,8 +540,12 @@
                "description": "Dictionary mapping environment variable names to secret names"
             },
             "priorityClassName": {
-               "type": "string",
-               "description": "PriorityClassName to use for the deployment"
+                "type": "string",
+                "description": "PriorityClassName to use for the deployment"
+            },
+            "jobId": {
+                "type": "string",
+                "description": "Job ID to label spawned objects."
             },
             "nodeSelectors": {
                "type": [
@@ -594,33 +556,53 @@
             },
             "nodeSelectorsOps": {
                "type": "string",
-               "enum": [
-                  "OR",
-                  "AND"
-               ],
+               "enum": ["OR", "AND"],
                "description": "Logical operation to use to apply to nodeSelectors. Accepted values: 'OR', 'AND'"
             },
-            "jobId": {
-               "type": "string",
-               "description": "Id to tag spawned objects."
-            },
             "nodeAffinityPreferenceKey": {
-               "type": [
-                  "string",
-                  "null"
-               ],
-               "description": "Key to use for node affinity"
+               "type": ["null", "string"],
+               "description": "Node affinity preference key to use for the deployment"
+            }
+            
+         }
+      },
+      "resources": {
+         "type": "object",
+         "properties": {
+            "replicas": {
+               "type": "integer",
+               "description": "Number of replicas to run"
             },
             "workerGpuMemory": {
-               "type": [
-                  "number",
-                  "null"
-               ],
-               "description": "Working GPU memory to be used per single worker (final one = working_gpu_memory * workers). Workers should have these many GB of working GPU memory available."
+               "type": ["integer", "null"],
+               "description": "Worker GPU memory limit in GB (multiplied by 1000 for nvidia.com/gpumem resource)"
+            },
+            "workingMemory": {
+               "description": "Temporary storage to use to cache model weights (in GB), should be big enough to hold the model weights. All workers should have enough free disk to accommodate the weights.",
+               "type": "integer"
+            },
+            "workers": {
+               "description": "Number of workers, corresponding to the number of nodes (or machines) that will be used to deploy the model",
+               "type": "integer"
+            },
+            "backend": {
+               "description": "Use 'cuda' (nvidia cards) or 'cpu' backend",
+               "type": "string",
+               "enum": ["cuda", "cpu"]
+            },
+            "memory": {
+               "description": "Memory to be used per single worker (final one = memory * workers). Workers should have these many GB of memory available.",
+               "type": "integer"
+            },
+            "cpus": {
+               "description": "CPUs to be used per single worker (final one = cpus * workers). Workers should have these many CPUs available.",
+               "type": "integer"
+            },
+            "gpus": {
+               "description": "GPUs to be used per single worker (final one = gpus * workers). Workers should have these many GPUs available.",
+               "type": "integer"
             }
          }
       }
-   },
-   "required": [
-   ]
+   }
 }

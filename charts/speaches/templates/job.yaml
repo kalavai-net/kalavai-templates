@@ -7,7 +7,7 @@ metadata:
     kalavai.job.name: {{ .Values.system.jobId}}
 spec:
   queue: default
-  priorityClassName: {{ .Values.system.priorityClassName}}
+  priorityClassName: {{ .Values.system.priorityClassName }}
   schedulerName: volcano
   plugins:
     env: []
@@ -29,13 +29,13 @@ spec:
       metadata:
         labels:
           role: leader
-          kalavai.job.name: {{ .Values.system.jobId}}
+          kalavai.job.name: {{ .Values.system.jobId }}
           {{- if .Values.system.workerGpuMemory }}
           kalavai/vram: {{ .Values.system.workerGpuMemory | quote }}
           {{- end }}
       spec:
         terminationGracePeriodSeconds: 60
-      {{- if eq .Values.deployment.gpuBackend "cuda" }}
+      {{- if eq .Values.system.backend "cuda" }}
         runtimeClassName: nvidia
       {{- end }}
         affinity:
@@ -75,11 +75,7 @@ spec:
         {{- end }}
         containers:
         - name: speaches-leader
-        {{- if .Values.deployment.gpus > 0 }}
-          image: ghcr.io/speaches-ai/speaches:latest-cuda
-        {{- else }}
-          image: ghcr.io/speaches-ai/speaches:latest-cpu
-        {{- end }}
+          image: ghcr.io/speaches-ai/speaches:latest-{{ .Values.resources.backend }}
           imagePullPolicy: IfNotPresent
           # command:
           # - sh
@@ -97,24 +93,24 @@ spec:
           {{- end }}
           resources:
             requests:
-              cpu: {{ .Values.deployment.cpus}}
-              memory: {{ .Values.deployment.memory }}Gi
-            {{- if eq .Values.deployment.gpuBackend "cuda" }}
-              nvidia.com/gpu: {{ .Values.deployment.gpus}}
-            {{- else }}
-              amd.com/gpu: {{ .Values.deployment.gpus}}
+              cpu: {{ .Values.resources.cpus }}
+              memory: {{ .Values.resources.memory }}Gi
+            {{- if gt (int .Values.resources.gpus) 0 }}
+            {{- if eq .Values.system.backend "cuda" }}
+              nvidia.com/gpu: {{ .Values.resources.gpus }}
+            {{- end }}
             {{- end }}
               ephemeral-storage: 24Gi
             limits:
-              cpu: {{ .Values.deployment.cpus}}
-              memory: {{ .Values.deployment.memory }}Gi
-            {{- if eq .Values.deployment.gpuBackend "cuda" }}
-              nvidia.com/gpu: {{ .Values.deployment.gpus}}
-              {{- if .Values.deployment.gpuMemory }}
-              nvidia.com/gpumem: {{ .Values.deployment.gpuMemory}}
+              cpu: {{ .Values.resources.cpus}}
+              memory: {{ .Values.resources.memory }}Gi
+            {{- if gt (int .Values.system.gpus) 0 }}
+            {{- if eq .Values.system.backend "cuda" }}
+              nvidia.com/gpu: {{ .Values.resources.gpus }}
+              {{- if .Values.resources.workerGpuMemory }}
+              nvidia.com/gpumem: {{ .Values.resources.workerGpuMemory }}
               {{- end }}
-            {{- else }}
-              amd.com/gpu: {{ .Values.deployment.gpus}}
+            {{- end }}
             {{- end }}
               ephemeral-storage: 24Gi
           readinessProbe:
@@ -129,7 +125,7 @@ spec:
     template:
       metadata:
         labels:
-          kalavai.job.name: {{ .Values.system.jobId}}
+          kalavai.job.name: {{ .Values.system.jobId }}
       spec:
         terminationGracePeriodSeconds: 60
         containers:
@@ -232,11 +228,7 @@ spec:
               fieldRef:
                 fieldPath: metadata.namespace
           - name: LITELLM_MODEL_NAME
-          {{ if .Values.deployment.modelNameOverride }}
-            value: "{{ .Values.deployment.modelNameOverride }}"
-          {{ else }}
             value: "{{ .Values.speaches.model }}"
-          {{ end }}
           {{- if .Values.litellm.baseUrl}}
           - name: LITELLM_BASE_URL
             value: {{ .Values.litellm.baseUrl }}

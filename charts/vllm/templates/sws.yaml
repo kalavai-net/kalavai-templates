@@ -117,13 +117,13 @@ spec:
       runtimeClassName: nvidia
     {{- end }}
       affinity:
-      {{- if .Values.resources.nodeAffinityPreferenceKey }}
+      {{- if .Values.system.nodeAffinityPreferenceKey }}
         podAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
                 matchLabels:
                   kalavai.job.name: {{ .Values.system.jobId }}
-              topologyKey: {{ .Values.resources.nodeAffinityPreferenceKey }}
+              topologyKey: {{ .Values.system.nodeAffinityPreferenceKey }}
       {{- end }}
       {{- if .Values.system.nodeSelectors }}
         nodeAffinity:

@@ -1,0 +1,38 @@
+FROM ghcr.io/kalavai-net/ray-base:latest AS base
+
+FROM python:3.12-slim
+
+ARG PIP_VLLM_VERSION=0.14.0
+ARG TARGETARCH # Buildkit's target architecture, e.g. "amd64" or "arm64"
+
+WORKDIR /home/ray/workspace
+
+# copy over ray scripts
+COPY --from=base /home/ray/workspace/ .
+
+RUN apt update -y && apt install --no-install-recommends libtcmalloc-minimal4 bc wget ffmpeg curl python3-venv git gcc-12 g++-12 libnuma-dev  -y && \
+    rm -rf /var/lib/apt/lists/*
+
+# install dependencies
+COPY common_requirements.txt .
+
+RUN python3 -m venv /home/ray/workspace/env
+
+RUN . /home/ray/workspace/env/bin/activate && \
+    pip install -r common_requirements.txt --no-cache-dir
+
+# wheel naming breaks from 0.30.0
+RUN . /home/ray/workspace/env/bin/activate && \
+    case "$TARGETARCH" in \
+      amd64) WHEEL_ARCH=x86_64 ;; \
+      arm64) WHEEL_ARCH=aarch64 ;; \
+      *) echo "Unsupported architecture: $TARGETARCH" && exit 1 ;; \
+    esac && \
+    pip install "https://github.com/vllm-project/vllm/releases/download/v${PIP_VLLM_VERSION}/vllm-${PIP_VLLM_VERSION}+cpu-cp38-abi3-manylinux_2_34_${WHEEL_ARCH}.whl" --extra-index-url https://download.pytorch.org/whl/cpu --no-cache-dir
+
+# vllm-omni is not supported on CPU-only
+
+COPY run_model.sh .
+RUN chmod +x /home/ray/workspace/run_model.sh
+
+ENTRYPOINT [ "/bin/bash" ]

@@ -183,7 +183,7 @@ spec:
         {{- end }}
         {{- if eq .Values.resources.backend "cuda" }}
           nvidia-smi;
-        {{- else }}
+        {{- else if eq .Values.resources.backend "rocm" }}
           rocm-smi;
           python -c "import torch; print(torch.cuda.device_count(), torch.cuda.get_device_name(0))";
         {{- end }}
@@ -431,7 +431,7 @@ spec:
         {{- end }}
         {{- if eq .Values.resources.backend "cuda" }}
           nvidia-smi;
-        {{- else }}
+        {{- else if eq .Values.resources.backend "rocm" }}
           rocm-smi;
           python -c "import torch; print(torch.cuda.device_count(), torch.cuda.get_device_name(0))";
         {{- end }}

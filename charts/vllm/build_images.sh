@@ -28,7 +28,7 @@ fi
 # free disk space
 docker system prune -af
 
-CUDA (both arm64 and x86)
+# CUDA (both arm64 and x86)
 docker buildx build --build-arg PIP_VLLM_VERSION=$PIP_VLLM_VERSION --push -t ghcr.io/kalavai-net/vllm-cuda:$IMAGE_TAG --platform=linux/amd64,linux/arm64 -f src/Dockerfile_cuda src/
 if [ "$PUSH_LATEST" = true ]; then
     docker buildx build --build-arg PIP_VLLM_VERSION=$PIP_VLLM_VERSION --push -t ghcr.io/kalavai-net/vllm-cuda:latest --platform=linux/amd64,linux/arm64 -f src/Dockerfile_cuda src/

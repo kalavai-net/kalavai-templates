@@ -4215,6 +4215,29 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/ray-cluster-0.0.1/ray-cluster-0.0.1.tgz
     version: 0.0.1
+  rstudio:
+  - annotations:
+      category: development
+      status: dev
+    apiVersion: v2
+    appVersion: 0.0.1
+    created: "2026-09-25T13:50:19.585139188Z"
+    description: RStudio is a popular free, open-source integrated development environment
+      (IDE) designed specifically for the R programming language, as well as Python
+      and other data science tools
+    digest: 2ad1bc47bfc13a1757d535fd51e13542bd9227fad00edc049ca158a1552350f2
+    icon: https://commons.wikimedia.org/wiki/File:RStudio_logo_flat.svg
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: rstudio
+    sources:
+    - https://posit.co/products/open-source/rstudio
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/rstudio-0.0.1/rstudio-0.0.1.tgz
+    version: 0.0.1
   serverless:
   - annotations:
       category: development
@@ -5975,4 +5998,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-09-23T09:59:26.264250836Z"
+generated: "2026-09-25T13:50:19.893654906Z"

@@ -1,0 +1,16 @@
+apiVersion: v2
+appVersion: 0.0.1
+description: RStudio is a popular free, open-source integrated development environment (IDE) designed specifically for the R programming language, as well as Python and other data science tools
+icon: 'https://commons.wikimedia.org/wiki/File:RStudio_logo_flat.svg'
+kubeVersion: '>= 1.25.0'
+maintainers:
+- email: carlos@kalavai.net
+  name: Carlos Fernandez Musoles
+  url: https://kalavai.net
+name: rstudio
+sources:
+- https://posit.co/products/open-source/rstudio
+version: 0.0.1
+annotations:
+  status: dev
+  category: development

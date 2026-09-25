@@ -1,0 +1,47 @@
+# Service for API
+# deploy NodePort to expose model
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-rstudio-svc
+  labels:
+    # must have this!
+    kalavai.job.name: {{ .Values.system.jobId }}
+spec:
+  selector:
+    role: server
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+  ports:
+    - name: main
+      port: 8787
+      targetPort: 8787
+      protocol: TCP
+  {{- if .Values.ingress.enabled }}
+  type: ClusterIP
+  {{- else }}
+  type: NodePort
+  {{- end }}
+---
+{{- if .Values.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  # annotations:
+  #   traefik.ingress.kubernetes.io/router.middlewares: "{{ .Release.Namespace }}-{{ .Release.Name }}-large-body@kubernetescrd"
+  labels:
+    kalavai.job.name: {{ .Values.system.jobId }}
+  name: {{ .Release.Name }}-rstudio-ingress
+spec:
+  ingressClassName: traefik
+  rules:
+  - host: {{ .Release.Name }}-{{ .Release.Namespace }}-rstudio.{{ .Values.ingress.subdomain }}
+    http:
+      paths:
+      - backend:
+          service:
+            name: {{ .Release.Name }}-rstudio-svc
+            port:
+              number: 8888 # match internal port
+        path: /
+        pathType: Prefix
+{{- end }}

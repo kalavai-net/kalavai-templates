@@ -1,0 +1,27 @@
+rstudio:
+  version: 4.2.2
+  password: password
+
+# Ingress Configuration
+ingress:
+  enabled: false
+  subdomain: spaces.kalavai.net
+
+system:
+  jobId: null
+  nodeSelectors: null
+  nodeSelectorsOps: OR
+  priorityClassName: user-spot-priority
+  envFromSecrets: {}
+  nodeAffinityPreferenceKey: null
+  workerGpuMemory: null
+
+resources:
+  replicas: 1
+  workerGpuMemory: null
+  workers: 1
+  backend: cpu
+  workingMemory: 16
+  memory: 8
+  cpus: 2
+  gpus: 0

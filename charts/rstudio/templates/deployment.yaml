@@ -1,0 +1,109 @@
+# RStudio Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-rstudio
+  labels:
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+  template:
+    metadata:
+      labels:
+        kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+        role: server
+    spec:
+      terminationGracePeriodSeconds: 10
+    {{- if eq .Values.resources.backend "cuda" }}
+      runtimeClassName: nvidia
+    {{- end }}
+    {{- if .Values.system.priorityClassName }}
+      priorityClassName: {{ .Values.system.priorityClassName }}
+    {{- end }}
+      affinity:
+      {{- if .Values.system.nodeAffinityPreferenceKey }}
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  kalavai.job.name: {{ .Values.system.jobId }}
+              topologyKey: {{ .Values.system.nodeAffinityPreferenceKey }}
+      {{- end }}
+      {{- if .Values.system.nodeSelectors }}
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+          {{ if eq .Values.system.nodeSelectorsOps "OR" }}
+            {{ range $k, $v := .Values.system.nodeSelectors }}
+            - matchExpressions:
+              - key: {{$k}}
+                operator: In
+                values:
+                {{ range $v }}
+                - "{{ . }}"
+                {{ end }}
+            {{ end }}
+          {{ else }}
+            - matchExpressions:
+            {{ range $k, $v := .Values.system.nodeSelectors }}
+              {{ range $v }}
+              - key: {{ $k }}
+                operator: In
+                values:
+                - "{{ . }}"
+              {{ end }}
+            {{ end }}
+          {{ end }}
+      {{- end }}
+      containers:
+      - name: server
+        image: "docker.io/rocker/rstudio:{{ .Values.rstudio.version }}"
+        # command:
+        # - "sh"
+        # - "-c"
+        # - |
+        #   redis-server --requirepass $REDIS_PASSWORD
+        ports:
+        - containerPort: 8787
+          name: server-port
+        env:
+        {{- if .Values.system.envFromSecrets }}
+        {{- range .Values.system.envFromSecrets }}
+        - name: {{ . }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ . }}
+              key: {{ . }}
+        {{- end }}
+        {{- end }}
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{.Release.Name }}-rstudio-secrets
+              key: rstudio_password
+        resources:
+          requests:
+            cpu: {{ .Values.resources.cpus}}
+            memory: {{ .Values.resources.memory}}Gi
+          {{- if eq .Values.resources.backend "cuda" }}
+            nvidia.com/gpu: {{ .Values.resources.gpus }}
+          {{- else if eq .Values.resources.backend "rocm" }}
+            amd.com/gpu: {{ .Values.resources.gpus }}
+          {{- end }}
+            ephemeral-storage: {{ .Values.resources.workingMemory}}Gi
+          limits:
+            cpu: {{ .Values.resources.cpus}}
+            memory: {{ .Values.resources.memory }}Gi
+          {{- if eq .Values.resources.backend "cuda" }}
+            nvidia.com/gpu: {{ .Values.resources.gpus }}
+            {{- if .Values.resources.workerGpuMemory }}
+            nvidia.com/gpumem: {{ mul .Values.resources.workerGpuMemory 1000 }}
+            {{- end }}
+          {{- else if eq .Values.resources.backend "rocm" }}
+            amd.com/gpu: {{ .Values.resources.gpus }}
+          {{- end }}
+            ephemeral-storage: {{ .Values.resources.workingMemory}}Gi
+      restartPolicy: Always

@@ -1,0 +1,102 @@
+{
+   "$schema": "http://json-schema.org/draft-07/schema#",
+   "type": "object",
+   "properties": {
+      "rstudio": {
+         "type": "object",
+         "properties": {
+            "version": {
+               "type": "string",
+               "description": "RStudio version to deploy"
+            }
+         }
+      },
+      "ingress": {
+         "type": "object",
+         "properties": {
+         "enabled": {
+            "type": "boolean",
+            "default": false,
+            "description": "Enable ingress for the UI service"
+         },
+         "subdomain": {
+            "type": "string",
+            "default": "spaces.kalavai.net",
+            "description": "Subdomain for ingress"
+         }
+         },
+         "required": ["enabled"]
+      },
+      "system": {
+         "properties": {
+            "envFromSecrets": {
+               "type": "object",
+               "description": "Dictionary mapping environment variable names to secret names"
+            },
+            "priorityClassName": {
+                "type": "string",
+                "description": "PriorityClassName to use for the deployment"
+            },
+            "jobId": {
+                "type": "string",
+                "description": "Job ID to label spawned objects."
+            },
+            "nodeSelectors": {
+               "type": [
+                  "object",
+                  "null"
+               ],
+               "description": "target specific devices. Expected format -> key: value pairs, where 'value' is a list of elements"
+            },
+            "nodeSelectorsOps": {
+               "type": "string",
+               "enum": ["OR", "AND"],
+               "description": "Logical operation to use to apply to nodeSelectors. Accepted values: 'OR', 'AND'"
+            },
+            "nodeAffinityPreferenceKey": {
+               "type": ["null", "string"],
+               "description": "Node affinity preference key to use for the deployment"
+            }
+            
+         }
+      },
+      "resources": {
+         "type": "object",
+         "properties": {
+            "replicas": {
+               "type": "integer",
+               "description": "Number of replicas to run"
+            },
+            "workerGpuMemory": {
+               "type": ["integer", "null"],
+               "description": "Worker GPU memory limit in GB (multiplied by 1000 for nvidia.com/gpumem resource)"
+            },
+            "workingMemory": {
+               "description": "Temporary storage to use to cache model weights (in GB), should be big enough to hold the model weights. All workers should have enough free disk to accommodate the weights.",
+               "type": "integer"
+            },
+            "workers": {
+               "description": "Number of workers, corresponding to the number of nodes (or machines) that will be used to deploy the model",
+               "type": "integer"
+            },
+            "backend": {
+               "description": "Use 'cuda' (nvidia cards) or 'cpu' backend",
+               "type": "string",
+               "enum": ["cuda", "cpu"]
+            },
+            "memory": {
+               "description": "Memory to be used per single worker (final one = memory * workers). Workers should have these many GB of memory available.",
+               "type": "integer"
+            },
+            "cpus": {
+               "description": "CPUs to be used per single worker (final one = cpus * workers). Workers should have these many CPUs available.",
+               "type": "integer"
+            },
+            "gpus": {
+               "description": "GPUs to be used per single worker (final one = gpus * workers). Workers should have these many GPUs available.",
+               "type": "integer"
+            }
+         }
+      }
+   }
+}

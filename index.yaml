@@ -1,5 +1,27 @@
 apiVersion: v1
 entries:
+  databases:
+  - annotations:
+      category: db
+      status: beta
+    apiVersion: v2
+    appVersion: 0.0.1
+    created: "2026-10-09T20:00:55.679517117Z"
+    description: A collection of Databases
+    digest: e0cd40dd3b5a656f1bbdba7bcd89b4d9e14b01796e267acc77654b86a82fdf3c
+    icon: https://wiki.postgresql.org/images/thumb/a/a4/PostgreSQL_logo.3colors.svg/540px-PostgreSQL_logo.3colors.svg.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: databases
+    sources:
+    - https://www.postgresql.org/docs/
+    - https://redis.io/docs/latest/operate/oss_and_stack
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/databases-0.0.1/databases-0.0.1.tgz
+    version: 0.0.1
   deployer:
   - annotations:
       category: development
@@ -322,6 +344,27 @@ entries:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/deployer-0.0.1/deployer-0.0.1.tgz
     version: 0.0.1
   gateway:
+  - annotations:
+      category: development
+      status: beta
+    apiVersion: v2
+    appVersion: 0.1.12
+    created: "2026-10-09T20:00:55.8578329Z"
+    description: Python SDK, Proxy Server (LLM Gateway) to call 100+ LLM APIs in OpenAI
+      format
+    digest: 3be009ccb8a802fa36e005ac00042d1a05f042aec948b49f05ebe0f46fd951de
+    icon: https://opensource.muenchen.de/logo/litellm.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: gateway
+    sources:
+    - https://docs.litellm.ai/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/gateway-0.1.12/gateway-0.1.12.tgz
+    version: 0.1.12
   - annotations:
       category: development
       status: beta
@@ -894,6 +937,26 @@ entries:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/inference-0.0.1/inference-0.0.1.tgz
     version: 0.0.1
   jupyterhub:
+  - annotations:
+      category: development
+      status: release
+    apiVersion: v2
+    appVersion: 0.2.6
+    created: "2026-10-09T20:00:56.081811423Z"
+    description: Access to JupyterHub instance for terminal and jupyter notebooks
+    digest: e1d2ad5f5e462ad5f5fcf140ccbaa68c0378811ae42fe1df0d23acee5bfdc982
+    icon: https://jupyter.org/assets/homepage/hublogo.svg
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: jupyterhub
+    sources:
+    - https://jupyter.org/hub
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/jupyterhub-0.2.6/jupyterhub-0.2.6.tgz
+    version: 0.2.6
   - annotations:
       category: development
       status: release
@@ -2499,6 +2562,28 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/kalavai-pool-0.0.1/kalavai-pool-0.0.1.tgz
     version: 0.0.1
+  langflow:
+  - annotations:
+      category: development
+      status: beta
+    apiVersion: v2
+    appVersion: 0.0.1
+    created: "2026-10-09T20:00:56.308912386Z"
+    description: Langflow is an open-source, Python-based, customizable framework
+      for building AI applications.
+    digest: d9b9275b60dc0e3fa813a4115c577e2914778a654c7e731960b025c2ae3c313f
+    icon: http://github.com/langflow-ai/langflow/blob/main/docs/static/img/langflow-logo-color-blue-bg.svg
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: langflow
+    sources:
+    - https://docs.langflow.org/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/langflow-0.0.1/langflow-0.0.1.tgz
+    version: 0.0.1
   llama.cpp:
   - annotations:
       category: llm
@@ -3684,6 +3769,27 @@ entries:
       category: development
       status: beta
     apiVersion: v2
+    appVersion: 0.1.20
+    created: "2026-10-09T20:00:56.563916456Z"
+    description: An open source framework to build and scale your ML and Python applications
+      easily
+    digest: d7ef061990e75b38fabc43b64febd183f96ac80fd8d228c0a3401ec044aafb8d
+    icon: https://github.com/ray-project/ray/raw/master/doc/source/images/ray_header_logo.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: ray-cluster
+    sources:
+    - https://docs.ray.io/en/latest
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/ray-cluster-0.1.20/ray-cluster-0.1.20.tgz
+    version: 0.1.20
+  - annotations:
+      category: development
+      status: beta
+    apiVersion: v2
     appVersion: 0.1.19
     created: "2026-09-10T18:18:48.046283176Z"
     description: An open source framework to build and scale your ML and Python applications
@@ -4240,6 +4346,28 @@ entries:
       category: development
       status: dev
     apiVersion: v2
+    appVersion: 0.0.2
+    created: "2026-10-09T20:00:56.772686296Z"
+    description: RStudio is a popular free, open-source integrated development environment
+      (IDE) designed specifically for the R programming language, as well as Python
+      and other data science tools
+    digest: 67d91a28ead388ad156283f98fb5ad1c591a74188d6d0a857cfcf1af2ec7b14a
+    icon: https://www.r-project.org/logo/Rlogo.svg
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: rstudio
+    sources:
+    - https://posit.co/products/open-source/rstudio
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/rstudio-0.0.2/rstudio-0.0.2.tgz
+    version: 0.0.2
+  - annotations:
+      category: development
+      status: dev
+    apiVersion: v2
     appVersion: 0.0.1
     created: "2026-09-25T13:50:19.585139188Z"
     description: RStudio is a popular free, open-source integrated development environment
@@ -4507,6 +4635,28 @@ entries:
     - https://speaches.ai/
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/speaches-0.0.1/speaches-0.0.1.tgz
+    version: 0.0.1
+  vectordb:
+  - annotations:
+      category: db
+      status: beta
+    apiVersion: v2
+    appVersion: 0.0.1
+    created: "2026-10-09T20:00:56.987241064Z"
+    description: A collection of vector DBs
+    digest: 1e2e4ff2f770c63d65dfca1cc1550d4d465a25e30f695de36ba5f7b3267b72d6
+    icon: https://qdrant.tech/img/brand-resources-logos/qdrant-logo-red-black.svg
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: vectordb
+    sources:
+    - https://github.com/qdrant/qdrant
+    - https://github.com/chroma-core/chroma
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/vectordb-0.0.1/vectordb-0.0.1.tgz
     version: 0.0.1
   vllm:
   - annotations:
@@ -6018,4 +6168,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-10-09T19:20:27.583808036Z"
+generated: "2026-10-09T20:00:56.988227249Z"

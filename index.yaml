@@ -2504,6 +2504,26 @@ entries:
       category: llm
       status: beta
     apiVersion: v2
+    appVersion: 0.3.6
+    created: "2026-10-09T19:20:27.583431613Z"
+    description: LLM inference in C/C++
+    digest: 61bf919484228d1176098a261a3c1a13012a84054af3e0a7153d73a3a7b573f3
+    icon: https://user-images.githubusercontent.com/1991296/230134379-7181e485-c521-4d23-a0d6-f7b3b61ba524.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: llama.cpp
+    sources:
+    - https://github.com/ggml-org/llama.cpp
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/llama.cpp-0.3.6/llama.cpp-0.3.6.tgz
+    version: 0.3.6
+  - annotations:
+      category: llm
+      status: beta
+    apiVersion: v2
     appVersion: 0.3.5
     created: "2026-09-10T15:31:05.437461677Z"
     description: LLM inference in C/C++
@@ -5998,4 +6018,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-09-25T13:50:19.893654906Z"
+generated: "2026-10-09T19:20:27.583808036Z"

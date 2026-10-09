@@ -1,0 +1,53 @@
+redis:
+  enabled: false
+  version: "7.4.0"
+  password: mypassword
+
+valkey:
+  enabled: false
+  replica:
+    replicas: 1
+    persistence:
+      size: 1Gi
+    sentinel:
+      enabled: false
+      replicas: 3
+      quorum: 2
+  auth:
+    aclUsers:
+      default:
+        password: mypassword
+      replicator:
+        password: mypassword
+
+postgres:
+  enabled: false
+  version: "14"
+  user: admin
+  db: db
+  password: mypassword
+
+ingress:
+  enabled: false
+  subdomain: spaces.kalavai.net
+
+# pvc:
+#   enabled: false
+
+system:
+  priorityClassName: user-spot-priority
+  nodeSelectors: null
+  nodeSelectorsOps: OR
+  nodeAffinityPreferenceKey: null
+  jobId: null
+  envFromSecrets: {}
+
+resources:
+  replicas: 1
+  workerGpuMemory: null
+  workers: 1
+  backend: cuda
+  workingMemory: 16
+  memory: 2
+  cpus: 1
+  gpus: 1

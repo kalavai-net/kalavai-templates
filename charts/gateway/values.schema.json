@@ -15,6 +15,11 @@
                "default": 1,
                "description": "Number of replicas for the LiteLLM proxy (+2 for high concurrency)"
             },
+            "ui_username": {
+               "type": "string",
+               "default": "admin",
+               "description": "LiteLLM UI username"
+            },
             "ui_password": {
                "type": "string",
                "description": "LiteLLM UI password"
@@ -118,7 +123,7 @@
                }
             }
          },
-         "required": ["ui_password", "master_key", "salt_key"]
+         "required": ["ui_password", "master_key", "salt_key", "ui_username"]
       },
       "redis": {
          "type": "object",

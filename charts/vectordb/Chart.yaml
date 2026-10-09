@@ -1,0 +1,17 @@
+apiVersion: v2
+appVersion: 0.0.1
+description: A collection of vector DBs
+icon: https://qdrant.tech/img/brand-resources-logos/qdrant-logo-red-black.svg
+kubeVersion: '>= 1.25.0'
+maintainers:
+- email: carlos@kalavai.net
+  name: Carlos Fernandez Musoles
+  url: https://kalavai.net
+name: vectordb
+sources:
+- https://github.com/qdrant/qdrant
+- https://github.com/chroma-core/chroma
+version: 0.0.1
+annotations:
+  status: beta
+  category: db

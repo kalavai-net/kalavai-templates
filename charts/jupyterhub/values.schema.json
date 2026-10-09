@@ -55,7 +55,8 @@
                "type": "string",
                "description": "Initialization script"
             }
-         }
+         },
+         "required": ["adminUsername", "username", "password", "storageClass"]
       },
       "distributed": {
          "type": "object",

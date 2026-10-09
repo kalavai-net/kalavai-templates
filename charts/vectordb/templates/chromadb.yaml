@@ -1,0 +1,165 @@
+{{- if .Values.chromadb.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-chromadb-db
+  labels:
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+    component: chromadb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+      component: chromadb
+  template:
+    metadata:
+      labels:
+        kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+        component: chromadb
+        role: leader
+    spec:
+      terminationGracePeriodSeconds: 10
+      {{- if .Values.system.priorityClassName }}
+      priorityClassName: {{ .Values.system.priorityClassName }}
+      {{- end }}
+      tolerations:
+      - key: "node.kubernetes.io/not-ready"
+        operator: Exists
+        effect: NoExecute
+        tolerationSeconds: 10
+      - key: "node.kubernetes.io/unreachable"
+        operator: Exists
+        effect: NoExecute
+        tolerationSeconds: 10
+      - key: "node.kubernetes.io/unknown"
+        operator: Exists
+        effect: NoExecute
+        tolerationSeconds: 10
+      - key: "node.kubernetes.io/memory-pressure"
+        operator: Exists
+        effect: NoSchedule
+      - key: "node.kubernetes.io/disk-pressure"
+        operator: Exists
+        effect: NoSchedule
+      - key: "node.kubernetes.io/pid-pressure"
+        operator: Exists
+        effect: NoSchedule
+      - key: "node.kubernetes.io/network-unavailable"
+        operator: Exists
+        effect: NoSchedule
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: kalavai.job.name
+                  operator: In
+                  values:
+                  - {{ .Values.system.jobId | default .Release.Name }}
+              topologyKey: "kubernetes.io/hostname"
+      {{- if .Values.system.nodeSelectors }}
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+          {{- if eq .Values.system.nodeSelectorsOps "OR" }}
+            {{ range $k, $v := .Values.system.nodeSelectors }}
+            - matchExpressions:
+              - key: {{$k}}
+                operator: In
+                values:
+                {{- range $v }}
+                - "{{ . }}"
+                {{- end }}
+            {{ end }}
+          {{- else }}
+            - matchExpressions:
+            {{ range $k, $v := .Values.system.nodeSelectors }}
+              {{ range $v }}
+              - key: {{ $k }}
+                operator: In
+                values:
+                - "{{ . }}"
+              {{ end }}
+            {{ end }}
+          {{- end }}
+      {{- end }}
+      containers:
+      - name: chromadb
+        image: "ghcr.io/chroma-core/chroma:{{ .Values.chromadb.version }}"
+        # command:
+        # - sh
+        # - -c
+        # - |
+        #   echo "Deploying server..."
+        #   python backend/main.py --host 0.0.0.0 --port 8000
+        env:
+        {{- if .Values.system.envFromSecrets }}
+        {{- range .Values.system.envFromSecrets }}
+        - name: {{ . }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ . }}
+              key: {{ . }}
+        {{- end }}
+        {{- end }}
+        ports:
+        - containerPort: 8000
+          name: container-port
+        # startupProbe:
+        #   httpGet:
+        #     path: /v1/health
+        #     port: 8000
+        #   initialDelaySeconds: 50
+        #   periodSeconds: 60
+        #   timeoutSeconds: 2
+        #   failureThreshold: 5
+        # livenessProbe:
+        #   httpGet:
+        #     path: /v1/health
+        #     port: 8000
+        #   initialDelaySeconds: 100
+        #   periodSeconds: 90
+        #   timeoutSeconds: 2
+        #   failureThreshold: 2
+        # readinessProbe:
+        #   httpGet:
+        #     path: /v1/health
+        #     port: 8000
+        #   initialDelaySeconds: 20
+        #   periodSeconds: 120
+        #   timeoutSeconds: 1
+        #   failureThreshold: 2
+        resources:
+          requests:
+            cpu: {{ .Values.resources.cpus | quote }}
+            memory: {{ .Values.resources.memory }}Gi
+          limits:
+            cpu: {{ .Values.resources.cpus | quote }}
+            memory: {{ .Values.resources.memory }}Gi
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-chromadb-svc
+  labels:
+    # must have this!
+    kalavai.job.name: {{ .Values.system.jobId }}
+spec:
+  selector:
+    component: chromadb
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+  ports:
+    - name: main
+      port: 8000
+      targetPort: 8000
+      protocol: TCP
+  {{- if .Values.ingress.enabled }}
+  type: ClusterIP
+  {{- else }}
+  type: NodePort
+  {{- end }}
+{{- end }}

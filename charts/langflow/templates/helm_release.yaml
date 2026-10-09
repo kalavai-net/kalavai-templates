@@ -1,0 +1,141 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: langflow-repo-{{ .Release.Name }}
+  labels:
+    kalavai.job.name: {{ .Values.system.jobId}}
+spec:
+  interval: 1h
+  url: https://langflow-ai.github.io/langflow-helm-charts
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: {{ .Release.Name}}-langflow
+  labels:
+    kalavai.job.name: {{ .Values.system.jobId}}
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: langflow-ide
+      #version: "4.3.2"
+      sourceRef:
+        kind: HelmRepository
+        name: langflow-repo-{{ .Release.Name }}
+        namespace: {{ .Release.Namespace }}
+  values:
+    # more options https://github.com/langflow-ai/langflow-helm-charts/blob/main/charts/langflow-ide/values.yaml
+    langflow:
+      backend:
+        image:
+          tag: {{ .Values.langflow.image.tag }}
+        replicaCount: {{ .Values.langflow.backend.replicaCount }}
+        numWorkers: {{ .Values.langflow.backend.numWorkers }}
+        sqlite:
+          enabled: {{ not .Values.postgresql.enabled }}
+        env:
+        - name: LANGFLOW_SUPERUSER_PASSWORD
+          value: {{ .Values.langflow.backend.superuserPassword | quote }}
+        resources:
+          requests:
+            memory: {{ .Values.resources.memory }}Gi
+            cpu: {{ .Values.resources.cpus }}
+          limits:
+            memory: {{ .Values.resources.memory }}Gi
+            cpu: {{ .Values.resources.cpus }}
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                  - key: kalavai.job.name
+                    operator: In
+                    values:
+                    - {{ .Values.system.jobId | default .Release.Name }}
+                topologyKey: "kubernetes.io/hostname"
+        {{- if .Values.system.nodeSelectors }}
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+            {{- if eq .Values.system.nodeSelectorsOps "OR" }}
+              {{ range $k, $v := .Values.system.nodeSelectors }}
+              - matchExpressions:
+                - key: {{$k}}
+                  operator: In
+                  values:
+                  {{- range $v }}
+                  - "{{ . }}"
+                  {{- end }}
+              {{ end }}
+            {{- else }}
+              - matchExpressions:
+              {{ range $k, $v := .Values.system.nodeSelectors }}
+                {{ range $v }}
+                - key: {{ $k }}
+                  operator: In
+                  values:
+                  - "{{ . }}"
+                {{ end }}
+              {{ end }}
+            {{- end }}
+        {{- end }}
+      frontend:
+        image:
+          tag: {{ .Values.langflow.image.tag }}
+        replicaCount: {{ .Values.langflow.frontend.replicaCount }}
+        resources:
+          requests:
+            memory: {{ .Values.resources.memory }}Gi
+            cpu: {{ .Values.resources.cpus }}
+          limits:
+            memory: {{ .Values.resources.memory }}Gi
+            cpu: {{ .Values.resources.cpus }}
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                  - key: kalavai.job.name
+                    operator: In
+                    values:
+                    - {{ .Values.system.jobId | default .Release.Name }}
+                topologyKey: "kubernetes.io/hostname"
+        {{- if .Values.system.nodeSelectors }}
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+            {{- if eq .Values.system.nodeSelectorsOps "OR" }}
+              {{ range $k, $v := .Values.system.nodeSelectors }}
+              - matchExpressions:
+                - key: {{$k}}
+                  operator: In
+                  values:
+                  {{- range $v }}
+                  - "{{ . }}"
+                  {{- end }}
+              {{ end }}
+            {{- else }}
+              - matchExpressions:
+              {{ range $k, $v := .Values.system.nodeSelectors }}
+                {{ range $v }}
+                - key: {{ $k }}
+                  operator: In
+                  values:
+                  - "{{ . }}"
+                {{ end }}
+              {{ end }}
+            {{- end }}
+        {{- end }}
+      
+      postgresql:
+        enabled: {{ .Values.postgresql.enabled }}
+        auth:
+          username: {{ .Values.postgresql.username }}
+          password: {{ .Values.postgresql.password | quote }}
+          database: {{ .Values.postgresql.database }}
+            

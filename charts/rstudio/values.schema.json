@@ -14,18 +14,17 @@
       "ingress": {
          "type": "object",
          "properties": {
-         "enabled": {
-            "type": "boolean",
-            "default": false,
-            "description": "Enable ingress for the UI service"
-         },
-         "subdomain": {
-            "type": "string",
-            "default": "spaces.kalavai.net",
-            "description": "Subdomain for ingress"
+            "enabled": {
+               "type": "boolean",
+               "default": false,
+               "description": "Enable ingress for the UI service"
+            },
+            "subdomain": {
+               "type": "string",
+               "default": "spaces.kalavai.net",
+               "description": "Subdomain for ingress"
+            }
          }
-         },
-         "required": ["enabled"]
       },
       "system": {
          "properties": {
@@ -57,7 +56,6 @@
                "type": ["null", "string"],
                "description": "Node affinity preference key to use for the deployment"
             }
-            
          }
       },
       "resources": {

@@ -43,7 +43,7 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/deployer-0.1.12/deployer-0.1.12.tgz
     version: 0.1.12
-  - 
+  - annotations:
       category: development
       status: beta
     apiVersion: v2

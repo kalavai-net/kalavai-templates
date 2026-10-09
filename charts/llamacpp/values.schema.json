@@ -42,7 +42,8 @@
                "type": "string",
                "enum": ["Always", "OnFailure", "Never"]
             }
-         }
+         },
+         "required": ["repoId", "quant"]
       },
       "loadBalancer": {
          "type": "object",

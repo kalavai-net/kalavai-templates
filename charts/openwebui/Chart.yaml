@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: 0.0.3
+appVersion: 0.0.4
 description: Open WebUI is a home for AI, a self-hosted AI platform that's extensible, feature-rich, user-friendly, and built to run entirely offline.
 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/open-webui-light.svg
 kubeVersion: '>= 1.25.0'
@@ -10,7 +10,7 @@ maintainers:
 name: openwebui
 sources:
 - https://docs.openwebui.com/
-version: 0.0.3
+version: 0.0.4
 annotations:
   status: beta
   category: agents

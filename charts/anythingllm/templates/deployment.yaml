@@ -103,6 +103,7 @@ spec:
         {{- end }}
         - name: STORAGE_DIR
           value: /app/data
+        {{- if .Values.anythingllm.openaiBaseUrl }}
         - name: LLM_PROVIDER
           value: "generic-openai"
         - name: GENERIC_OPEN_AI_BASE_PATH
@@ -112,6 +113,7 @@ spec:
             secretKeyRef:
               name: {{ .Release.Name }}-anythingllm-secrets
               key: openaiApiKey
+        {{- end }}
         - name: GENERIC_OPEN_AI_MODEL_TOKEN_LIMIT
           value: "{{ .Values.anythingllm.modelTokenLimit | default 4096 }}"
         - name: EMBEDDING_ENGINE

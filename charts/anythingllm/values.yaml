@@ -1,7 +1,7 @@
 anythingllm:
   version: 1.17.0
-  openaiBaseUrl: https://openrouter.ai/api/v1/
-  openaiApiKey: sk-changeme
+  openaiBaseUrl: null
+  openaiApiKey: null
   targetOcrLang: eng # https://github.com/Mintplex-Labs/anything-llm/blob/master/docker/.env.example#L523
 
 chroma:

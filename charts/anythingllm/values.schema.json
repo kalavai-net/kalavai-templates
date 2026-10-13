@@ -10,7 +10,7 @@
                 "description": "Open Notebook image tag to deploy"
              },
              "openaiApiKey": {
-                "type": "string",
+                "type": ["string", "null"],
                 "description": "Secret used to encrypt AI provider keys in the database"
              },
              "openaiBaseUrl": {

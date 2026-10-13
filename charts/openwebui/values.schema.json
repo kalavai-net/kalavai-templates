@@ -7,20 +7,24 @@
           "properties": {
              "version": {
                 "type": "string",
-                "description": "Open Notebook image tag to deploy"
+                "description": "Open Web UI image tag to deploy"
              },
              "openaiApiKey": {
                 "type": "string",
-                "description": "Secret used to encrypt AI provider keys in the database"
+                "description": "Secret used to encrypt default provider keys in the database"
              },
              "openaiBaseUrl": {
                 "type": ["string", "null"],
-                "description": "Base URL for the OpenAI API"
+                "description": "Base URL for the default API provider"
              },
-             "targetOcrLang": {
+             "defaultUserRole": {
                 "type": "string",
-                "enum": ["eng", "deu", "ita", "spa", "fra", "por", "rus", "nld", "tur", "hun", "pol"],
-                "description": "Language to use for OCR"
+                "enum": ["admin", "user"],
+                "description": "Role for the default user"
+             },
+             "webuiAuth": {
+                "type": "boolean",
+                "description": "Whether to use user authentication"
              }
           }
        },

@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: 0.0.1
+appVersion: 0.0.2
 description: AnythingLLM is the easiest to use, all-in-one AI application that can do RAG, AI Agents, and much more with no code or infrastructure headaches.
 icon: https://github.com/Mintplex-Labs/anything-llm/blob/master/images/wordmark.png
 kubeVersion: '>= 1.25.0'
@@ -7,10 +7,10 @@ maintainers:
 - email: carlos@kalavai.net
   name: Carlos Fernandez Musoles
   url: https://kalavai.net
-name: open-notebook
+name: anythingllm
 sources:
 - https://docs.anythingllm.com/introduction
-version: 0.0.1
+version: 0.0.2
 annotations:
   status: beta
   category: frontend

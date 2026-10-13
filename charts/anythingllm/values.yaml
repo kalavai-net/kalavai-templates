@@ -1,0 +1,36 @@
+anythingllm:
+  version: 1.17.0
+  openaiBaseUrl: https://openrouter.ai/api/v1/
+  openaiApiKey: sk-changeme
+  targetOcrLang: eng # https://github.com/Mintplex-Labs/anything-llm/blob/master/docker/.env.example#L523
+
+chroma:
+  endpoint: null
+  apiHeader: "X-Api-Key"
+  apiKey: null
+
+qdrant:
+  endpoint: null
+  apiKey: null
+
+ingress:
+  enabled: false
+  subdomain: spaces.kalavai.net
+
+system:
+  priorityClassName: user-spot-priority
+  nodeSelectors: null
+  nodeSelectorsOps: OR
+  nodeAffinityPreferenceKey: null
+  jobId: null
+  envFromSecrets: {}
+
+resources:
+  replicas: 1
+  workerGpuMemory: null
+  workers: 1
+  backend: cuda
+  workingMemory: 16
+  memory: 4
+  cpus: 2
+  gpus: 1

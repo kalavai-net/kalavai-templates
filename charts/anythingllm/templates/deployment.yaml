@@ -1,0 +1,187 @@
+# Service Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-anythingllm
+  labels:
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+    component: anythingllm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+      component: anythingllm
+  template:
+    metadata:
+      labels:
+        kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+        component: anythingllm
+    spec:
+      terminationGracePeriodSeconds: 10
+      {{- if .Values.system.priorityClassName }}
+      priorityClassName: {{ .Values.system.priorityClassName }}
+      {{- end }}
+      tolerations:
+      - key: "node.kubernetes.io/not-ready"
+        operator: Exists
+        effect: NoExecute
+        tolerationSeconds: 10
+      - key: "node.kubernetes.io/unreachable"
+        operator: Exists
+        effect: NoExecute
+        tolerationSeconds: 10
+      - key: "node.kubernetes.io/unknown"
+        operator: Exists
+        effect: NoExecute
+        tolerationSeconds: 10
+      - key: "node.kubernetes.io/memory-pressure"
+        operator: Exists
+        effect: NoSchedule
+      - key: "node.kubernetes.io/disk-pressure"
+        operator: Exists
+        effect: NoSchedule
+      - key: "node.kubernetes.io/pid-pressure"
+        operator: Exists
+        effect: NoSchedule
+      - key: "node.kubernetes.io/network-unavailable"
+        operator: Exists
+        effect: NoSchedule
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: kalavai.job.name
+                  operator: In
+                  values:
+                  - {{ .Values.system.jobId }}
+              topologyKey: "kubernetes.io/hostname"
+      {{- if .Values.system.nodeSelectors }}
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+          {{- if eq .Values.system.nodeSelectorsOps "OR" }}
+            {{ range $k, $v := .Values.system.nodeSelectors }}
+            - matchExpressions:
+              - key: {{$k}}
+                operator: In
+                values:
+                {{- range $v }}
+                - "{{ . }}"
+                {{- end }}
+            {{ end }}
+          {{- else }}
+            - matchExpressions:
+            {{ range $k, $v := .Values.system.nodeSelectors }}
+              {{ range $v }}
+              - key: {{ $k }}
+                operator: In
+                values:
+                - "{{ . }}"
+              {{ end }}
+            {{ end }}
+          {{- end }}
+      {{- end }}
+      containers:
+      - name: service
+        image: "mintplexlabs/anythingllm:{{ .Values.anythingllm.version }}"
+        env:
+        {{- if .Values.system.envFromSecrets }}
+        {{- range .Values.system.envFromSecrets }}
+        - name: {{ . }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ . }}
+              key: {{ . }}
+        {{- end }}
+        {{- end }}
+        ports:
+        - containerPort: 3001
+          name: sandbox-port
+        env:
+        - name: STORAGE_DIR
+          value: /app/data
+        - name: LLM_PROVIDER
+          value: "generic-openai"
+        - name: GENERIC_OPEN_AI_BASE_PATH
+          value: {{ .Values.anythingllm.openaiBaseUrl }}
+        - name: GENERIC_OPEN_AI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-anythingllm-secrets
+              key: openaiApiKey
+        - name: GENERIC_OPEN_AI_MODEL_TOKEN_LIMIT
+          value: "{{ .Values.anythingllm.modelTokenLimit | default 4096 }}"
+        - name: EMBEDDING_ENGINE
+          value: "native"
+        {{- if .Values.chroma.endpoint }}
+        - name: VECTOR_DB
+          value: "chroma"
+        - name: CHROMA_ENDPOINT
+          value: {{ .Values.chroma.endpoint }}
+        - name: CHROMA_API_HEADER
+          value: {{ .Values.chroma.apiHeader | default "X-Api-Key" }}
+        - name: CHROMA_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: chroma_api_key
+              key: {{ .Values.chroma.apiKey }}
+        {{- else if .Values.qdrant.endpoint }}
+        - name: VECTOR_DB
+          value: "qdrant"
+        - name: QDRANT_ENDPOINT
+          value: {{ .Values.qdrant.endpoint }}
+        - name: QDRANT_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: qdrant_api_key
+              key: {{ .Values.qdrant.apiKey }}
+        {{- else }}
+        - name: VECTOR_DB
+          value: "lancedb"
+        {{- end }}
+        - name: WHISPER_PROVIDER
+          value: "local"
+        - name: TTS_PROVIDER
+          value: "native"
+        - name: STT_PROVIDER
+          value: "native"
+        {{- if .Values.ingress.enabled }}
+        - name: ENABLE_HTTPS
+          value: "true"
+        {{- end }}
+        - name: TARGET_OCR_LANG
+          value: {{ .Values.anythingllm.targetOcrLang }}
+        resources:
+          requests:
+            cpu: {{ .Values.resources.cpus }}
+            memory: {{ .Values.resources.memory }}Gi
+          limits:
+            cpu: {{ .Values.resources.cpus }}
+            memory: {{ .Values.resources.memory }}Gi
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-anythingllm-svc
+  labels:
+    # must have this!
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+spec:
+  selector:
+    component: anythingllm
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+  ports:
+    - name: main
+      port: 3001
+      targetPort: 3001
+      protocol: TCP
+  {{- if .Values.ingress.enabled }}
+  type: ClusterIP
+  {{- else }}
+  type: NodePort
+  {{- end }}

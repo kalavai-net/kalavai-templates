@@ -5,6 +5,27 @@ entries:
       category: agents
       status: beta
     apiVersion: v2
+    appVersion: 0.0.6
+    created: "2026-10-13T15:18:59.67773058Z"
+    description: AnythingLLM is the easiest to use, all-in-one AI application that
+      can do RAG, AI Agents, and much more with no code or infrastructure headaches.
+    digest: 34b739727b740f785905b18ace652346d1e29f6f896cd9b9b089031a75ee4269
+    icon: https://raw.githubusercontent.com/Mintplex-Labs/anything-llm/master/images/wordmark.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: anythingllm
+    sources:
+    - https://docs.anythingllm.com/introduction
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/anythingllm-0.0.6/anythingllm-0.0.6.tgz
+    version: 0.0.6
+  - annotations:
+      category: agents
+      status: beta
+    apiVersion: v2
     appVersion: 0.0.5
     created: "2026-10-13T15:02:31.675852305Z"
     description: AnythingLLM is the easiest to use, all-in-one AI application that
@@ -3498,6 +3519,27 @@ entries:
       category: agents
       status: beta
     apiVersion: v2
+    appVersion: 0.0.4
+    created: "2026-10-13T15:18:59.923365053Z"
+    description: Open WebUI is a home for AI, a self-hosted AI platform that's extensible,
+      feature-rich, user-friendly, and built to run entirely offline.
+    digest: e5350943fda79e36a3184cbd4a17a3dc5d44c3efdf24c6b00a7ea9ca36157042
+    icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/open-webui-light.svg
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: openwebui
+    sources:
+    - https://docs.openwebui.com/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/openwebui-0.0.4/openwebui-0.0.4.tgz
+    version: 0.0.4
+  - annotations:
+      category: agents
+      status: beta
+    apiVersion: v2
     appVersion: 0.0.3
     created: "2026-10-13T15:02:32.07754134Z"
     description: Open WebUI is a home for AI, a self-hosted AI platform that's extensible,
@@ -6002,4 +6044,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-10-13T15:02:32.079933065Z"
+generated: "2026-10-13T15:18:59.925023365Z"

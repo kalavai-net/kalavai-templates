@@ -88,6 +88,9 @@ spec:
       containers:
       - name: service
         image: "mintplexlabs/anythingllm:{{ .Values.anythingllm.version }}"
+        ports:
+        - containerPort: 3001
+          name: sandbox-port
         env:
         {{- if .Values.system.envFromSecrets }}
         {{- range .Values.system.envFromSecrets }}
@@ -98,10 +101,6 @@ spec:
               key: {{ . }}
         {{- end }}
         {{- end }}
-        ports:
-        - containerPort: 3001
-          name: sandbox-port
-        env:
         - name: STORAGE_DIR
           value: /app/data
         - name: LLM_PROVIDER

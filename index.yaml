@@ -3451,28 +3451,6 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/localai-0.0.1/localai-0.0.1.tgz
     version: 0.0.1
-  open-notebook:
-  - annotations:
-      category: frontend
-      status: beta
-    apiVersion: v2
-    appVersion: 0.0.1
-    created: "2026-10-13T13:58:17.410713419Z"
-    description: AnythingLLM is the easiest to use, all-in-one AI application that
-      can do RAG, AI Agents, and much more with no code or infrastructure headaches.
-    digest: 93c9e7d2a14bedf4c78647f9cffeff2a40de85482cc745f261867dbdd00c61e1
-    icon: https://github.com/Mintplex-Labs/anything-llm/blob/master/images/wordmark.png
-    kubeVersion: '>= 1.25.0'
-    maintainers:
-    - email: carlos@kalavai.net
-      name: Carlos Fernandez Musoles
-      url: https://kalavai.net
-    name: open-notebook
-    sources:
-    - https://docs.anythingllm.com/introduction
-    urls:
-    - https://github.com/kalavai-net/kalavai-templates/releases/download/open-notebook-0.0.1/open-notebook-0.0.1.tgz
-    version: 0.0.1
   openwebui:
   - annotations:
       category: agents
@@ -3515,27 +3493,6 @@ entries:
     - https://docs.openwebui.com/
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/openwebui-0.0.1/openwebui-0.0.1.tgz
-    version: 0.0.1
-  postgresql:
-  - apiVersion: v2
-    appVersion: 0.0.1
-    created: "2026-03-19T22:24:28.327231886Z"
-    description: highly available PostgreSQL database cluster with a primary/standby
-      architecture
-    digest: b70912a8cfda68fe04c7c146e14885f4ef60890dd53437c508488abea606b8ec
-    icon: https://cloudnative-pg.io/logo/large_logo.svg
-    kubeVersion: '>= 1.25.0'
-    maintainers:
-    - email: carlos@kalavai.net
-      name: Carlos Fernandez Musoles
-      url: https://kalavai.net
-    name: postgresql
-    sources:
-    - https://cloudnative-pg.io/docs/1.28/
-    - https://www.pgadmin.org/
-    - https://cloudnative-pg.io/
-    urls:
-    - https://github.com/kalavai-net/kalavai-templates/releases/download/postgresql-0.0.1/postgresql-0.0.1.tgz
     version: 0.0.1
   ray-cluster:
   - annotations:

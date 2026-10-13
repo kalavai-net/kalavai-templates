@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: 0.0.1
+appVersion: 0.0.2
 description: A collection of Databases
 icon: https://wiki.postgresql.org/images/thumb/a/a4/PostgreSQL_logo.3colors.svg/540px-PostgreSQL_logo.3colors.svg.png
 kubeVersion: '>= 1.25.0'
@@ -11,7 +11,7 @@ name: databases
 sources:
 - https://www.postgresql.org/docs/
 - https://redis.io/docs/latest/operate/oss_and_stack
-version: 0.0.1
+version: 0.0.2
 annotations:
   status: beta
-  category: db
+  category: database

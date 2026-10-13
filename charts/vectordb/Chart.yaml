@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: 0.0.1
+appVersion: 0.0.2
 description: A collection of vector DBs
 icon: https://qdrant.tech/img/brand-resources-logos/qdrant-logo-red-black.svg
 kubeVersion: '>= 1.25.0'
@@ -11,7 +11,7 @@ name: vectordb
 sources:
 - https://github.com/qdrant/qdrant
 - https://github.com/chroma-core/chroma
-version: 0.0.1
+version: 0.0.2
 annotations:
   status: beta
-  category: db
+  category: database

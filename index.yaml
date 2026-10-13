@@ -2,6 +2,27 @@ apiVersion: v1
 entries:
   anythingllm:
   - annotations:
+      category: agents
+      status: beta
+    apiVersion: v2
+    appVersion: 0.0.4
+    created: "2026-10-13T14:42:14.725548476Z"
+    description: AnythingLLM is the easiest to use, all-in-one AI application that
+      can do RAG, AI Agents, and much more with no code or infrastructure headaches.
+    digest: 3e6c3abe164a98daadb575a6c18a128e393d142545922a6325067b53c7c3b5cb
+    icon: https://github.com/Mintplex-Labs/anything-llm/blob/master/images/wordmark.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: anythingllm
+    sources:
+    - https://docs.anythingllm.com/introduction
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/anythingllm-0.0.4/anythingllm-0.0.4.tgz
+    version: 0.0.4
+  - annotations:
       category: frontend
       status: beta
     apiVersion: v2
@@ -3454,6 +3475,27 @@ entries:
     version: 0.0.1
   openwebui:
   - annotations:
+      category: agents
+      status: beta
+    apiVersion: v2
+    appVersion: 0.0.2
+    created: "2026-10-13T14:42:14.927559626Z"
+    description: Open WebUI is a home for AI, a self-hosted AI platform that's extensible,
+      feature-rich, user-friendly, and built to run entirely offline.
+    digest: 2bb9b44c648e4984943512fcd1d0dbfd4b269114a0099916d31fe9e7a4123b39
+    icon: https://github.com/Mintplex-Labs/anything-llm/blob/master/images/wordmark.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: openwebui
+    sources:
+    - https://docs.openwebui.com/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/openwebui-0.0.2/openwebui-0.0.2.tgz
+    version: 0.0.2
+  - annotations:
       category: frontend
       status: beta
     apiVersion: v2
@@ -5940,4 +5982,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-10-13T14:34:01.980764439Z"
+generated: "2026-10-13T14:42:14.93161272Z"

@@ -3452,6 +3452,28 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/open-notebook-0.0.1/open-notebook-0.0.1.tgz
     version: 0.0.1
+  openwebui:
+  - annotations:
+      category: frontend
+      status: beta
+    apiVersion: v2
+    appVersion: 0.0.1
+    created: "2026-10-13T14:34:01.97996788Z"
+    description: Open WebUI is a home for AI, a self-hosted AI platform that's extensible,
+      feature-rich, user-friendly, and built to run entirely offline.
+    digest: b16b0abf71d1a6c8932240cc542cf8754fc26978dcbb83e5a326c2d7fbb6455d
+    icon: https://github.com/Mintplex-Labs/anything-llm/blob/master/images/wordmark.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: openwebui
+    sources:
+    - https://docs.openwebui.com/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/openwebui-0.0.1/openwebui-0.0.1.tgz
+    version: 0.0.1
   postgresql:
   - apiVersion: v2
     appVersion: 0.0.1
@@ -5918,4 +5940,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-10-13T14:18:57.833079559Z"
+generated: "2026-10-13T14:34:01.980764439Z"

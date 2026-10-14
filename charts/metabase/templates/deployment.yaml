@@ -1,0 +1,173 @@
+# Service Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-metabase
+  labels:
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+    component: metabase
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+      component: metabase
+  template:
+    metadata:
+      labels:
+        kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+        component: metabase
+    spec:
+      terminationGracePeriodSeconds: 10
+      {{- if .Values.system.priorityClassName }}
+      priorityClassName: {{ .Values.system.priorityClassName }}
+      {{- end }}
+      tolerations:
+      - key: "node.kubernetes.io/not-ready"
+        operator: Exists
+        effect: NoExecute
+        tolerationSeconds: 10
+      - key: "node.kubernetes.io/unreachable"
+        operator: Exists
+        effect: NoExecute
+        tolerationSeconds: 10
+      - key: "node.kubernetes.io/unknown"
+        operator: Exists
+        effect: NoExecute
+        tolerationSeconds: 10
+      - key: "node.kubernetes.io/memory-pressure"
+        operator: Exists
+        effect: NoSchedule
+      - key: "node.kubernetes.io/disk-pressure"
+        operator: Exists
+        effect: NoSchedule
+      - key: "node.kubernetes.io/pid-pressure"
+        operator: Exists
+        effect: NoSchedule
+      - key: "node.kubernetes.io/network-unavailable"
+        operator: Exists
+        effect: NoSchedule
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: kalavai.job.name
+                  operator: In
+                  values:
+                  - {{ .Values.system.jobId }}
+              topologyKey: "kubernetes.io/hostname"
+      {{- if .Values.system.nodeSelectors }}
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+          {{- if eq .Values.system.nodeSelectorsOps "OR" }}
+            {{ range $k, $v := .Values.system.nodeSelectors }}
+            - matchExpressions:
+              - key: {{$k}}
+                operator: In
+                values:
+                {{- range $v }}
+                - "{{ . }}"
+                {{- end }}
+            {{ end }}
+          {{- else }}
+            - matchExpressions:
+            {{ range $k, $v := .Values.system.nodeSelectors }}
+              {{ range $v }}
+              - key: {{ $k }}
+                operator: In
+                values:
+                - "{{ . }}"
+              {{ end }}
+            {{ end }}
+          {{- end }}
+      {{- end }}
+      containers:
+      - name: service
+        image: "metabase/metabase:{{ .Values.metabase.version }}"
+        ports:
+        - containerPort: 3000
+          name: main
+        env:
+      {{- if .Values.system.envFromSecrets }}
+        {{- range .Values.system.envFromSecrets }}
+        - name: {{ . }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ . }}
+              key: {{ . }}
+        {{- end }}
+      {{- end }}
+        # more detail https://www.metabase.com/docs/latest/configuring-metabase/environment-variables
+        - name: MB_DB_TYPE
+          value: postgres
+        - name: MB_DB_DBNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-metabase-pg-secret
+              key: db
+        - name: MB_DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-metabase-pg-secret
+              key: user
+        - name: MB_DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-metabase-pg-secret
+              key: password
+        - name: MB_DB_HOST
+          value: {{ .Release.Name }}-metabase-pg-svc
+        - name: MB_DB_PORT
+          value: "5432"
+      {{- if .Values.metabase.openai.baseUrl }}
+        - name: MB_LLM_OPENAI_API_BASE_URL
+          value: {{ .Values.metabase.openai.baseUrl }}
+        - name: MB_LLM_OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-metabase-secret
+              key: openai_api_key
+      {{- end }}
+      {{- if .Values.metabase.openrouter.baseUrl }}
+        - name: MB_LLM_OPENROUTER_API_BASE_URL
+          value: {{ .Values.metabase.openrouter.baseUrl }}
+        - name: MB_LLM_OPENROUTER_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-metabase-secret
+              key: openrouter_api_key
+      {{- end }}
+        resources:
+          requests:
+            cpu: {{ .Values.resources.cpus }}
+            memory: {{ .Values.resources.memory }}Gi
+          limits:
+            cpu: {{ .Values.resources.cpus }}
+            memory: {{ .Values.resources.memory }}Gi
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-metabase-svc
+  labels:
+    # must have this!
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+spec:
+  selector:
+    component: metabase
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+  ports:
+    - name: main
+      port: 3000
+      targetPort: 3000
+      protocol: TCP
+  {{- if .Values.ingress.enabled }}
+  type: ClusterIP
+  {{- else }}
+  type: NodePort
+  {{- end }}

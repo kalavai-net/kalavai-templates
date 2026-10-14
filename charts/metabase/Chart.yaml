@@ -1,0 +1,16 @@
+apiVersion: v2
+appVersion: 0.0.1
+description: The easy-to-use open source Business Intelligence and Embedded Analytics tool that lets everyone work with data
+icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/metabase.svg
+kubeVersion: '>= 1.25.0'
+maintainers:
+- email: carlos@kalavai.net
+  name: Carlos Fernandez Musoles
+  url: https://kalavai.net
+name: metabase
+sources:
+- https://www.metabase.com/docs/latest/
+version: 0.0.1
+annotations:
+  status: beta
+  category: development

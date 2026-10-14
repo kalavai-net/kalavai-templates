@@ -1,0 +1,36 @@
+metabase:
+  version: latest
+  openai:
+    baseUrl: null
+    apiKey: null
+  openrouter:
+    baseUrl: null
+    apiKey: null
+
+postgres:
+  version: "14"
+  user: admin
+  db: metabase
+  password: mypassword
+
+ingress:
+  enabled: false
+  subdomain: spaces.kalavai.net
+
+system:
+  priorityClassName: user-spot-priority
+  nodeSelectors: null
+  nodeSelectorsOps: OR
+  nodeAffinityPreferenceKey: null
+  jobId: null
+  envFromSecrets: {}
+
+resources:
+  replicas: 1
+  workerGpuMemory: null
+  workers: 1
+  backend: cuda
+  workingMemory: 16
+  memory: 4
+  cpus: 2
+  gpus: 1

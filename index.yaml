@@ -3514,6 +3514,28 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/localai-0.0.1/localai-0.0.1.tgz
     version: 0.0.1
+  metabase:
+  - annotations:
+      category: development
+      status: beta
+    apiVersion: v2
+    appVersion: 0.0.1
+    created: "2026-10-14T14:10:21.034765509Z"
+    description: The easy-to-use open source Business Intelligence and Embedded Analytics
+      tool that lets everyone work with data
+    digest: 4a99e52e5086202564940b9d68648606358ba10e1f32bd5073abc913bb77820b
+    icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/metabase.svg
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: metabase
+    sources:
+    - https://www.metabase.com/docs/latest/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/metabase-0.0.1/metabase-0.0.1.tgz
+    version: 0.0.1
   openwebui:
   - annotations:
       category: agents
@@ -6044,4 +6066,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-10-13T15:18:59.925023365Z"
+generated: "2026-10-14T14:10:21.035365096Z"

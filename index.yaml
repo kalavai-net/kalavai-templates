@@ -3519,6 +3519,27 @@ entries:
       category: development
       status: beta
     apiVersion: v2
+    appVersion: 0.0.2
+    created: "2026-10-14T14:18:58.240656762Z"
+    description: The easy-to-use open source Business Intelligence and Embedded Analytics
+      tool that lets everyone work with data
+    digest: a13167ca1e1f74871be69bb35eb541f14b7854d82746b451234c3cd7fcd47eae
+    icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/metabase.svg
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: metabase
+    sources:
+    - https://www.metabase.com/docs/latest/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/metabase-0.0.2/metabase-0.0.2.tgz
+    version: 0.0.2
+  - annotations:
+      category: development
+      status: beta
+    apiVersion: v2
     appVersion: 0.0.1
     created: "2026-10-14T14:10:21.034765509Z"
     description: The easy-to-use open source Business Intelligence and Embedded Analytics
@@ -6066,4 +6087,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-10-14T14:10:21.035365096Z"
+generated: "2026-10-14T14:18:58.24103281Z"

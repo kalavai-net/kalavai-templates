@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: 0.0.1
+appVersion: 0.0.2
 description: The easy-to-use open source Business Intelligence and Embedded Analytics tool that lets everyone work with data
 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/metabase.svg
 kubeVersion: '>= 1.25.0'
@@ -10,7 +10,7 @@ maintainers:
 name: metabase
 sources:
 - https://www.metabase.com/docs/latest/
-version: 0.0.1
+version: 0.0.2
 annotations:
   status: beta
   category: development

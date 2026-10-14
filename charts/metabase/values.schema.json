@@ -2,59 +2,59 @@
    "$schema": "http://json-schema.org/draft-07/schema#",
    "type": "object",
    "properties": {
-       "anythingllm": {
+       "metabase": {
           "type": "object",
           "properties": {
              "version": {
                 "type": "string",
-                "description": "Open Web UI image tag to deploy"
+                "description": "Metabase UI image tag to deploy"
              },
-             "openaiApiKey": {
-                "type": "string",
-                "description": "Secret used to encrypt default provider keys in the database"
+             "openai": {
+               "type": "object",
+               "properties": {
+                  "apiKey": {
+                     "type": ["string", "null"],
+                     "description": "Secret used to encrypt default provider keys in the database"
+                  },
+                  "baseUrl": {
+                     "type": ["string", "null"],
+                     "description": "Base URL for the default API provider"
+                  }
+               }
              },
-             "openaiBaseUrl": {
-                "type": ["string", "null"],
-                "description": "Base URL for the default API provider"
-             },
-             "defaultUserRole": {
-                "type": "string",
-                "enum": ["admin", "user"],
-                "description": "Role for the default user"
-             },
-             "webuiAuth": {
-                "type": "boolean",
-                "description": "Whether to use user authentication"
+             "openrouter": {
+               "type": "object",
+               "properties": {
+                  "apiKey": {
+                     "type": ["string", "null"],
+                     "description": "Secret used to encrypt default provider keys in the database"
+                  },
+                  "baseUrl": {
+                     "type": ["string", "null"],
+                     "description": "Base URL for the default API provider"
+                  }
+               }
              }
           }
-       },
-       "chroma": {
-          "type": "object",
-          "properties": {
-             "endpoint": {
-                "type": ["string", "null"],
-                "description": "External Chroma endpoint to use for the vector database"
-             },
-             "apiHeader": {
-                "type": ["string", "null"],
-                "description": "External Chroma API header to use for the vector database"
-             },
-             "apiKey": {
-                "type": ["string", "null"],
-                "description": "Chroma API key to use for the vector database"
-             }
-          }
-       },
-      "qdrant": {
+      },
+      "postgres": {
          "type": "object",
          "properties": {
-            "endpoint": {
-               "type": ["string", "null"],
-               "description": "External Qdrant endpoint to use for the vector database"
+            "password": {
+               "type": "string",
+               "description": "Postgres password to use for the backend DB"
             },
-            "apiKey": {
-               "type": ["string", "null"],
-               "description": "External Qdrant API key to use for the vector database"
+            "user": {
+               "type": "string",
+               "description": "User name to use for the backend DB"
+            },
+            "db": {
+               "type": "string",
+               "description": "DB name to use for the backend DB"
+            },
+            "version": {
+               "type": "string",
+               "description": "Postgres version to deploy for the backend DB"
             }
          }
       },

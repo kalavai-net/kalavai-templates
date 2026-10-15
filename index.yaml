@@ -106,49 +106,6 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/anythingllm-0.0.2/anythingllm-0.0.2.tgz
     version: 0.0.2
-  databases:
-  - annotations:
-      category: database
-      status: beta
-    apiVersion: v2
-    appVersion: 0.0.2
-    created: "2026-10-13T13:58:16.735701915Z"
-    description: A collection of Databases
-    digest: 699c34e1f8f4cb020aded8e965c24006e3de67f4f6848ccd521eb2be11f79f1b
-    icon: https://wiki.postgresql.org/images/thumb/a/a4/PostgreSQL_logo.3colors.svg/540px-PostgreSQL_logo.3colors.svg.png
-    kubeVersion: '>= 1.25.0'
-    maintainers:
-    - email: carlos@kalavai.net
-      name: Carlos Fernandez Musoles
-      url: https://kalavai.net
-    name: databases
-    sources:
-    - https://www.postgresql.org/docs/
-    - https://redis.io/docs/latest/operate/oss_and_stack
-    urls:
-    - https://github.com/kalavai-net/kalavai-templates/releases/download/databases-0.0.2/databases-0.0.2.tgz
-    version: 0.0.2
-  - annotations:
-      category: db
-      status: beta
-    apiVersion: v2
-    appVersion: 0.0.1
-    created: "2026-10-09T20:00:55.679517117Z"
-    description: A collection of Databases
-    digest: e0cd40dd3b5a656f1bbdba7bcd89b4d9e14b01796e267acc77654b86a82fdf3c
-    icon: https://wiki.postgresql.org/images/thumb/a/a4/PostgreSQL_logo.3colors.svg/540px-PostgreSQL_logo.3colors.svg.png
-    kubeVersion: '>= 1.25.0'
-    maintainers:
-    - email: carlos@kalavai.net
-      name: Carlos Fernandez Musoles
-      url: https://kalavai.net
-    name: databases
-    sources:
-    - https://www.postgresql.org/docs/
-    - https://redis.io/docs/latest/operate/oss_and_stack
-    urls:
-    - https://github.com/kalavai-net/kalavai-templates/releases/download/databases-0.0.1/databases-0.0.1.tgz
-    version: 0.0.1
   deployer:
   - annotations:
       category: development

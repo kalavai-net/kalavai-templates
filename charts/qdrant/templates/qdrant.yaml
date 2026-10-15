@@ -1,4 +1,3 @@
-{{- if .Values.qdrant.enabled }}
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
@@ -20,7 +19,7 @@ spec:
   chart:
     spec:
       chart: qdrant
-      #version: "4.3.2"
+      version: {{ .Values.qdrant.version | quote }}
       sourceRef:
         kind: HelmRepository
         name: qdrant-repo-{{ .Release.Name }}
@@ -75,4 +74,3 @@ spec:
       limits:
         memory: {{ .Values.resources.memory }}Gi
         cpu: {{ .Values.resources.cpus }}
-{{- end }}

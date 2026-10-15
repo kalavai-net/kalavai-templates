@@ -1,0 +1,27 @@
+qdrant:
+  version: 1.19.2
+
+ingress:
+  enabled: false
+  subdomain: spaces.kalavai.net
+
+pvc:
+  enabled: false
+
+system:
+  priorityClassName: user-spot-priority
+  nodeSelectors: null
+  nodeSelectorsOps: OR
+  nodeAffinityPreferenceKey: null
+  jobId: null
+  envFromSecrets: {}
+
+resources:
+  replicas: 1
+  workerGpuMemory: null
+  workers: 1
+  backend: cuda
+  workingMemory: 16
+  memory: 2
+  cpus: 1
+  gpus: 1

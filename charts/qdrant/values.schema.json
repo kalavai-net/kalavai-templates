@@ -2,25 +2,12 @@
    "$schema": "http://json-schema.org/draft-07/schema#",
    "type": "object",
    "properties": {
-      "chromadb": {
-         "type": "object",
-         "properties": {
-            "enabled": {
-               "type": "boolean",
-               "description": "Enable ChromaDB deployment"
-            },
-            "version": {
-               "type": "string",
-               "description": "ChromaDB version to deploy"
-            }            
-         }
-      },
       "qdrant": {
          "type": "object",
          "properties": {
-            "enabled": {
-               "type": "boolean",
-               "description": "Enable Qdrant deployment"
+            "version": {
+               "type": "string",
+               "description": "Version of Qdrant chart to use"
             }        
          }
       },

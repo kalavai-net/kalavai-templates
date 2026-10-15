@@ -1,0 +1,16 @@
+apiVersion: v2
+appVersion: 0.0.1
+description: Qdrant - High-performance, massive-scale Vector Database and Vector Search Engine for the next generation of AI
+icon: https://qdrant.tech/img/brand-resources-logos/qdrant-brandmark-red.svg
+kubeVersion: '>= 1.25.0'
+maintainers:
+- email: carlos@kalavai.net
+  name: Carlos Fernandez Musoles
+  url: https://kalavai.net
+name: qdrant
+sources:
+- https://github.com/qdrant/qdrant
+version: 0.0.1
+annotations:
+  status: beta
+  category: database

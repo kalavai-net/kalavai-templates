@@ -1,10 +1,6 @@
 chromadb:
-  enabled: false
-  version: 1.5.10.dev313
   # config via yaml at /config.yaml https://docs.trychroma.com/guides/deploy/docker#configuration
-
-qdrant:
-  enabled: false
+  version: 1.5.10.dev313
 
 ingress:
   enabled: false

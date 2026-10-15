@@ -2433,6 +2433,27 @@ entries:
       category: agents
       status: beta
     apiVersion: v2
+    appVersion: 0.0.4
+    created: "2026-10-15T13:54:43.063855423Z"
+    description: Langflow is an open-source, Python-based, customizable framework
+      for building AI applications.
+    digest: 8a24626e71f9f8c70d921837480e6c118d572038f5c00b77ce4368c6269f6f19
+    icon: http://raw.githubusercontent.com/langflow-ai/langflow/main/docs/static/img/langflow-logo-color-blue-bg.svg
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: langflow
+    sources:
+    - https://docs.langflow.org/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/langflow-0.0.4/langflow-0.0.4.tgz
+    version: 0.0.4
+  - annotations:
+      category: agents
+      status: beta
+    apiVersion: v2
     appVersion: 0.0.3
     created: "2026-10-13T15:02:31.875399449Z"
     description: Langflow is an open-source, Python-based, customizable framework
@@ -6133,4 +6154,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-10-15T13:30:35.840949762Z"
+generated: "2026-10-15T13:54:43.064432625Z"

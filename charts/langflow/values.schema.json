@@ -16,6 +16,10 @@
                   "replicaCount": {
                      "type": "integer",
                      "description": "Number of replicas for the frontend"
+                  },
+                  "version": {
+                     "type": "string",
+                     "description": "langflowai/langflow-frontend docker image tag to deploy"
                   }
                },
                "required": ["replicaCount"]

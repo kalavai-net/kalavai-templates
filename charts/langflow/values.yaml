@@ -5,6 +5,7 @@ langflow:
     numWorkers: 1
     superuserPassword: "password"
   frontend:
+    version: latest
     replicaCount: 1
   
 postgresql:

@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: 0.0.4
+appVersion: 0.0.5
 description: Langflow is an open-source, Python-based, customizable framework for building AI applications.
 icon: http://raw.githubusercontent.com/langflow-ai/langflow/main/docs/static/img/langflow-logo-color-blue-bg.svg
 kubeVersion: '>= 1.25.0'
@@ -10,7 +10,7 @@ maintainers:
 name: langflow
 sources:
 - https://docs.langflow.org/
-version: 0.0.4
+version: 0.0.5
 annotations:
   status: beta
   category: agents

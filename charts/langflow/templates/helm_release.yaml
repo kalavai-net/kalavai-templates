@@ -86,7 +86,8 @@ spec:
         {{- end }}
       frontend:
         image:
-          tag: {{ .Values.langflow.image.tag }}
+          repository: langflowai/langflow-frontend
+          tag: {{ .Values.langflow.frontend.version }}
         replicaCount: {{ .Values.langflow.frontend.replicaCount }}
         resources:
           requests:

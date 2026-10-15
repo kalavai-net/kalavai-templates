@@ -29,7 +29,8 @@ spec:
     langflow:
       backend:
         image:
-          tag: {{ .Values.langflow.image.tag }}
+          repository: ghcr.io/kalavai-net/langflow
+          tag: {{ .Values.langflow.version }}
         replicaCount: {{ .Values.langflow.backend.replicaCount }}
         numWorkers: {{ .Values.langflow.backend.numWorkers }}
         sqlite:
@@ -37,6 +38,7 @@ spec:
         env:
         - name: LANGFLOW_SUPERUSER_PASSWORD
           value: {{ .Values.langflow.backend.superuserPassword | quote }}
+        # PostgresBackend needs the 'PGVECTOR_CONNECTION_STRING' environment variable populated with a Postgres connection string, e.g. 'postgresql+psycopg://user:pass@host:5432/dbname'.
         resources:
           requests:
             memory: {{ .Values.resources.memory }}Gi

@@ -1,6 +1,5 @@
 langflow:
-  image:
-    tag: "latest"
+  version: 1.12.6-1
   backend:
     replicaCount: 1
     numWorkers: 1

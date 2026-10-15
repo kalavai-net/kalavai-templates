@@ -5,15 +5,10 @@
       "langflow": {
          "type": "object",
          "properties": {
-            "image": {
-               "type": "object",
-               "properties": {
-                  "tag": {
-                     "type": "string",
-                     "description": "Tag for the Langflow image"
-                  }
-               },
-               "required": ["tag"]
+            "version": {
+               "type": "string",
+               "enum": ["1.12.6-1"],
+               "description": "Langflow template version to deploy"
             },
             "frontend": {
                "type": "object",

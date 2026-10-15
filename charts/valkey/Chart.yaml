@@ -1,0 +1,16 @@
+apiVersion: v2
+appVersion: 0.0.1
+description: Valkey is an open source, in memory datastore released under the BSD-3 Clause License. It is a continuation of the work that was being done on Redis 7.2.4.
+icon: https://valkey.io/img/valkey-logo-og.png
+kubeVersion: '>= 1.25.0'
+maintainers:
+- email: carlos@kalavai.net
+  name: Carlos Fernandez Musoles
+  url: https://kalavai.net
+name: valkey
+sources:
+- https://valkey.io/docs/
+version: 0.0.1
+annotations:
+  status: beta
+  category: database

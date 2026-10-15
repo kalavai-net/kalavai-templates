@@ -1,7 +1,7 @@
 apiVersion: v2
-appVersion: 0.0.1
+appVersion: 0.0.2
 description: Search infrastructure for AI
-icon: https://qdrant.tech/img/brand-resources-logos/qdrant-logo-red-black.svg
+icon: https://images.seeklogo.com/logo-png/48/1/chroma-logo-png_seeklogo-482133.png
 kubeVersion: '>= 1.25.0'
 maintainers:
 - email: carlos@kalavai.net
@@ -10,7 +10,7 @@ maintainers:
 name: chroma
 sources:
 - https://docs.trychroma.com/docs/overview/introduction
-version: 0.0.1
+version: 0.0.2
 annotations:
   status: beta
   category: database

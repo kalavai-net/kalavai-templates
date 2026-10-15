@@ -3642,6 +3642,29 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/openwebui-0.0.1/openwebui-0.0.1.tgz
     version: 0.0.1
+  postgres:
+  - annotations:
+      category: database
+      status: beta
+    apiVersion: v2
+    appVersion: 0.0.1
+    created: "2026-10-15T11:04:14.20975707Z"
+    description: PostgreSQL is a powerful, open source object-relational database
+      system with over 35 years of active development that has earned it a strong
+      reputation for reliability, feature robustness, and performance.
+    digest: 08db1adebe8ac892829dfdf2a264f5cedd1c17430d17c4d0734c05a8685fe532
+    icon: https://wiki.postgresql.org/images/thumb/a/a4/PostgreSQL_logo.3colors.svg/540px-PostgreSQL_logo.3colors.svg.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: postgres
+    sources:
+    - https://www.postgresql.org/docs/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/postgres-0.0.1/postgres-0.0.1.tgz
+    version: 0.0.1
   ray-cluster:
   - annotations:
       category: development
@@ -4219,6 +4242,29 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/ray-cluster-0.0.1/ray-cluster-0.0.1.tgz
     version: 0.0.1
+  redis:
+  - annotations:
+      category: database
+      status: beta
+    apiVersion: v2
+    appVersion: 0.0.1
+    created: "2026-10-15T11:04:14.485069203Z"
+    description: For developers, who are building real-time data-driven applications,
+      Redis is the preferred, fastest, and most feature-rich cache, data structure
+      server, and document and vector query engine.
+    digest: b3107266e5986d5bd2448b5576226bccd104624d990fc52336724bfb489de8b5
+    icon: https://1000logos.net/wp-content/uploads/2020/08/Redis-Logo.jpg
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: redis
+    sources:
+    - https://redis.io/resources/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/redis-0.0.1/redis-0.0.1.tgz
+    version: 0.0.1
   rstudio:
   - annotations:
       category: development
@@ -4533,6 +4579,29 @@ entries:
     - https://speaches.ai/
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/speaches-0.0.1/speaches-0.0.1.tgz
+    version: 0.0.1
+  valkey:
+  - annotations:
+      category: database
+      status: beta
+    apiVersion: v2
+    appVersion: 0.0.1
+    created: "2026-10-15T11:04:14.734727497Z"
+    description: Valkey is an open source, in memory datastore released under the
+      BSD-3 Clause License. It is a continuation of the work that was being done on
+      Redis 7.2.4.
+    digest: 3eff2828bebba0e2d1bee4ee8a2a15025c85a15ce3f1cfbfd93a51e7c8fa3c16
+    icon: https://valkey.io/img/valkey-logo-og.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: valkey
+    sources:
+    - https://valkey.io/docs/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/valkey-0.0.1/valkey-0.0.1.tgz
     version: 0.0.1
   vectordb:
   - annotations:
@@ -6087,4 +6156,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-10-14T14:18:58.24103281Z"
+generated: "2026-10-15T11:04:14.735523947Z"

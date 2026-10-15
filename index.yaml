@@ -4603,49 +4603,6 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/valkey-0.0.1/valkey-0.0.1.tgz
     version: 0.0.1
-  vectordb:
-  - annotations:
-      category: database
-      status: beta
-    apiVersion: v2
-    appVersion: 0.0.2
-    created: "2026-10-13T13:58:17.583427932Z"
-    description: A collection of vector DBs
-    digest: 7af3055d53bcdd1e0c5b1ccd41e75346430f0a547314a540481d5fdbf44f59f3
-    icon: https://qdrant.tech/img/brand-resources-logos/qdrant-logo-red-black.svg
-    kubeVersion: '>= 1.25.0'
-    maintainers:
-    - email: carlos@kalavai.net
-      name: Carlos Fernandez Musoles
-      url: https://kalavai.net
-    name: vectordb
-    sources:
-    - https://github.com/qdrant/qdrant
-    - https://github.com/chroma-core/chroma
-    urls:
-    - https://github.com/kalavai-net/kalavai-templates/releases/download/vectordb-0.0.2/vectordb-0.0.2.tgz
-    version: 0.0.2
-  - annotations:
-      category: db
-      status: beta
-    apiVersion: v2
-    appVersion: 0.0.1
-    created: "2026-10-09T20:00:56.987241064Z"
-    description: A collection of vector DBs
-    digest: 1e2e4ff2f770c63d65dfca1cc1550d4d465a25e30f695de36ba5f7b3267b72d6
-    icon: https://qdrant.tech/img/brand-resources-logos/qdrant-logo-red-black.svg
-    kubeVersion: '>= 1.25.0'
-    maintainers:
-    - email: carlos@kalavai.net
-      name: Carlos Fernandez Musoles
-      url: https://kalavai.net
-    name: vectordb
-    sources:
-    - https://github.com/qdrant/qdrant
-    - https://github.com/chroma-core/chroma
-    urls:
-    - https://github.com/kalavai-net/kalavai-templates/releases/download/vectordb-0.0.1/vectordb-0.0.1.tgz
-    version: 0.0.1
   vllm:
   - annotations:
       category: llm

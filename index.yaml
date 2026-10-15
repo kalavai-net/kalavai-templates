@@ -111,6 +111,26 @@ entries:
       category: database
       status: beta
     apiVersion: v2
+    appVersion: 0.0.2
+    created: "2026-10-15T13:30:35.840601159Z"
+    description: Search infrastructure for AI
+    digest: c4fd9d7170f76e76e36d484376e564df6f3a6c40a19d895ffed73affc3308d3b
+    icon: https://images.seeklogo.com/logo-png/48/1/chroma-logo-png_seeklogo-482133.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: chroma
+    sources:
+    - https://docs.trychroma.com/docs/overview/introduction
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/chroma-0.0.2/chroma-0.0.2.tgz
+    version: 0.0.2
+  - annotations:
+      category: database
+      status: beta
+    apiVersion: v2
     appVersion: 0.0.1
     created: "2026-10-15T13:23:13.173527041Z"
     description: Search infrastructure for AI
@@ -6113,4 +6133,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-10-15T13:23:13.378184935Z"
+generated: "2026-10-15T13:30:35.840949762Z"

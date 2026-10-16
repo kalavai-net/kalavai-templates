@@ -1,9 +1,11 @@
 {
    "$schema": "http://json-schema.org/draft-07/schema#",
    "type": "object",
+   "description": "AnythingLLM is the easiest to use, all-in-one AI application that can do RAG, AI Agents, and much more with no code or infrastructure headaches.",
    "properties": {
        "anythingllm": {
           "type": "object",
+          "description": "General properties for your AnythingLLM instance",
           "properties": {
             "version": {
                 "type": "string",
@@ -16,6 +18,7 @@
             },
             "llm": {
                "type": "object",
+               "description": "(Optional) Set a default LLM model provider",
                "properties": {
                   "apiKey": {
                      "type": ["string", "null"],

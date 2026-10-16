@@ -13,7 +13,7 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 LANGFLOW_VERSION=${LANGFLOW_VERSION:-"1.12.6"}
-IMAGE_TAG="v${LANGFLOW_VERSION}-${TEMPLATE_VERSION}"
+IMAGE_TAG="${LANGFLOW_VERSION}-${TEMPLATE_VERSION}"
 
 echo "Building Langflow version: $LANGFLOW_VERSION"
 echo "Pushing latest: $PUSH_LATEST"

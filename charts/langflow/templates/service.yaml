@@ -4,7 +4,7 @@ metadata:
   name: {{ .Release.Name }}-langflow-frontend-svc
   labels:
     # must have this!
-    kalavai.job.name: {{ .Values.system.jobId }}
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
 spec:
   selector:
     app: langflow-service
@@ -27,7 +27,7 @@ metadata:
   name: {{ .Release.Name }}-langflow-backend-svc
   labels:
     # must have this!
-    kalavai.job.name: {{ .Values.system.jobId }}
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
 spec:
   selector:
     app: langflow-service

@@ -89,7 +89,7 @@
                 "description": "PriorityClassName to use for the deployment"
             },
             "jobId": {
-                "type": "string",
+                "type": ["string", "null"],
                 "description": "Job ID to label spawned objects."
             },
             "nodeSelectors": {

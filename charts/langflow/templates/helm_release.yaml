@@ -3,7 +3,7 @@ kind: HelmRepository
 metadata:
   name: langflow-repo-{{ .Release.Name }}
   labels:
-    kalavai.job.name: {{ .Values.system.jobId}}
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
 spec:
   interval: 1h
   url: https://langflow-ai.github.io/langflow-helm-charts
@@ -13,7 +13,7 @@ kind: HelmRelease
 metadata:
   name: {{ .Release.Name}}-langflow
   labels:
-    kalavai.job.name: {{ .Values.system.jobId}}
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
 spec:
   interval: 10m
   chart:
@@ -36,6 +36,7 @@ spec:
         sqlite:
           enabled: {{ not .Values.postgresql.enabled }}
         env:
+        # add connection strings as env variables (e.g. KALAVAI_CHROMADB_HOST)
         - name: LANGFLOW_SUPERUSER_PASSWORD
           value: {{ .Values.langflow.backend.superuserPassword | quote }}
         # PostgresBackend needs the 'PGVECTOR_CONNECTION_STRING' environment variable populated with a Postgres connection string, e.g. 'postgresql+psycopg://user:pass@host:5432/dbname'.

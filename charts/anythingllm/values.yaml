@@ -1,8 +1,16 @@
 anythingllm:
   version: 1.17.0
-  openaiBaseUrl: null
-  openaiApiKey: null
+  llm:
+    baseUrl: null
+    apiKey: null
+    modelPreference: null
+    modelTokenLimit: 4096
   targetOcrLang: eng # https://github.com/Mintplex-Labs/anything-llm/blob/master/docker/.env.example#L523
+  embedder:
+    baseUrl: null
+    apiKey: null
+    modelPreference: null
+    modelMaxChunkLength: 8096
 
 chroma:
   endpoint: null

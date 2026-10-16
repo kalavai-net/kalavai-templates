@@ -5,23 +5,57 @@
        "anythingllm": {
           "type": "object",
           "properties": {
-             "version": {
+            "version": {
                 "type": "string",
                 "description": "Open Notebook image tag to deploy"
-             },
-             "openaiApiKey": {
-                "type": ["string", "null"],
-                "description": "Secret used to encrypt AI provider keys in the database"
-             },
-             "openaiBaseUrl": {
-                "type": ["string", "null"],
-                "description": "Base URL for the OpenAI API"
-             },
-             "targetOcrLang": {
+            },
+            "targetOcrLang": {
                 "type": "string",
                 "enum": ["eng", "deu", "ita", "spa", "fra", "por", "rus", "nld", "tur", "hun", "pol"],
                 "description": "Language to use for OCR"
-             }
+            },
+            "llm": {
+               "type": "object",
+               "properties": {
+                  "apiKey": {
+                     "type": ["string", "null"],
+                     "description": "API key for the OpenAI-compatible LLM service"
+                  },
+                  "baseUrl": {
+                     "type": ["string", "null"],
+                     "description": "Base URL for the OpenAI-compatible LLM service"
+                  },
+                  "modelPreference": {
+                     "type": ["string", "null"],
+                     "description": "(Optional) Model ID in the OpenAI-compatible to use as Embedder model"
+                  },
+                  "modelTokenLimit": {
+                     "type": "integer",
+                     "description": "Max tokens to accept by the LLM service model"
+                  }
+               }
+            },
+            "embedder": {
+               "type": "object",
+               "properties": {
+                  "apiKey": {
+                     "type": ["string", "null"],
+                     "description": "API key for the OpenAI-compatible Embedder model service"
+                  },
+                  "baseUrl": {
+                     "type": ["string", "null"],
+                     "description": "Base URL for the OpenAI-compatible Embedder model service. If not set, it will deploy a local model"
+                  },
+                  "modelPreference": {
+                     "type": ["string", "null"],
+                     "description": "(Optional) Model ID in the OpenAI-compatible to use as Embedder model"
+                  },
+                  "modelMaxChunkLength": {
+                     "type": "integer",
+                     "description": "Max length of each embedded chunk"
+                  }
+               }
+            }
           }
        },
        "chroma": {
@@ -78,7 +112,7 @@
                 "description": "PriorityClassName to use for the deployment"
             },
             "jobId": {
-                "type": "string",
+                "type": ["string", "null"],
                 "description": "Job ID to label spawned objects."
             },
             "nodeSelectors": {

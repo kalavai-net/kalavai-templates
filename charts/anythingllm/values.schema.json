@@ -66,7 +66,7 @@
                 "description": "External Chroma endpoint to use for the vector database"
              },
              "apiHeader": {
-                "type": ["string", "null"],
+                "type": "string",
                 "description": "External Chroma API header to use for the vector database"
              },
              "apiKey": {

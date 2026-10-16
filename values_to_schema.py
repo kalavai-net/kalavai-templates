@@ -83,7 +83,7 @@ if __name__ == "__main__":
                 "description": "Logical operation to use to apply to nodeSelectors. Accepted values: 'OR', 'AND'"
             },
             "jobId": {
-                "type": "string",
+                "type": ["string", "null"],
                 "description": "Id to tag spawned objects."
             },
             "nodeAffinityPreferenceKey": {

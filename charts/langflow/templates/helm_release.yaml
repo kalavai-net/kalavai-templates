@@ -40,7 +40,7 @@ spec:
         - name: LANGFLOW_SUPERUSER_PASSWORD
           value: {{ .Values.langflow.backend.superuserPassword | quote }}
         - name: LANGFLOW_SSRF_PROTECTION_ENABLED
-          value: {{ .Values.langflow.ssrfProtectionEnabled }}
+          value: {{ .Values.langflow.ssrfProtectionEnabled | quote }}
         - name: LANGFLOW_SSRF_ALLOWED_HOSTS
           value: {{ .Values.langflow.ssrfAllowedHosts }}
         # PostgresBackend needs the 'PGVECTOR_CONNECTION_STRING' environment variable populated with a Postgres connection string, e.g. 'postgresql+psycopg://user:pass@host:5432/dbname'.

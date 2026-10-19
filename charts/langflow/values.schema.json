@@ -52,6 +52,16 @@
             }
          }
       },
+      "pgvector": {
+         "type": "object",
+         "description": "Enable PGVector as a knowledge base database provider",
+         "properties": {
+            "connectionString": {
+               "type": "string",
+               "description": "Configure PGVector knowledgebase, connection string, e.g. 'postgresql+psycopg://user:pass@host:5432/dbname'."
+            }
+         }
+      },
       "postgresql": {
          "type": "object",
          "properties": {

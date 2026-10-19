@@ -16,6 +16,9 @@ postgresql:
   password: "langflow-postgres"
   database: "langflow-db"
 
+pgvector:
+  connectionString: null
+
 ingress:
   enabled: false
   subdomain: spaces.kalavai.net

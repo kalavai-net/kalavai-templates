@@ -5,7 +5,7 @@ llamacpp:
   quant: null
   serverExtra: null
   imagePullPolicy: IfNotPresent
-  version: b10894-1
+  version: v0.7.0-1
   restartPolicy: Always
 
 litellm:

@@ -1,5 +1,7 @@
 langflow:
   version: 1.12.6-1
+  ssrfProtectionEnabled: false
+  ssfrAllowedHoss: 0.0.0.0/0
   backend:
     replicaCount: 1
     numWorkers: 1

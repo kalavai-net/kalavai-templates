@@ -2475,6 +2475,27 @@ entries:
       category: agents
       status: beta
     apiVersion: v2
+    appVersion: 0.0.10
+    created: "2026-10-19T20:24:34.293307396Z"
+    description: Langflow is an open-source, Python-based, customizable framework
+      for building AI applications.
+    digest: 3f9d0512fd3aacb91e3c0165bc4113455b87c9ffe622805393f980bdb158886f
+    icon: http://raw.githubusercontent.com/langflow-ai/langflow/main/docs/static/img/langflow-logo-color-blue-bg.svg
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: langflow
+    sources:
+    - https://docs.langflow.org/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/langflow-0.0.10/langflow-0.0.10.tgz
+    version: 0.0.10
+  - annotations:
+      category: agents
+      status: beta
+    apiVersion: v2
     appVersion: 0.0.9
     created: "2026-10-19T20:06:27.32950382Z"
     description: Langflow is an open-source, Python-based, customizable framework
@@ -3849,6 +3870,28 @@ entries:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/openwebui-0.0.1/openwebui-0.0.1.tgz
     version: 0.0.1
   postgres:
+  - annotations:
+      category: database
+      status: beta
+    apiVersion: v2
+    appVersion: 0.0.2
+    created: "2026-10-19T20:24:34.473442812Z"
+    description: PostgreSQL is a powerful, open source object-relational database
+      system with over 35 years of active development that has earned it a strong
+      reputation for reliability, feature robustness, and performance.
+    digest: 57ab5c18f4f23bf0e66f7abbf323df348194b0ab6195176682f00c5fee9c9fe9
+    icon: https://wiki.postgresql.org/images/thumb/a/a4/PostgreSQL_logo.3colors.svg/540px-PostgreSQL_logo.3colors.svg.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: postgres
+    sources:
+    - https://www.postgresql.org/docs/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/postgres-0.0.2/postgres-0.0.2.tgz
+    version: 0.0.2
   - annotations:
       category: database
       status: beta
@@ -6341,4 +6384,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-10-19T20:06:27.330075759Z"
+generated: "2026-10-19T20:24:34.474270628Z"

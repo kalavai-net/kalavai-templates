@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: 0.0.2
+appVersion: 0.0.3
 description: PostgreSQL is a powerful, open source object-relational database system with over 35 years of active development that has earned it a strong reputation for reliability, feature robustness, and performance.
 icon: https://wiki.postgresql.org/images/thumb/a/a4/PostgreSQL_logo.3colors.svg/540px-PostgreSQL_logo.3colors.svg.png
 kubeVersion: '>= 1.25.0'
@@ -10,7 +10,7 @@ maintainers:
 name: postgres
 sources:
 - https://www.postgresql.org/docs/
-version: 0.0.2
+version: 0.0.3
 annotations:
   status: beta
   category: database

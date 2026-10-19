@@ -5,6 +5,14 @@
       "postgres": {
          "type": "object",
          "properties": {
+            "user": {
+               "type": "string",
+               "description": "Postgres admin username"
+            },
+            "db": {
+               "type": "string",
+               "description": "Postgres default database name"
+            },
             "password": {
                "type": "string",
                "description": "Postgres password to use"

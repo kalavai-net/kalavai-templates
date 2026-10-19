@@ -101,7 +101,7 @@ spec:
       {{- end }}
       containers:
       - name: service
-        image: "pgvector:{{ .Values.postgres.version }}"
+        image: "pgvector/pgvector:{{ .Values.postgres.version }}"
         env:
         - name: POSTGRES_DB
           valueFrom:

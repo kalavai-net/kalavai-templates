@@ -1,10 +1,11 @@
 FROM ghcr.io/kalavai-net/ray-base:latest AS base
 
 FROM nvidia/cuda:12.9.2-devel-ubuntu24.04
-#FROM nvidia/cuda:13.0.0-devel-ubuntu24.04
-#FROM rayproject/ray:2.54.1-py312-cu129
+#FROM nvidia/cuda:13.0.3-devel-ubuntu24.04
 
-ARG PIP_VLLM_VERSION=0.14.0
+ARG TARGETARCH # Buildkit's target architecture, e.g. "amd64" or "arm64"
+
+ARG VLLM_VERSION=0.14.0
 WORKDIR /home/ray/workspace
 
 # copy over ray scripts
@@ -22,13 +23,16 @@ RUN . /home/ray/workspace/env/bin/activate && \
     pip install -r common_requirements.txt --no-cache-dir
 
 RUN . /home/ray/workspace/env/bin/activate && \
-    pip install vllm[audio,video]==$PIP_VLLM_VERSION --no-cache-dir
+    pip install vllm[audio,video]==$VLLM_VERSION --no-cache-dir
+    #pip install vllm-omni==$VLLM_VERSION --no-cache-dir
 
 # vllm-omni from source to ensure version compatibility
+# will fail if vllm <-> vllm-omni tagged versions do not match
 RUN . /home/ray/workspace/env/bin/activate && \
     git clone https://github.com/vllm-project/vllm-omni.git && \
     cd vllm-omni && \
-    pip install -e .
+    git checkout v$VLLM_VERSION && \
+    pip install -e . --no-cache-dir
 
 # Voxtral / Gemma 4 issue (might be solved in >0.22.1)
 # Also seems to make inference faster for Quen3.6 35B?

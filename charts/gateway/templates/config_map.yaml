@@ -38,6 +38,7 @@ data:
         message_logging: {{ .Values.litellm.callback_settings.otel.message_logging | default false }}
 
     general_settings:
+      dangerously_permit_weak_or_unset_master_key: {{ .Values.litellm.general_settings.dangerously_permit_weak_or_unset_master_key | default false }}
       always_include_stream_usage: true # required to track reasoning tokens on streaming calls
       background_health_checks: False
       store_prompts_in_spend_logs: {{ .Values.litellm.general_settings.store_prompts_in_spend_logs | default false }}

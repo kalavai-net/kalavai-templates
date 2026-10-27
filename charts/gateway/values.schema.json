@@ -7,7 +7,7 @@
          "properties": {
             "tag": {
                "type": "string",
-               "default": "v1.83.3-stable",
+               "default": "v1.106.5",
                "description": "LiteLLM image tag"
             },
             "replicas": {
@@ -70,6 +70,11 @@
             "general_settings": {
                "type": "object",
                "properties": {
+                  "dangerously_permit_weak_or_unset_master_key": {
+                     "type": "boolean",
+                     "default": false,
+                     "description": "Allow weak master keys. Set to True only for local deployments."
+                  },
                   "store_prompts_in_spend_logs": {
                      "type": "boolean",
                      "default": false,

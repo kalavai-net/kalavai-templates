@@ -25,9 +25,9 @@ fi
 
 echo "Building Llama.cpp version: $LLAMACPP_VERSION"
 echo "Pushing latest: $PUSH_LATEST"
-echo "Image tag: $IMAGE_TAG"
-echo "CUDA tags: $CUDA_TAGS"
-echo "CPU tags: $CPU_TAGS"
+echo "Image tag: ${IMAGE_TAG[@]}"
+echo "CUDA tags: ${CUDA_TAGS[@]}"
+echo "CPU tags: ${CPU_TAGS[@]}"
 
 # # CPU only
 # docker buildx build --build-arg LLAMACPP_VERSION=$LLAMACPP_VERSION --push -t ghcr.io/kalavai-net/llamacpp-cpu:$IMAGE_TAG --platform=linux/amd64,linux/arm64 -f src/Dockerfile_cpu src/

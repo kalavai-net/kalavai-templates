@@ -3,7 +3,7 @@ kind: HelmRepository
 metadata:
   name: qdrant-repo-{{ .Release.Name }}
   labels:
-    kalavai.job.name: {{ .Values.system.jobId}}
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
 spec:
   interval: 1h
   url: https://qdrant.github.io/qdrant-helm
@@ -13,7 +13,7 @@ kind: HelmRelease
 metadata:
   name: {{ .Release.Name}}-qdrant
   labels:
-    kalavai.job.name: {{ .Values.system.jobId}}
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
 spec:
   interval: 10m
   chart:
@@ -65,7 +65,24 @@ spec:
           {{ end }}
         {{- end }}
     {{- end }}
+    # Authentication via api keys
+  {{- if .Values.qdrant.apiKey }}
+    apiKey:
+      valueFrom:
+        secretKeyRef:
+          name: {{ .Release.Name }}-qdrant-secret
+          key: api_key
+  {{- end }}
+  {{- if .Values.qdrant.readOnlyApiKey }}
+    readOnlyApiKey:
+      valueFrom:
+        secretKeyRef:
+          name: {{ .Release.Name }}-qdrant-secret
+          key: readonly_api_key
+  {{- end }}
     service:
+      additionalLabels:
+        kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
       type: {{ if .Values.ingress.enabled }}ClusterIP{{ else }}NodePort{{ end }}
     resources:
       requests:

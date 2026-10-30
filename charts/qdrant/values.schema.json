@@ -8,7 +8,15 @@
             "version": {
                "type": "string",
                "description": "Version of Qdrant chart to use"
-            }        
+            },
+            "apiKey": {
+               "type": ["string", "null"],
+               "description": "API KEY to access Qdrant"
+            },
+            "readOnlyApiKey": {
+               "type": ["string", "null"],
+               "description": "Readonly API KEY to access Qdrant"
+            }
          }
       },
       "ingress": {

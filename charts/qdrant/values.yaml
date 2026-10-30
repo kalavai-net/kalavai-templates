@@ -1,5 +1,7 @@
 qdrant:
   version: 1.19.2
+  apiKey: null
+  readOnlyApiKey: null
 
 ingress:
   enabled: false

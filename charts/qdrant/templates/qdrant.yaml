@@ -26,6 +26,8 @@ spec:
         namespace: {{ .Release.Namespace }}
   values:
     # more options https://github.com/qdrant/qdrant-helm/blob/main/charts/qdrant/values.yaml
+    podLabels:
+      kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
     priorityClassName: {{ .Values.system.priorityClassName }}
     affinity:
       podAntiAffinity:

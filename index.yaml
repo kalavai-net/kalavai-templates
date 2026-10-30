@@ -5,6 +5,27 @@ entries:
       category: agents
       status: beta
     apiVersion: v2
+    appVersion: 0.0.9
+    created: "2026-10-30T15:52:28.547013176Z"
+    description: AnythingLLM is the easiest to use, all-in-one AI application that
+      can do RAG, AI Agents, and much more with no code or infrastructure headaches.
+    digest: 31d89de31d93b597f94810c30373b20c9bc4081b9a7ce0a9c47ad46b741e0db0
+    icon: https://raw.githubusercontent.com/Mintplex-Labs/anything-llm/master/images/wordmark.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: anythingllm
+    sources:
+    - https://docs.anythingllm.com/introduction
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/anythingllm-0.0.9/anythingllm-0.0.9.tgz
+    version: 0.0.9
+  - annotations:
+      category: agents
+      status: beta
+    apiVersion: v2
     appVersion: 0.0.8
     created: "2026-10-16T14:38:35.322838649Z"
     description: AnythingLLM is the easiest to use, all-in-one AI application that
@@ -6552,4 +6573,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-10-30T15:43:16.321281061Z"
+generated: "2026-10-30T15:52:28.547284353Z"

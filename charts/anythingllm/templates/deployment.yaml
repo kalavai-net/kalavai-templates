@@ -119,7 +119,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: {{ .Release.Name }}-anythingllm-secrets
-              key: openaiApiKey
+              key: openai_api_key
         {{- end }}
         - name: EMBEDDING_MODEL_MAX_CHUNK_LENGTH
           value: {{ .Values.anythingllm.embedder.modelMaxChunkLength | quote }}
@@ -136,7 +136,7 @@ spec:
           valueFrom:
             secretKeyRef: 
               name: {{ .Release.Name }}-anythingllm-secrets
-              key: embedderApiKey
+              key: embedder_api_key
         {{- else }}
         - name: EMBEDDING_ENGINE
           value: "native"
@@ -151,8 +151,8 @@ spec:
         - name: CHROMA_API_KEY
           valueFrom:
             secretKeyRef:
-              name: chroma_api_key
-              key: {{ .Values.chroma.apiKey }}
+              name: {{ .Release.Name }}-anythingllm-secrets
+              key: chroma_api_key
         {{- else if .Values.qdrant.endpoint }}
         - name: VECTOR_DB
           value: "qdrant"
@@ -161,8 +161,8 @@ spec:
         - name: QDRANT_API_KEY
           valueFrom:
             secretKeyRef:
-              name: qdrant_api_key
-              key: {{ .Values.qdrant.apiKey }}
+              name: {{ .Release.Name }}-anythingllm-secrets
+              key: qdrant_api_key
         {{- else }}
         - name: VECTOR_DB
           value: "lancedb"

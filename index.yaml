@@ -4024,6 +4024,27 @@ entries:
       category: database
       status: beta
     apiVersion: v2
+    appVersion: 0.0.3
+    created: "2026-10-30T15:43:16.320706643Z"
+    description: Qdrant - High-performance, massive-scale Vector Database and Vector
+      Search Engine for the next generation of AI
+    digest: c9b0e7933af376985a656fddfdbfbf9326c7c07b4508ada1a9757829844f70b5
+    icon: https://qdrant.tech/img/brand-resources-logos/qdrant-brandmark-red.svg
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: qdrant
+    sources:
+    - https://github.com/qdrant/qdrant
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/qdrant-0.0.3/qdrant-0.0.3.tgz
+    version: 0.0.3
+  - annotations:
+      category: database
+      status: beta
+    apiVersion: v2
     appVersion: 0.0.2
     created: "2026-10-30T15:27:38.331877901Z"
     description: Qdrant - High-performance, massive-scale Vector Database and Vector
@@ -6531,4 +6552,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-10-30T15:27:38.332592039Z"
+generated: "2026-10-30T15:43:16.321281061Z"

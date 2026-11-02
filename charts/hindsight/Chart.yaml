@@ -1,0 +1,16 @@
+apiVersion: v2
+appVersion: 0.0.1
+description: State of the art long-term memory for your agents.
+icon: https://haystack.deepset.ai/logos/hindsight.png
+kubeVersion: '>= 1.25.0'
+maintainers:
+- email: carlos@kalavai.net
+  name: Carlos Fernandez Musoles
+  url: https://kalavai.net
+name: hindsight
+sources:
+- https://hindsight.vectorize.io/
+version: 0.0.1
+annotations:
+  status: beta
+  category: database

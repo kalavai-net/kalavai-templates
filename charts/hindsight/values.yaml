@@ -1,0 +1,47 @@
+hindsight:
+  version: 1.1.0
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
+  env: {}
+  secrets: {}
+  worker:
+    enabled: false
+    replicaCount: 2
+
+postgresql:
+  enabled: false
+  username: hindsight
+  password: hindsight
+  database: hindsight
+  external:
+    host: "postgresql"
+    port: 5432
+    database: "hindsight"
+    username: "hindsight"
+    password: "hindsight"
+
+ingress:
+  enabled: false
+  subdomain: spaces.kalavai.net
+
+system:
+  priorityClassName: user-spot-priority
+  nodeSelectors: null
+  nodeSelectorsOps: OR
+  nodeAffinityPreferenceKey: null
+  jobId: null
+  envFromSecrets: {}
+
+resources:
+  replicas: 1
+  workerGpuMemory: null
+  workers: 1
+  backend: cuda
+  workingMemory: 16
+  memory: 2
+  cpus: 1
+  gpus: 1

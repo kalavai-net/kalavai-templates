@@ -1,0 +1,188 @@
+# Service Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-hermes
+  labels:
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+    component: hermes
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+      component: hermes
+  template:
+    metadata:
+      labels:
+        kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+        component: hermes
+    spec:
+      terminationGracePeriodSeconds: 10
+      {{- if .Values.system.priorityClassName }}
+      priorityClassName: {{ .Values.system.priorityClassName }}
+      {{- end }}
+      tolerations:
+      - key: "node.kubernetes.io/not-ready"
+        operator: Exists
+        effect: NoExecute
+        tolerationSeconds: 10
+      - key: "node.kubernetes.io/unreachable"
+        operator: Exists
+        effect: NoExecute
+        tolerationSeconds: 10
+      - key: "node.kubernetes.io/unknown"
+        operator: Exists
+        effect: NoExecute
+        tolerationSeconds: 10
+      - key: "node.kubernetes.io/memory-pressure"
+        operator: Exists
+        effect: NoSchedule
+      - key: "node.kubernetes.io/disk-pressure"
+        operator: Exists
+        effect: NoSchedule
+      - key: "node.kubernetes.io/pid-pressure"
+        operator: Exists
+        effect: NoSchedule
+      - key: "node.kubernetes.io/network-unavailable"
+        operator: Exists
+        effect: NoSchedule
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: kalavai.job.name
+                  operator: In
+                  values:
+                  - {{ .Values.system.jobId | default .Release.Name}}
+              topologyKey: "kubernetes.io/hostname"
+      {{- if .Values.system.nodeSelectors }}
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+          {{- if eq .Values.system.nodeSelectorsOps "OR" }}
+            {{ range $k, $v := .Values.system.nodeSelectors }}
+            - matchExpressions:
+              - key: {{$k}}
+                operator: In
+                values:
+                {{- range $v }}
+                - "{{ . }}"
+                {{- end }}
+            {{ end }}
+          {{- else }}
+            - matchExpressions:
+            {{ range $k, $v := .Values.system.nodeSelectors }}
+              {{ range $v }}
+              - key: {{ $k }}
+                operator: In
+                values:
+                - "{{ . }}"
+              {{ end }}
+            {{ end }}
+          {{- end }}
+      {{- end }}
+      containers:
+      - name: service
+        image: "nousresearch/hermes-agent:{{ .Values.hermes.version }}"
+        workingDir: /opt/data
+        command:
+        - sh
+        - -c
+        - |
+          cat >> ~/.hermes/.env <<'EOF'
+          HERMES_DASHBOARD_BASIC_AUTH_SECRET=$(openssl rand -base64 32)
+          EOF
+          #chmod 600 ~/.hermes/.env
+          # 2. Run the backend bound to a reachable address. The non-loopback bind
+          #    engages the auth gate; the username/password provider handles login.
+          hermes serve --host 0.0.0.0 --port 9119
+        ports:
+        - containerPort: 9119
+          name: backend
+        env:
+        {{- if .Values.system.envFromSecrets }}
+        {{- range .Values.system.envFromSecrets }}
+        - name: {{ . }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ . }}
+              key: {{ . }}
+        {{- end }}
+        {{- end }}
+        - name: HERMES_DASHBOARD_FILES_ROOT
+          value: "/opt"
+        - name: HERMES_HOME
+          value: /opt/data
+        - name: HERMES_WRITE_SAFE_ROOT
+          value: "/opt/data"
+        - name: HERMES_DASHBOARD_BASIC_AUTH_USERNAME
+          value: {{ .Values.hermes.username }}
+        - name: HERMES_DASHBOARD_BASIC_AUTH_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-hermes-secrets
+              key: password
+        resources:
+          requests:
+            cpu: {{ .Values.resources.cpus }}
+            memory: {{ .Values.resources.memory }}Gi
+          limits:
+            cpu: {{ .Values.resources.cpus }}
+            memory: {{ .Values.resources.memory }}Gi
+        volumeMounts:
+        - name: data
+          mountPath: /opt/data
+      volumes:
+    {{- if .Values.system.storageClassName }}
+      - name: data
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}-hermes-pvc
+    {{- else }}
+      - name: workspace
+        emptyDir:
+          sizeLimit: {{ .Values.resources.workingMemory }}Gi
+    {{- end }}
+      restartPolicy: Always
+---
+{{- if .Values.system.storageClassName }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-hermes-pvc
+  labels:
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+    component: hermes
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: {{ .Values.system.storageClassName }}
+  resources:
+    requests:
+      storage: {{ .Values.resources.workingMemory }}Gi
+{{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-hermes-svc
+  labels:
+    # must have this!
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+spec:
+  selector:
+    component: hermes
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+  ports:
+    - name: main
+      port: 9119
+      targetPort: 9119
+      protocol: TCP
+  {{- if .Values.ingress.enabled }}
+  type: ClusterIP
+  {{- else }}
+  type: NodePort
+  {{- end }}

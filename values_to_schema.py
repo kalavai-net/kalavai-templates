@@ -114,6 +114,11 @@ if __name__ == "__main__":
             "memory": {
                "description": "RAM memory to be used per single worker (final one = memory * workers). Workers should have these much RAM available.",
                "type": "integer"
+            },
+            "storageClassName": {
+               "description": "Storage class name to use for the persistent volume claim",
+               "type": ["string", "null"],
+               "default": "kalavai-sc"
             }
         }
     }

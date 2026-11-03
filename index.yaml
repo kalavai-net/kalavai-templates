@@ -886,6 +886,30 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/gateway-0.0.1/gateway-0.0.1.tgz
     version: 0.0.1
+  hermes:
+  - annotations:
+      category: agents
+      status: beta
+    apiVersion: v2
+    appVersion: 0.0.1
+    created: "2026-11-03T13:51:37.898234817Z"
+    description: The self-improving AI agent built by Nous Research. It's the only
+      agent with a built-in learning loop — it creates skills from experience, improves
+      them during use, nudges itself to persist knowledge, searches its own past conversations,
+      and builds a deepening model of who you are across sessions
+    digest: 12a05b4657e0416c169afbf0eb37687acc629312259279f09525a92f4af5ac2d
+    icon: https://raw.githubusercontent.com/NousResearch/hermes-agent/main/assets/nous-girl-black.svg
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: hermes
+    sources:
+    - https://hermes-agent.nousresearch.com/docs/user-stories
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/hermes-0.0.1/hermes-0.0.1.tgz
+    version: 0.0.1
   hindsight:
   - annotations:
       category: database
@@ -6614,4 +6638,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-11-02T15:02:51.981746872Z"
+generated: "2026-11-03T13:51:37.899128441Z"

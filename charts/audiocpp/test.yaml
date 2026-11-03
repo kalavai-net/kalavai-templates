@@ -1,0 +1,124 @@
+---
+# Source: audiocpp/templates/deployment.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: test-audiocpp-pvc
+  labels:
+    kalavai.job.name: test-1
+    component: audiocpp
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: kalavai-sc
+  resources:
+    requests:
+      storage: 16Gi
+---
+# Source: audiocpp/templates/deployment.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-audiocpp-svc
+  labels:
+    # must have this!
+    kalavai.job.name: test-1
+spec:
+  selector:
+    component: audiocpp
+    kalavai.job.name: test-1
+  ports:
+    - name: main
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
+  type: NodePort
+---
+# Source: audiocpp/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-audiocpp
+  labels:
+    kalavai.job.name: test-1
+    component: audiocpp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      kalavai.job.name: test-1
+      component: audiocpp
+  template:
+    metadata:
+      labels:
+        kalavai.job.name: test-1
+        component: audiocpp
+        role: leader
+    spec:
+      terminationGracePeriodSeconds: 10
+      priorityClassName: user-spot-priority
+      tolerations:
+      - key: "node.kubernetes.io/not-ready"
+        operator: Exists
+        effect: NoExecute
+        tolerationSeconds: 10
+      - key: "node.kubernetes.io/unreachable"
+        operator: Exists
+        effect: NoExecute
+        tolerationSeconds: 10
+      - key: "node.kubernetes.io/unknown"
+        operator: Exists
+        effect: NoExecute
+        tolerationSeconds: 10
+      - key: "node.kubernetes.io/memory-pressure"
+        operator: Exists
+        effect: NoSchedule
+      - key: "node.kubernetes.io/disk-pressure"
+        operator: Exists
+        effect: NoSchedule
+      - key: "node.kubernetes.io/pid-pressure"
+        operator: Exists
+        effect: NoSchedule
+      - key: "node.kubernetes.io/network-unavailable"
+        operator: Exists
+        effect: NoSchedule
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: kalavai.job.name
+                  operator: In
+                  values:
+                  - test-1
+              topologyKey: "kubernetes.io/hostname"
+      containers:
+      - name: audiocpp
+        image: ghcr.io/0xshug0/audio.cpp:full-cpu
+        command:
+        - sh
+        - -c
+        - |
+          echo "Deploying server..."
+          /app/entrypoint.sh server --ui --ui-management --host 0.0.0.0 --port 8080 --backend cpu
+        env:
+        ports:
+        - containerPort: 8080
+          name: main-port
+        resources:
+          requests:
+            cpu: "1"
+            memory: 12Gi
+          limits:
+            cpu: "1"
+            memory: 12Gi
+        volumeMounts:
+        - name: data
+          mountPath: /app/models
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: test-audiocpp-pvc
+      restartPolicy: Always

@@ -142,7 +142,7 @@ spec:
         persistentVolumeClaim:
           claimName: {{ .Release.Name }}-hermes-pvc
     {{- else }}
-      - name: workspace
+      - name: data
         emptyDir:
           sizeLimit: {{ .Values.resources.workingMemory }}Gi
     {{- end }}

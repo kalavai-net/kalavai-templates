@@ -1,0 +1,28 @@
+unsloth:
+  version: latest
+  auth:
+    jupyterPassword: my-jupyter-password
+    studioPassword: my-studio-password
+
+ingress:
+  enabled: false
+  subdomain: spaces.kalavai.net
+
+system:
+  priorityClassName: user-spot-priority
+  storageClassName: kalavai-sc
+  nodeSelectors: null
+  nodeSelectorsOps: OR
+  nodeAffinityPreferenceKey: null
+  jobId: null
+  envFromSecrets: {}
+
+resources:
+  replicas: 1
+  workerGpuMemory: null
+  workers: 1
+  backend: cpu
+  workingMemory: 30
+  memory: 8
+  cpus: 2
+  gpus: 1

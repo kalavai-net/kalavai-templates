@@ -1,7 +1,7 @@
 apiVersion: v2
-appVersion: 0.0.1
+appVersion: 0.0.2
 description: Unsloth is an open-source framework for running and training LLMs.
-icon: https://raw.githubusercontent.com/unslothai/unsloth/main/images/unsloth%20logo%20black%20text.png
+icon: https://raw.githubusercontent.com/unslothai/unsloth/main/images/unsloth%20sticker.png
 kubeVersion: '>= 1.25.0'
 maintainers:
 - email: carlos@kalavai.net
@@ -10,7 +10,7 @@ maintainers:
 name: unsloth
 sources:
 - https://unsloth.ai/docs/new/studio
-version: 0.0.1
+version: 0.0.2
 annotations:
   status: beta
   category: development

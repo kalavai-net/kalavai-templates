@@ -83,7 +83,7 @@ spec:
                 - "{{ . }}"
               {{ end }}
             {{ end }}
-          {{- end }}
+          {{- end }}`
       {{- end }}
       containers:
       - name: service
@@ -93,13 +93,15 @@ spec:
         - sh
         - -c
         - |
-          cat >> ~/.hermes/.env <<'EOF'
+          mkdir -p "$HERMES_HOME"
+          cat >> "$HERMES_HOME/.env" <<EOF
           HERMES_DASHBOARD_BASIC_AUTH_SECRET=$(openssl rand -base64 32)
           EOF
-          #chmod 600 ~/.hermes/.env
-          # 2. Run the backend bound to a reachable address. The non-loopback bind
-          #    engages the auth gate; the username/password provider handles login.
-          hermes serve --host 0.0.0.0 --port 9119
+        {{- if .Values.hermes.dashboard }}
+          exec hermes dashboard --host 0.0.0.0 --port 9119
+        {{- else }}
+          exec hermes serve --host 0.0.0.0 --port 9119
+        {{- end }}
         ports:
         - containerPort: 9119
           name: backend

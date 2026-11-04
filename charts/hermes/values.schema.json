@@ -7,6 +7,10 @@
           "type": "object",
           "description": "General properties for your AnythingLLM instance",
           "properties": {
+            "dashboard": {
+                "type": "boolean",
+                "description": "Enable or disable the dashboard for the Hermes Agent"
+            },
             "version": {
                 "type": "string",
                 "description": "Hermes Agent image tag to deploy"

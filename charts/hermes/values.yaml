@@ -1,4 +1,5 @@
 hermes:
+  dashboard: false
   version: latest
   username: admin
   password: my-password

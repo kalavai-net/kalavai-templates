@@ -5173,6 +5173,27 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/speaches-0.0.1/speaches-0.0.1.tgz
     version: 0.0.1
+  unsloth:
+  - annotations:
+      category: development
+      status: beta
+    apiVersion: v2
+    appVersion: 0.0.1
+    created: "2026-11-04T12:48:05.701526206Z"
+    description: Unsloth is an open-source framework for running and training LLMs.
+    digest: a65268a61669825f2713c6832fc116c34af1b6f011a3b4568ccf06d07113f36c
+    icon: https://raw.githubusercontent.com/unslothai/unsloth/main/images/unsloth%20logo%20black%20text.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: unsloth
+    sources:
+    - https://unsloth.ai/docs/new/studio
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/unsloth-0.0.1/unsloth-0.0.1.tgz
+    version: 0.0.1
   valkey:
   - annotations:
       category: database
@@ -6727,4 +6748,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-11-04T11:47:38.454581467Z"
+generated: "2026-11-04T12:48:05.701864844Z"

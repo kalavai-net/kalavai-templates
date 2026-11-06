@@ -16,6 +16,30 @@
             }
          }
       },
+      "pvc": {
+         "type": "object",
+         "properties": {
+            "enabled": {
+               "type": "boolean",
+               "description": "Enable persistent volume claim for AudioCPP"
+            },
+            "storageClassName": {
+               "type": "string",
+               "description": "Storage class name for the persistent volume claim"
+            },
+            "accessModes": {
+               "type": "array",
+               "items": {
+                  "type": "string"
+               },
+               "description": "Access modes for the persistent volume claim"
+            },
+            "size": {
+               "type": "integer",
+               "description": "Size of the persistent volume claim in GB"
+            }
+         }
+      },
       "ingress": {
          "type": "object",
          "properties": {

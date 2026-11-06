@@ -4,6 +4,13 @@ unsloth:
     jupyterPassword: my-jupyter-password
     studioPassword: my-studio-password
 
+pvc:
+  enabled: true
+  storageClassName: kalavai-sc
+  accessModes:
+    - ReadWriteMany
+  size: 16
+
 ingress:
   enabled: false
   subdomain: spaces.kalavai.net
@@ -25,4 +32,3 @@ resources:
   memory: 8
   cpus: 2
   gpus: 1
-  storageClassName: kalavai-sc

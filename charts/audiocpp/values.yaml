@@ -2,6 +2,13 @@ audiocpp:
   ui:
     enabled: true
 
+pvc:
+  enabled: true
+  storageClassName: kalavai-sc
+  accessModes:
+    - ReadWriteMany
+  size: 16
+
 ingress:
   enabled: false
   subdomain: spaces.kalavai.net
@@ -23,4 +30,3 @@ resources:
   memory: 6
   cpus: 1
   gpus: 1
-  storageClassName: kalavai-sc

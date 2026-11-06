@@ -3,7 +3,7 @@
    "type": "object",
    "description": "The self-improving AI agent built by Nous Research. It's the only agent with a built-in learning loop — it creates skills from experience, improves them during use, nudges itself to persist knowledge, searches its own past conversations, and builds a deepening model of who you are across sessions",
    "properties": {
-       "unsloth": {
+      "unsloth": {
           "type": "object",
           "description": "General properties for your AnythingLLM instance",
           "properties": {
@@ -23,6 +23,30 @@
                         "description": "Default admin password."
                     }
                 }
+            }
+          }
+      },
+      "pvc": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+               "type": "boolean",
+               "description": "Enable persistent volume claim for Unsloth Studio"
+            },
+            "storageClassName": {
+               "type": "string",
+               "description": "Storage class name for the persistent volume claim"
+            },
+            "accessModes": {
+               "type": "array",
+               "items": {
+                  "type": "string"
+               },
+               "description": "Access modes for the persistent volume claim"
+            },
+            "size": {
+               "type": "integer",
+               "description": "Size of the persistent volume claim in GB"
             }
           }
        },
@@ -107,11 +131,6 @@
             "gpus": {
                "description": "GPUs to be used per single worker (final one = gpus * workers). Workers should have these many GPUs available.",
                "type": "integer"
-            },
-            "storageClassName": {
-               "description": "Storage class name to use for the persistent volume claim",
-               "type": ["string", "null"],
-               "default": "kalavai-sc"
             }
          }
       }

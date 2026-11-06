@@ -10,7 +10,6 @@ ingress:
 
 system:
   priorityClassName: user-spot-priority
-  storageClassName: kalavai-sc
   nodeSelectors: null
   nodeSelectorsOps: OR
   nodeAffinityPreferenceKey: null
@@ -26,3 +25,4 @@ resources:
   memory: 8
   cpus: 2
   gpus: 1
+  storageClassName: kalavai-sc

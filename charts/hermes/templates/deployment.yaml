@@ -139,7 +139,7 @@ spec:
         - name: data
           mountPath: /opt/data
       volumes:
-    {{- if .Values.system.storageClassName }}
+    {{- if .Values.resources.storageClassName }}
       - name: data
         persistentVolumeClaim:
           claimName: {{ .Release.Name }}-hermes-pvc

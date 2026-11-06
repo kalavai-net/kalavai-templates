@@ -13,7 +13,7 @@ pvc:
   storageClassName: kalavai-sc
   accessModes:
     - ReadWriteMany
-  size: 16Gi
+  size: 16
 
 system:
   priorityClassName: user-spot-priority

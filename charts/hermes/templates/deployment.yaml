@@ -150,7 +150,7 @@ spec:
     {{- end }}
       restartPolicy: Always
 ---
-{{- if .Values.system.storageClassName }}
+{{- if .Values.resources.storageClassName }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -161,7 +161,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: {{ .Values.system.storageClassName }}
+  storageClassName: {{ .Values.resources.storageClassName }}
   resources:
     requests:
       storage: {{ .Values.resources.workingMemory }}Gi

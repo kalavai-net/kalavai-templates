@@ -22,6 +22,26 @@ Then [connect to the remote gateway](https://hermes-agent.nousresearch.com/docs/
 --> Honcho for memory card (extension to local memory .md)
 
 
+Configure endpoint. Edit config.yaml in Settings (YAML view)
+
+```yaml
+model:
+  provider: custom
+  default: unsloth/Qwen3.5-0.8B-GGUF
+  base_url: http://llm-llamacpp-service.default:8080/v1
+custom_providers:
+  - name: custom
+    base_url: http://172.17.0.1:30544/v1
+    models:
+      - unsloth/Qwen3.5-0.8B-GGUF
+  - name: Llm-llamacpp-service.default:8080
+    base_url: http://llm-llamacpp-service.default:8080/v1
+    model: unsloth/Qwen3.5-0.8B-GGUF
+    models:
+      unsloth/Qwen3.5-0.8B-GGUF:
+        context_length: 64000
+```
+
 # OpenAgent
 
 https://github.com/the-open-agent/openagent

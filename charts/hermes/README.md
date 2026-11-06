@@ -30,11 +30,7 @@ model:
   default: unsloth/Qwen3.5-0.8B-GGUF
   base_url: http://llm-llamacpp-service.default:8080/v1
 custom_providers:
-  - name: custom
-    base_url: http://172.17.0.1:30544/v1
-    models:
-      - unsloth/Qwen3.5-0.8B-GGUF
-  - name: Llm-llamacpp-service.default:8080
+  - name: kalavai
     base_url: http://llm-llamacpp-service.default:8080/v1
     model: unsloth/Qwen3.5-0.8B-GGUF
     models:

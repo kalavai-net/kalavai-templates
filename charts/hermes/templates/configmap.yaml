@@ -1,0 +1,18 @@
+{{- if and .Values.hermes.model.base_url .Values.hermes.model.default }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-hermes-config
+data:
+  config.yaml: |
+    model:
+      provider: custom
+      default: {{ .Values.hermes.model.default }}
+      base_url: {{ .Values.hermes.model.base_url }}
+    custom_providers:
+      - name: kalavai
+        base_url: {{ .Values.hermes.model.base_url }}
+        model: {{ .Values.hermes.model.default }}
+        models:
+          {{ .Values.hermes.model.default }}: {}
+{{- end }}

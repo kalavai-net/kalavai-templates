@@ -22,6 +22,19 @@
             "password": {
                 "type": "string",
                 "description": "Default admin password."
+            },
+            "model": {
+                "type": "object",
+                "properties": {
+                    "default": {
+                        "type": ["string", "null"],
+                        "description": "Default LLM name to use for the Hermes Agent"
+                    },
+                    "base_url": {
+                        "type": ["string", "null"],
+                        "description": "Base URL for the custom LLM provider"
+                    }
+                }
             }
           }
        },

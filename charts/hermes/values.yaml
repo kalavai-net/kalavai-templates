@@ -3,6 +3,9 @@ hermes:
   version: latest
   username: admin
   password: my-password
+  model:
+    default: null
+    base_url: null
 
 ingress:
   enabled: false

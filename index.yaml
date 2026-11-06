@@ -174,6 +174,28 @@ entries:
       category: audio
       status: beta
     apiVersion: v2
+    appVersion: 0.0.3
+    created: "2026-11-06T21:58:11.771347496Z"
+    description: An all-in-one, pure C++ inference engine for audio models, powered
+      by ggml. Supports TTS, STT, VAD, voice conversion, music generation, and more,
+      with highly optimized performance.
+    digest: 7b5fedc4abee3fa8af2e7e5346c41034de5f97083e0b7ba9c2b3fa5059212c12
+    icon: https://images.icon-icons.com/3685/PNG/512/github_logo_icon_229278.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: audiocpp
+    sources:
+    - https://github.com/0xShug0/audio.cpp
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/audiocpp-0.0.3/audiocpp-0.0.3.tgz
+    version: 0.0.3
+  - annotations:
+      category: audio
+      status: beta
+    apiVersion: v2
     appVersion: 0.0.2
     created: "2026-11-06T10:45:02.962430754Z"
     description: An all-in-one, pure C++ inference engine for audio models, powered
@@ -5338,6 +5360,26 @@ entries:
       category: development
       status: beta
     apiVersion: v2
+    appVersion: 0.0.4
+    created: "2026-11-06T21:58:11.967490573Z"
+    description: Unsloth is an open-source framework for running and training LLMs.
+    digest: a305a7640c98f005ad8c66018f4d86c66ee8a7ac0ca653293799d12666723c32
+    icon: https://raw.githubusercontent.com/unslothai/unsloth/main/images/unsloth%20sticker.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: unsloth
+    sources:
+    - https://unsloth.ai/docs/new/studio
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/unsloth-0.0.4/unsloth-0.0.4.tgz
+    version: 0.0.4
+  - annotations:
+      category: development
+      status: beta
+    apiVersion: v2
     appVersion: 0.0.3
     created: "2026-11-06T10:45:03.554176654Z"
     description: Unsloth is an open-source framework for running and training LLMs.
@@ -6948,4 +6990,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-11-06T16:00:56.140290052Z"
+generated: "2026-11-06T21:58:11.967933631Z"

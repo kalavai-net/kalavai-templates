@@ -147,7 +147,7 @@ spec:
           amd.com/gpu: {{ .Values.resources.gpus }}
         {{ end }}
       volumes:
-    {{- if .Values.resources.storageClassName }}
+    {{- if .Values.pvc.enabled }}
       - name: data
         persistentVolumeClaim:
           claimName: {{ .Release.Name }}-unsloth-pvc
@@ -158,7 +158,7 @@ spec:
     {{- end }}
       restartPolicy: Always
 ---
-{{- if .Values.resources.storageClassName }}
+{{- if .Values.pvc.enabled }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -168,11 +168,13 @@ metadata:
     component: unsloth
 spec:
   accessModes:
-    - ReadWriteMany
-  storageClassName: {{ .Values.resources.storageClassName }}
+  {{- range .Values.pvc.accessModes }}
+    - {{ . }}
+  {{- end }}
+  storageClassName: {{ .Values.pvc.storageClassName }}
   resources:
     requests:
-      storage: {{ .Values.resources.workingMemory }}Gi
+      storage: {{ .Values.pvc.size }}Gi
 {{- end }}
 ---
 apiVersion: v1

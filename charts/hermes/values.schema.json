@@ -25,6 +25,30 @@
             }
           }
        },
+       "pvc": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+                "type": "boolean",
+                "description": "Enable or disable the Persistent Volume Claim for the Hermes Agent"
+            },
+            "storageClassName": {
+                "type": ["string", "null"],
+                "description": "Storage class name for the Persistent Volume Claim"
+            },
+            "accessModes": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                },
+                "description": "Access modes for the Persistent Volume Claim"
+            },
+            "size": {
+                "type": "integer",
+                "description": "Size of the Persistent Volume Claim in Gi"
+            }
+          }
+       },
       "ingress": {
          "type": "object",
          "properties": {
@@ -106,11 +130,6 @@
             "gpus": {
                "description": "GPUs to be used per single worker (final one = gpus * workers). Workers should have these many GPUs available.",
                "type": "integer"
-            },
-            "storageClassName": {
-               "description": "Storage class name to use for the persistent volume claim",
-               "type": ["string", "null"],
-               "default": "kalavai-sc"
             }
          }
       }

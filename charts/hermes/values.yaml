@@ -8,6 +8,13 @@ ingress:
   enabled: false
   subdomain: spaces.kalavai.net
 
+pvc:
+  enabled: true
+  storageClassName: kalavai-sc
+  accessModes:
+    - ReadWriteMany
+  size: 16Gi
+
 system:
   priorityClassName: user-spot-priority
   nodeSelectors: null
@@ -25,4 +32,3 @@ resources:
   memory: 4
   cpus: 2
   gpus: 1
-  storageClassName: kalavai-sc

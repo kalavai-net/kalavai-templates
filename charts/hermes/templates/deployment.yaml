@@ -100,13 +100,16 @@ spec:
           HERMES_DASHBOARD_BASIC_AUTH_SECRET=$(openssl rand -base64 32)
           EOF
         {{- if .Values.hermes.dashboard }}
-          hermes dashboard --host 0.0.0.0 --port 9119
-        {{- else }}
-          hermes serve --host 0.0.0.0 --port 9119
+          hermes webapp
         {{- end }}
+          hermes serve --host 0.0.0.0 --port 9119
         ports:
         - containerPort: 9119
           name: backend
+      {{- if .Values.hermes.dashboard }}
+        - containerPort: 9120
+          name: dashboard
+      {{- end }}
         env:
         {{- if .Values.system.envFromSecrets }}
         {{- range .Values.system.envFromSecrets }}
@@ -142,10 +145,8 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /opt/data
-        {{- if and .Values.hermes.model.base_url .Values.hermes.model.default }}
         - name: hermes-config
           mountPath: /root/.hermes
-        {{- end }}
       volumes:
     {{- if .Values.pvc.enabled }}
       - name: data
@@ -156,11 +157,9 @@ spec:
         emptyDir:
           sizeLimit: {{ .Values.resources.workingMemory }}Gi
     {{- end }}
-    {{- if and .Values.hermes.model.base_url .Values.hermes.model.default }}
       - name: hermes-config
         configMap:
           name: {{ .Release.Name }}-hermes-config
-    {{- end }}
       restartPolicy: Always
 ---
 {{- if .Values.pvc.enabled }}
@@ -198,6 +197,12 @@ spec:
       port: 9119
       targetPort: 9119
       protocol: TCP
+  {{- if .Values.hermes.dashboard }}
+    - name: dashboard
+      port: 9120
+      targetPort: 9120
+      protocol: TCP
+  {{- end }}
   {{- if .Values.ingress.enabled }}
   type: ClusterIP
   {{- else }}

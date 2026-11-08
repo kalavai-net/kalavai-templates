@@ -1,6 +1,6 @@
 hermes:
-  dashboard: false
-  version: latest
+  dashboard: true
+  version: v0.23.0
   username: admin
   password: my-password
   model:

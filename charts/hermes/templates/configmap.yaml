@@ -1,10 +1,15 @@
-{{- if and .Values.hermes.model.base_url .Values.hermes.model.default }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-hermes-config
 data:
   config.yaml: |
+    webapp:
+      enabled: {{ .Values.hermes.dashboard }}
+      host: 0.0.0.0
+      port: 9120
+
+    {{- if and .Values.hermes.model.base_url .Values.hermes.model.default }}
     model:
       provider: custom
       default: {{ .Values.hermes.model.default }}
@@ -15,4 +20,4 @@ data:
         model: {{ .Values.hermes.model.default }}
         models:
           {{ .Values.hermes.model.default }}: {}
-{{- end }}
+    {{- end }}

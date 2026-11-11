@@ -43,8 +43,8 @@ echo "CPU tags: ${CPU_TAGS[@]}"
 
 
 docker buildx build --build-arg LLAMACPP_VERSION=$LLAMACPP_VERSION --push \
-  "${CPU_TAGS[@]}" --platform=linux/amd64,linux/arm64 \
-  -f src/Dockerfile_cpu src/
+ "${CPU_TAGS[@]}" --platform=linux/amd64,linux/arm64 \
+ -f src/Dockerfile_cpu src/
 
 docker buildx build --build-arg LLAMACPP_VERSION=$LLAMACPP_VERSION --push \
   "${CUDA_TAGS[@]}" --platform=linux/amd64,linux/arm64 \

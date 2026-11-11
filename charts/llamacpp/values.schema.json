@@ -236,11 +236,11 @@
             },
             "cpus": {
                "description": "CPUs to be used per single worker (final one = cpus * workers). Workers should have these many CPUs available.",
-               "type": "integer"
+               "type": "number"
             },
             "memory": {
                "description": "RAM memory to be used per single worker (final one = memory * workers). Workers should have these much RAM available.",
-               "type": "integer"
+               "type": "number"
             },
             "gpus": {
                "description": "GPUs to be used per single worker (final one = gpus * workers). Workers should have these many GPUs available.",

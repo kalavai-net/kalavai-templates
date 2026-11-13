@@ -174,6 +174,28 @@ entries:
       category: audio
       status: beta
     apiVersion: v2
+    appVersion: 0.0.4
+    created: "2026-11-13T10:01:26.416130656Z"
+    description: An all-in-one, pure C++ inference engine for audio models, powered
+      by ggml. Supports TTS, STT, VAD, voice conversion, music generation, and more,
+      with highly optimized performance.
+    digest: 824347323d7bb497242bfb8b11c62936c853aa3ff14c7dc76b14b6ad27dc6a45
+    icon: https://images.icon-icons.com/3685/PNG/512/github_logo_icon_229278.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: audiocpp
+    sources:
+    - https://github.com/0xShug0/audio.cpp
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/audiocpp-0.0.4/audiocpp-0.0.4.tgz
+    version: 0.0.4
+  - annotations:
+      category: audio
+      status: beta
+    apiVersion: v2
     appVersion: 0.0.3
     created: "2026-11-06T21:58:11.771347496Z"
     description: An all-in-one, pure C++ inference engine for audio models, powered
@@ -7053,4 +7075,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-11-11T14:27:14.109775848Z"
+generated: "2026-11-13T10:01:26.416751206Z"

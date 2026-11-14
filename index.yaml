@@ -1211,6 +1211,26 @@ entries:
       category: database
       status: beta
     apiVersion: v2
+    appVersion: 0.0.2
+    created: "2026-11-14T21:04:24.943360636Z"
+    description: State of the art long-term memory for your agents.
+    digest: e8bce09c8f23c1ebb60d784cd8fdf00e3258f4089447737c14274aa3efc71fe0
+    icon: https://haystack.deepset.ai/logos/hindsight.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: hindsight
+    sources:
+    - https://hindsight.vectorize.io/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/hindsight-0.0.2/hindsight-0.0.2.tgz
+    version: 0.0.2
+  - annotations:
+      category: database
+      status: beta
+    apiVersion: v2
     appVersion: 0.0.1
     created: "2026-11-02T10:07:39.021428664Z"
     description: State of the art long-term memory for your agents.
@@ -7075,4 +7095,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-11-13T10:01:26.416751206Z"
+generated: "2026-11-14T21:04:24.944195225Z"

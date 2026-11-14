@@ -68,9 +68,27 @@ spec:
     {{- end }}
     api:
       env:
+      {{- if .Values.hindsight.env }}
         {{- toYaml .Values.hindsight.env | nindent 8 }}
+      {{- end }}
+        HINDSIGHT_API_LLM_MAX_CONCURRENT: {{ .Values.hindsight.llm.maxConcurrent }}
+        HINDSIGHT_API_LLM_BASE_URL: {{ .Values.hindsight.llm.baseUrl | quote }}
+        HINDSIGHT_API_LLM_PROVIDER: {{ .Values.hindsight.llm.provider | quote }}
+        HINDSIGHT_API_LLM_MODEL: {{ .Values.hindsight.llm.model | quote }}
+      {{- if and .Values.hindsight.embedding.baseUrl .Values.hindsight.embedding.model }}
+        HINDSIGHT_API_EMBEDDINGS_PROVIDER: {{ .Values.hindsight.embedding.provider | quote }}
+        HINDSIGHT_API_EMBEDDINGS_{{ .Values.hindsight.embedding.provider | upper }}_MODEL: {{ .Values.hindsight.embedding.model | quote }}
+        HINDSIGHT_API_EMBEDDINGS_{{ .Values.hindsight.embedding.provider | upper }}_BASE_URL: {{ .Values.hindsight.embedding.baseUrl | quote }}
+      {{- end }}
       secrets:
+      {{- if .Values.hindsight.secrets }}  
         {{- toYaml .Values.hindsight.secrets | nindent 8 }}
+      {{- end }}
+        HINDSIGHT_API_LLM_API_KEY: {{ .Values.hindsight.llm.apiKey | quote }}
+        HINDSIGHT_API_EMBEDDINGS_{{ .Values.hindsight.embedding.provider | upper }}_API_KEY: {{ .Values.hindsight.embedding.apiKey | quote }}
+      {{- if not .Values.postgresql.enabled }}
+        HINDSIGHT_API_DATABASE_URL: {{ .Values.postgresql.externalConnectionString | quote }}
+      {{- end }}
       service:
         type: {{ if .Values.ingress.enabled }}ClusterIP{{ else }}NodePort{{ end }}
     worker:
@@ -81,18 +99,14 @@ spec:
       replicaCount: 1
       service:
         type: {{ if .Values.ingress.enabled }}ClusterIP{{ else }}NodePort{{ end }}
+  {{- if .Values.postgresql.enabled }}  
     postgresql:
       enabled: {{ .Values.postgresql.enabled }}
       auth:
         username: {{ .Values.postgresql.username }}
         password: {{ .Values.postgresql.password }}
         database: {{ .Values.postgresql.database }}
-      external:
-        host: {{ .Values.postgresql.external.host }}
-        port: {{ .Values.postgresql.external.port }}
-        database: {{ .Values.postgresql.external.database }}
-        username: {{ .Values.postgresql.external.username }}
-        password: {{ .Values.postgresql.external.password }}
+  {{- end }}
     autoscaling:
       enabled: {{ .Values.hindsight.autoscaling.enabled }}
       minReplicas: {{ .Values.hindsight.autoscaling.minReplicas }}

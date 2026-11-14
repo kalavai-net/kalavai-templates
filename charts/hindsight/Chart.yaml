@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: 0.0.1
+appVersion: 0.0.2
 description: State of the art long-term memory for your agents.
 icon: https://haystack.deepset.ai/logos/hindsight.png
 kubeVersion: '>= 1.25.0'
@@ -10,7 +10,7 @@ maintainers:
 name: hindsight
 sources:
 - https://hindsight.vectorize.io/
-version: 0.0.1
+version: 0.0.2
 annotations:
   status: beta
   category: database

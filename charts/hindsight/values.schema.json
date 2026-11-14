@@ -19,6 +19,54 @@
                "additionalProperties": true,
                "description": "Sensitive environment variables to configure Hindsight"
             },
+            "llm": {
+               "type": "object",
+               "properties": {
+                  "provider": {
+                     "type": "string",
+                     "enum": ["openai", "openai-responses", "groq", "ollama", "gemini", "anthropic", "lmstudio", "vertexai", "minimax", "deepseek", "zai", "atlas", "meta", "volcano", "openai-codex", "claude-code", "cursor", "github-copilot", "openrouter"],
+                     "description": "Provider for the LLM API"
+                  },
+                  "baseUrl": {
+                     "type": ["string", "null"],
+                     "description": "Base URL for the LLM API"
+                  },
+                  "apiKey": {
+                     "type": ["string", "null"],
+                     "description": "API key for the LLM API"
+                  },
+                  "model": {
+                     "type": ["string", "null"],
+                     "description": "Model to use for the LLM API"
+                  },
+                  "maxConcurrent": {
+                     "type": "integer",
+                     "description": "Maximum number of concurrent requests to the LLM API"
+                  }
+               }
+            },
+            "embedding": {
+               "type": "object",
+               "properties": {
+                  "provider": {
+                     "type": "string",
+                     "enum": ["local", "onnx", "tei", "openai", "cohere", "google", "openrouter", "zeroentropy", "litellm", "litellm-sdk"],
+                     "description": "Provider for the embedding API"
+                  },
+                  "baseUrl": {
+                     "type": ["string", "null"],
+                     "description": "Base URL for the embedding API"
+                  },
+                  "apiKey": {
+                     "type": ["string", "null"],
+                     "description": "API key for the embedding API"
+                  },
+                  "model": {
+                     "type": ["string", "null"],
+                     "description": "Model to use for the embedding API"
+                  }
+               }
+            },
             "autoscaling": {
                "type": "object",
                "properties": {
@@ -65,27 +113,9 @@
                "type": "boolean",
                "description": "Whether to deploy a built-in postres"
             },
-            "external": {
-               "type": "object",
-               "description": "External PostgreSQL connection; Only used if postgresql.enabled is false",
-               "properties": {
-                  "username": {
-                     "type": ["string", "null"],
-                     "description": "External Postgres admin username"
-                  },
-                  "database": {
-                     "type": ["string", "null"],
-                     "description": "External Postgres default database name"
-                  },
-                  "password": {
-                     "type": ["string", "null"],
-                     "description": "External Postgres password to use"
-                  },
-                  "port": {
-                     "type": ["integer", "null"],
-                     "description": "External Postgres port to use"
-                  }
-               }
+            "externalConnectionString": {
+               "type": ["string", "null"],
+               "description": "External PostgreSQL connection string; Only used if postgresql.enabled is false"
             }
          },
          "required": []

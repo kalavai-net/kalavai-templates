@@ -232,7 +232,7 @@
             "backend": {
                "description": "Backend to run workers. One of the following: cpu, cuda, rocm",
                "type": "string",
-               "enum": ["cpu", "cuda", "rocm"]
+               "enum": ["cpu", "cuda"]
             },
             "cpus": {
                "description": "CPUs to be used per single worker (final one = cpus * workers). Workers should have these many CPUs available.",

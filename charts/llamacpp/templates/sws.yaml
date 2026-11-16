@@ -164,19 +164,16 @@ spec:
       {{- end }}
       containers:
       - name: llamacpp-leader
-      {{ if eq .Values.resources.backend "cuda" }}
-        image: ghcr.io/kalavai-net/llamacpp-cuda:{{ .Values.llamacpp.version }}
-      {{ else if eq .Values.resources.backend "rocm" }}
-        image: ghcr.io/kalavai-net/llamacpp-rocm:{{ .Values.llamacpp.version }}
-      {{ else }}
-        image: ghcr.io/kalavai-net/llamacpp-cpu:{{ .Values.llamacpp.version }}
-      {{ end }}
+        image: ghcr.io/kalavai-net/llamacpp-{{ .Values.resources.backend }}:{{ .Values.llamacpp.version }}
         imagePullPolicy: {{ .Values.llamacpp.imagePullPolicy }}
         command:
         - sh
         - -c
         - |
           echo "Starting server..."
+          {{- if .Values.resources.backend "cuda" }}
+          nvidia-smi
+          {{- end }}
           # run model server
           export WORKERS=$(/workspace/get_workers_address.sh --rpc_port=50052 --rpc_servers="${WORKERS_ADDRESSES}")
           /workspace/run_api_server.sh \
@@ -342,18 +339,15 @@ spec:
       {{- end }}
       containers:
       - name: llamacpp-worker
-      {{ if eq .Values.resources.backend "cuda" }}
-        image: ghcr.io/kalavai-net/llamacpp-cuda:{{ .Values.llamacpp.version }}
-      {{ else if eq .Values.resources.backend "rocm" }}
-        image: ghcr.io/kalavai-net/llamacpp-rocm:{{ .Values.llamacpp.version }}
-      {{ else }}
-        image: ghcr.io/kalavai-net/llamacpp-cpu:{{ .Values.llamacpp.version }}
-      {{ end }}
+        image: ghcr.io/kalavai-net/llamacpp-{{ .Values.resources.backend }}:{{ .Values.llamacpp.version }}
         imagePullPolicy: {{ .Values.llamacpp.imagePullPolicy }}
         command:
         - sh
         - -c
         - |
+          {{- if .Values.resources.backend "cuda" }}
+          nvidia-smi
+          {{- end }}
           /workspace/run_rpc_worker.sh --rpc_port=50052
         env:
         {{- range $key, $value := .Values.system.envFromSecrets }}

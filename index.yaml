@@ -3126,6 +3126,28 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/langflow-0.0.1/langflow-0.0.1.tgz
     version: 0.0.1
+  langfuse:
+  - annotations:
+      category: development
+      status: beta
+    apiVersion: v2
+    appVersion: 0.0.1
+    created: "2026-11-16T16:51:14.274527607Z"
+    description: Langfuse is one open platform for every AI call your company makes
+      and every agent your teams build
+    digest: 57c490fe5b726046b50da7d6b52ef9305ea54ce349a6823c8340c7e0074f11df
+    icon: https://langfuse.com/brand-assets/icon/color/langfuse-icon.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: langfuse
+    sources:
+    - https://langfuse.com/docs
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/langfuse-0.0.1/langfuse-0.0.1.tgz
+    version: 0.0.1
   llama.cpp:
   - annotations:
       category: llm
@@ -7095,4 +7117,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-11-14T21:04:24.944195225Z"
+generated: "2026-11-16T16:51:14.27514831Z"

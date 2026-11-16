@@ -1,0 +1,227 @@
+{
+   "$schema": "http://json-schema.org/draft-07/schema#",
+   "type": "object",
+   "properties": {
+      "langfuse": {
+         "type": "object",
+         "properties": {
+            "version": {
+               "type": "string",
+               "description": "Version of Langfuse to deploy"
+            },
+            "encryptionKey": {
+               "type": "string",
+               "description": "Must be 256 bits, 64 string characters in hex format, generate via: openssl rand -hex 32e"
+            },
+            "salt": {
+               "type": "string",
+               "description": "A strong Salt is required to encrypt API keys securely. See: https://langfuse.com/self-hosting#deploy-the-container"
+            },
+            "seret": {
+               "type": "string",
+               "description": "Private secret for Langfuse worker"
+            },
+            "default": {
+               "type": "object",
+               "description": "Default credentials for your Langfuse project/user",
+               "properties": {
+                  "initProjectPublicKey": {
+                     "type": "string",
+                     "description": "Public key for the default project"
+                  },
+                  "initProjectSecretKey": {
+                     "type": "string",
+                     "description": "Secret key for the default project"
+                  },
+                  "initProjectName": {
+                     "type": "string",
+                     "description": "Project name for the default project"
+                  },
+                  "initOrgName": {
+                     "type": "string",
+                     "description": "Organisation name for the default project"
+                  },
+                  "initUserEmail": {
+                     "type": "string",
+                     "description": "Default user name for Langfuse"
+                  },
+                  "initProjectPassword": {
+                     "type": "string",
+                     "description": "Password for the default username"
+                  }
+               }
+            }
+         }
+      },
+      "gateway": {
+         "type": "object",
+         "properties": {
+            "enabled": {
+               "type": "boolean",
+               "description": "Whether to enable AI Gateway: https://langfuse.com/docs/gateway/overview"
+            }
+         }
+      },
+      "minio": {
+         "type": "object",
+         "properties": {
+            "enabled": {
+               "type": "boolean",
+               "description": "Whether to deploy embedded MinIO S3 storage"
+            },
+            "secret": {
+               "type": ["string", "null"],
+               "description": "Secret for embedded MinIO"
+            }
+         }
+      },
+      "redis": {
+         "type": "object",
+         "properties": {
+            "enabled": {
+               "type": "boolean",
+               "description": "Whether to deploy embedded Redis"
+            },
+            "externalHost": {
+               "type": ["string", "null"],
+               "description": "External host for Redis"
+            },
+            "externalPort": {
+               "type": ["number", "null"],
+               "description": "External port for Redis"
+            },
+            "externalPassword": {
+               "type": ["string", "null"],
+               "description": "External password for Redis"
+            }
+         }
+      },
+      "clickhouse": {
+         "type": "object",
+         "properties": {
+            "enabled": {
+               "type": "boolean",
+               "description": "Whether to deploy embedded ClickHouse"
+            },
+            "externalUrl": {
+               "type": ["string", "null"],
+               "description": "External host for ClickHouse"
+            },
+            "externalUser": {
+               "type": ["string", "null"],
+               "description": "External user for ClickHouse"
+            },
+            "externalPassword": {
+               "type": ["string", "null"],
+               "description": "External password for ClickHouse"
+            },
+            "externalMigrationUrl": {
+               "type": ["string", "null"],
+               "description": "External migration URL for ClickHouse"
+            },
+            "externalDB": {
+               "type": ["string", "null"],
+               "description": "External DB for ClickHouse"
+            }
+         }
+      },
+      "postgres": {
+         "type": "object",
+         "properties": {
+            "enabled": {
+               "type": "boolean",
+               "description": "Whether to enable PostgreSQL"
+            },
+            "externalHost": {
+               "type": ["string", "null"],
+               "description": "External host for PostgreSQL"
+            }
+         }
+      },
+      "ingress": {
+         "type": "object",
+         "properties": {
+            "enabled": {
+               "type": "boolean",
+               "description": "Enable ingress for the vLLM service"
+            },
+            "subdomain": {
+               "type": "string",
+               "description": "Subdomain for the ingress"
+            }
+         }
+      },
+      "system": {
+         "properties": {
+            "envFromSecrets": {
+               "type": "object",
+               "description": "Dictionary mapping environment variable names to secret names"
+            },
+            "priorityClassName": {
+                "type": "string",
+                "description": "PriorityClassName to use for the deployment"
+            },
+            "jobId": {
+                "type": "string",
+                "description": "Job ID to label spawned objects."
+            },
+            "nodeSelectors": {
+               "type": [
+                  "object",
+                  "null"
+               ],
+               "description": "target specific devices. Expected format -> key: value pairs, where 'value' is a list of elements"
+            },
+            "nodeSelectorsOps": {
+               "type": "string",
+               "enum": ["OR", "AND"],
+               "description": "Logical operation to use to apply to nodeSelectors. Accepted values: 'OR', 'AND'"
+            },
+            "nodeAffinityPreferenceKey": {
+               "type": ["null", "string"],
+               "description": "Node affinity preference key to use for the deployment"
+            }
+            
+         }
+      },
+      "resources": {
+         "type": "object",
+         "properties": {
+            "replicas": {
+               "type": "integer",
+               "description": "Number of replicas to run"
+            },
+            "workerGpuMemory": {
+               "type": ["integer", "null"],
+               "description": "Worker GPU memory limit in GB (multiplied by 1000 for nvidia.com/gpumem resource)"
+            },
+            "workingMemory": {
+               "description": "Temporary storage to use to cache model weights (in GB), should be big enough to hold the model weights. All workers should have enough free disk to accommodate the weights.",
+               "type": "integer"
+            },
+            "workers": {
+               "description": "Number of workers, corresponding to the number of nodes (or machines) that will be used to deploy the model",
+               "type": "integer"
+            },
+            "backend": {
+               "description": "Use 'cuda' (nvidia cards), 'rocm' (AMD cards) or cpu-only backend",
+               "type": "string",
+               "enum": ["cuda", "cpu", "rocm"]
+            },
+            "memory": {
+               "description": "Memory to be used per single worker (final one = memory * workers). Workers should have these many GB of memory available.",
+               "type": "number"
+            },
+            "cpus": {
+               "description": "CPUs to be used per single worker (final one = cpus * workers). Workers should have these many CPUs available.",
+               "type": "number"
+            },
+            "gpus": {
+               "description": "GPUs to be used per single worker (final one = gpus * workers). Workers should have these many GPUs available.",
+               "type": "integer"
+            }
+         }
+      }
+   },
+   "required": []
+}

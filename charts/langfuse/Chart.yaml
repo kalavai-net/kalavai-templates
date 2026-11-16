@@ -1,0 +1,16 @@
+apiVersion: v2
+appVersion: 0.0.1
+description: Langfuse is one open platform for every AI call your company makes and every agent your teams build
+icon: https://langfuse.com/brand-assets/icon/color/langfuse-icon.png
+kubeVersion: '>= 1.25.0'
+maintainers:
+- email: carlos@kalavai.net
+  name: Carlos Fernandez Musoles
+  url: https://kalavai.net
+name: langfuse
+sources:
+- https://langfuse.com/docs
+version: 0.0.1
+annotations:
+  status: beta
+  category: development

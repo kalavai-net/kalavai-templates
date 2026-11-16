@@ -1,0 +1,59 @@
+langfuse:
+  salt: d142fff6323014c9462716f06ee06c82 # 'A strong Salt is required to encrypt API keys securely. See: https://langfuse.com/self-hosting#deploy-the-container'
+  secret: secret-changeme
+  encryptionKey: eb7350d5b04b713fed9f01093e6121a6852a3b4626bf50438676885ac9544bcf #"ENCRYPTION_KEY must be 256 bits, 64 string characters in hex format, generate via: openssl rand -hex 32"
+  version: 4.80.0
+  default:
+    initProjectPublicKey: public-key
+    initProjectSecretKey: secret-key
+    initProjectName: project
+    initOrgName: org
+    initUserEmail: "dummy@gmail.com"
+    initUserPassword: password
+  
+gateway:
+  enabled: false
+
+postgres:
+  enabled: true
+  externalHost: null
+
+redis:
+  enabled: true
+  externalHost: null
+  externalPort: 6379
+  externalPassword: null
+
+minio:
+  enabled: true
+  secret: minio-secret
+
+clickhouse:
+  enabled: true
+  externalUser: user
+  externalPassword: password
+  externalUrl: null
+  externalMigrationUrl: null
+  externalDB: default
+
+ingress:
+  enabled: false
+  subdomain: spaces.kalavai.net
+
+system:
+  priorityClassName: user-spot-priority
+  nodeSelectors: null
+  nodeSelectorsOps: OR
+  nodeAffinityPreferenceKey: null
+  jobId: null
+  envFromSecrets: {}
+
+resources:
+  replicas: 1
+  workerGpuMemory: null
+  workers: 1
+  backend: cuda
+  workingMemory: 16
+  memory: 0.25
+  cpus: 0.25
+  gpus: 1

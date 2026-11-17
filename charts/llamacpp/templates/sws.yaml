@@ -171,7 +171,7 @@ spec:
         - -c
         - |
           echo "Starting server..."
-          {{- if .Values.resources.backend "cuda" }}
+          {{- if eq .Values.resources.backend "cuda" }}
           nvidia-smi
           {{- end }}
           # run model server

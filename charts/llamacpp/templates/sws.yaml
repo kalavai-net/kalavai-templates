@@ -345,7 +345,7 @@ spec:
         - sh
         - -c
         - |
-          {{- if .Values.resources.backend "cuda" }}
+          {{- if eq .Values.resources.backend "cuda" }}
           nvidia-smi
           {{- end }}
           /workspace/run_rpc_worker.sh --rpc_port=50052

@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-filebrowser
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+      component: filebrowser
+  template:
+    metadata:
+      labels:
+        kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+        component: filebrowser
+    spec:
+      securityContext:
+        runAsUser: {{ .Values.filebrowser.runAsUser }}
+        runAsGroup: {{ .Values.filebrowser.runAsGroup }}
+        fsGroup: {{ .Values.filebrowser.runAsGroup }}
+      containers:
+      - name: filebrowser
+        image: filebrowser/filebrowser:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        {{- range $k, $v := .Values.filebrowser.pvcs }}
+        - name: {{$k}}
+          mountPath: /srv/{{$k}}
+        {{- end }}
+      volumes:
+    {{- range $k, $v := .Values.filebrowser.pvcs }}
+      - name: {{$k}}
+        persistentVolumeClaim:
+          claimName: {{$v}}
+    {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-filebrowser-svc
+  labels:
+    # must have this!
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+spec:
+  selector:
+    component: filebrowser
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      protocol: TCP
+  {{- if .Values.ingress.enabled }}
+  type: ClusterIP
+  {{- else }}
+  type: NodePort
+  {{- end }}

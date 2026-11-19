@@ -1,0 +1,16 @@
+apiVersion: v2
+appVersion: 0.0.1
+description: File Browser provides a file managing interface within a specified directory and it can be used to upload, delete, preview and edit your files.
+icon: https://raw.githubusercontent.com/filebrowser/filebrowser/master/docs/static/logo.png
+kubeVersion: '>= 1.25.0'
+maintainers:
+- email: carlos@kalavai.net
+  name: Carlos Fernandez Musoles
+  url: https://kalavai.net
+name: filebrowser
+sources:
+- https://github.com/filebrowser/filebrowser
+version: 0.0.1
+annotations:
+  status: beta
+  category: development

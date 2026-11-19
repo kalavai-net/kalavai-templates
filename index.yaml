@@ -620,6 +620,28 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/deployer-0.0.1/deployer-0.0.1.tgz
     version: 0.0.1
+  filebrowser:
+  - annotations:
+      category: development
+      status: beta
+    apiVersion: v2
+    appVersion: 0.0.1
+    created: "2026-11-19T09:37:43.647931208Z"
+    description: File Browser provides a file managing interface within a specified
+      directory and it can be used to upload, delete, preview and edit your files.
+    digest: a288693cd1b8ad15c79cffeb31333d23277a5352ed865ad4db2f12a64b9f3d6c
+    icon: https://raw.githubusercontent.com/filebrowser/filebrowser/master/docs/static/logo.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: filebrowser
+    sources:
+    - https://github.com/filebrowser/filebrowser
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/filebrowser-0.0.1/filebrowser-0.0.1.tgz
+    version: 0.0.1
   gateway:
   - annotations:
       category: backend
@@ -7177,4 +7199,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-11-17T14:30:33.636624375Z"
+generated: "2026-11-19T09:37:43.648773987Z"

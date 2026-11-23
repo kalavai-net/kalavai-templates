@@ -1,0 +1,62 @@
+honcho:
+  version: v3.6.0
+  apiKey: null
+  default:
+    apiKey: null
+    model: null
+    baseUrl: null
+  deriver:
+    flush: false
+    representationMaxAge: 1800
+    apiKey: null
+    model: null
+    baseUrl: null
+  summariser:
+    apiKey: null
+    model: null
+    baseUrl: null
+  dreamer:
+    apiKey: null
+    model: null
+    baseUrl: null
+  embedder:
+    apiKey: null
+    model: null
+    baseUrl: null
+    vectorDimensions: 1536
+  dashboard:
+    enabled: true
+    version: 0.17.1
+
+postgresql:
+  enabled: true
+  externalHost: null
+
+redis:
+  enabled: true
+  externalHost: null
+
+ingress:
+  enabled: false
+  subdomain: spaces.kalavai.net
+
+# pvc:
+#   enabled: false
+
+system:
+  priorityClassName: user-spot-priority
+  nodeSelectors: null
+  nodeSelectorsOps: OR
+  nodeAffinityPreferenceKey: null
+  jobId: null
+  envFromSecrets: {}
+
+resources:
+  replicas: 1
+  workerGpuMemory: null
+  workers: 1
+  backend: cuda
+  workingMemory: 16
+  memory: 0.25
+  cpus: 0.25
+  gpus: 1

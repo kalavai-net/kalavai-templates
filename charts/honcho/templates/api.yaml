@@ -1,0 +1,300 @@
+# Service Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-honcho-api
+  labels:
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+    component: honcho
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+      component: honcho
+  template:
+    metadata:
+      labels:
+        kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+        component: honcho
+    spec:
+      terminationGracePeriodSeconds: 10
+      {{- if .Values.system.priorityClassName }}
+      priorityClassName: {{ .Values.system.priorityClassName }}
+      {{- end }}
+      tolerations:
+      - key: "node.kubernetes.io/not-ready"
+        operator: Exists
+        effect: NoExecute
+        tolerationSeconds: 10
+      - key: "node.kubernetes.io/unreachable"
+        operator: Exists
+        effect: NoExecute
+        tolerationSeconds: 10
+      - key: "node.kubernetes.io/unknown"
+        operator: Exists
+        effect: NoExecute
+        tolerationSeconds: 10
+      - key: "node.kubernetes.io/memory-pressure"
+        operator: Exists
+        effect: NoSchedule
+      - key: "node.kubernetes.io/disk-pressure"
+        operator: Exists
+        effect: NoSchedule
+      - key: "node.kubernetes.io/pid-pressure"
+        operator: Exists
+        effect: NoSchedule
+      - key: "node.kubernetes.io/network-unavailable"
+        operator: Exists
+        effect: NoSchedule
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: kalavai.job.name
+                  operator: In
+                  values:
+                  - {{ .Values.system.jobId | default .Release.Name}}
+              topologyKey: "kubernetes.io/hostname"
+      {{- if .Values.system.nodeSelectors }}
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+          {{- if eq .Values.system.nodeSelectorsOps "OR" }}
+            {{ range $k, $v := .Values.system.nodeSelectors }}
+            - matchExpressions:
+              - key: {{$k}}
+                operator: In
+                values:
+                {{- range $v }}
+                - "{{ . }}"
+                {{- end }}
+            {{ end }}
+          {{- else }}
+            - matchExpressions:
+            {{ range $k, $v := .Values.system.nodeSelectors }}
+              {{ range $v }}
+              - key: {{ $k }}
+                operator: In
+                values:
+                - "{{ . }}"
+              {{ end }}
+            {{ end }}
+          {{- end }}`
+      {{- end }}
+      containers:
+      - name: service
+        image: "ghcr.io/plastic-labs/honcho:{{ .Values.honcho.version }}"
+        command:
+        - sh
+        - -c
+        - |
+          # set pg schema to match embedding dimensions
+          /app/.venv/bin/python scripts/configure_embeddings.py --yes
+          sh docker/entrypoint.sh
+        ports:
+        - containerPort: 8000
+          name: api
+        env: # https://honcho.dev/docs/v3/contributing/configuration
+        {{- if .Values.system.envFromSecrets }}
+        {{- range .Values.system.envFromSecrets }}
+        - name: {{ . }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ . }}
+              key: {{ . }}
+        {{- end }}
+        {{- end }}
+        - name: DB_CONNECTION_URI
+        {{- if .Values.postgresql.enabled }}
+          value: "postgresql+psycopg://postgresql:postgresql@{{ .Release.Name }}-honcho-db-svc:5432/postgresql"
+        {{- else }}
+          value: {{ .Values.postgres.externalHost }}
+        {{- end }}
+        {{- if (or .Values.redis.enabled .Values.redis.externalHost)}}
+        - name: CACHE_ENABLED
+          value: "true"
+        - name: CACHE_URL
+          {{- if .Values.redis.enabled }}
+          value: redis://{{ .Release.Name }}-honcho-redis-svc:6379
+          {{- else }}
+          value: {{ .Values.redis.externalHost }}
+          {{- end }}
+        {{- else }}
+        - name: CACHE_ENABLED
+          value: "false"
+        {{- end }}
+      {{- if .Values.honcho.apiKey }}
+        - name: AUTH_USE_AUTH
+          value: "true"
+        - name: AUTH_JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-honcho-secret
+              key: api_key
+      {{- else }}
+        - name: AUTH_USE_AUTH
+          value: "false"
+      {{- end }}
+        - name: LLM_OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-honcho-secret
+              key: default_api_key
+        - name: EMBEDDING_MODEL_CONFIG__TRANSPORT
+          value: "openai"
+        - name: EMBEDDING_MODEL_CONFIG__OVERRIDES__API_KEY_ENV
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-honcho-secret
+              {{- if .Values.honcho.embedder.apiKey }}
+              key: embedder_api_key
+              {{- else }}
+              key: default_api_key
+              {{- end }}
+        - name: EMBEDDING_MODEL_CONFIG__OVERRIDES__BASE_URL
+          {{- if .Values.honcho.embedder.baseUrl }}
+          value: {{ .Values.honcho.embedder.baseUrl }}
+          {{- else }}
+          value: {{ .Values.honcho.default.baseUrl }}
+          {{- end }}
+        - name: EMBEDDING_MODEL_CONFIG__MODEL
+          {{- if .Values.honcho.embedder.model }}
+          value: {{ .Values.honcho.embedder.model }}
+          {{- else }}
+          value: {{ .Values.honcho.default.model }}
+          {{- end }}
+        - name: EMBEDDING_VECTOR_DIMENSIONS
+          value: {{ .Values.honcho.embedder.vectorDimensions | quote }}
+        - name: DERIVER_ENABLED
+          value: "true"
+        - name: DERIVER_MODEL_CONFIG__TRANSPORT
+          value: "openai"
+        - name: DERIVER_MODEL_CONFIG__OVERRIDES__API_KEY_ENV
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-honcho-secret
+              {{- if .Values.honcho.deriver.apiKey }}
+              key: deriver_api_key
+              {{- else }}
+              key: default_api_key
+              {{- end }}
+        - name: DERIVER_MODEL_CONFIG__OVERRIDES__BASE_URL
+          {{- if .Values.honcho.deriver.baseUrl }}
+          value: {{ .Values.honcho.deriver.baseUrl }}
+          {{- else }}
+          value: {{ .Values.honcho.default.baseUrl }}
+          {{- end }}
+        - name: DERIVER_MODEL_CONFIG__MODEL
+          {{- if .Values.honcho.deriver.model }}
+          value: {{ .Values.honcho.deriver.model }}
+          {{- else }}
+          value: {{ .Values.honcho.default.model }}
+          {{- end }}
+        - name: DERIVER_FLUSH_ENABLED
+          value: {{ .Values.honcho.deriver.flush | quote }}
+        - name: DERIVER_REPRESENTATION_BATCH_MAX_AGE_SECONDS
+          value: {{ .Values.honcho.deriver.representationMaxAge | quote }}
+        - name: SUMMARY_MODEL_CONFIG__TRANSPORT
+          value: "openai"
+        - name: SUMMARY_MODEL_CONFIG__OVERRIDES__API_KEY_ENV
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-honcho-secret
+              {{- if .Values.honcho.summariser.apiKey }}
+              key: summariser_api_key
+              {{- else }}
+              key: default_api_key
+              {{- end }}
+        - name: SUMMARY_MODEL_CONFIG__OVERRIDES__BASE_URL
+          {{- if .Values.honcho.summariser.baseUrl }}
+          value: {{ .Values.honcho.summariser.baseUrl }}
+          {{- else }}
+          value: {{ .Values.honcho.default.baseUrl }}
+          {{- end }}
+        - name: SUMMARY_MODEL_CONFIG__MODEL
+          {{- if .Values.honcho.summariser.model }}
+          value: {{ .Values.honcho.summariser.model }}
+          {{- else }}
+          value: {{ .Values.honcho.default.model }}
+          {{- end }}
+        - name: DREAM_DEDUCTION_MODEL_CONFIG__TRANSPORT
+          value: "openai"
+        - name: DREAM_DEDUCTION_MODEL_CONFIG__OVERRIDES__API_KEY_ENV
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-honcho-secret
+              {{- if .Values.honcho.dreamer.apiKey }}
+              key: dreamer_api_key
+              {{- else }}
+              key: default_api_key
+              {{- end }}
+        - name: DREAM_DEDUCTION_MODEL_CONFIG__OVERRIDES__BASE_URL
+          {{- if .Values.honcho.dreamer.baseUrl }}
+          value: {{ .Values.honcho.dreamer.baseUrl }}
+          {{- else }}
+          value: {{ .Values.honcho.default.baseUrl }}
+          {{- end }}
+        - name: DREAM_DEDUCTION_MODEL_CONFIG__MODEL
+          {{- if .Values.honcho.dreamer.model }}
+          value: {{ .Values.honcho.dreamer.model }}
+          {{- else }}
+          value: {{ .Values.honcho.default.model }}
+          {{- end }}
+        - name: DREAM_INDUCTION_MODEL_CONFIG__TRANSPORT
+          value: "openai"
+        - name: DREAM_INDUCTION_MODEL_CONFIG__OVERRIDES__API_KEY_ENV
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-honcho-secret
+              {{- if .Values.honcho.dreamer.apiKey }}
+              key: dreamer_api_key
+              {{- else }}
+              key: default_api_key
+              {{- end }}
+        - name: DREAM_INDUCTION_MODEL_CONFIG__OVERRIDES__BASE_URL
+          {{- if .Values.honcho.dreamer.baseUrl }}
+          value: {{ .Values.honcho.dreamer.baseUrl }}
+          {{- else }}
+          value: {{ .Values.honcho.default.baseUrl }}
+          {{- end }}
+        - name: DREAM_INDUCTION_MODEL_CONFIG__MODEL
+          {{- if .Values.honcho.dreamer.model }}
+          value: {{ .Values.honcho.dreamer.model }}
+          {{- else }}
+          value: {{ .Values.honcho.default.model }}
+          {{- end }}
+      resources:
+        requests:
+          cpu: 0.5
+          memory: 2Gi
+        limits:
+          cpu: 0.5
+          memory: 2Gi
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-honcho-svc
+  labels:
+    # must have this!
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+spec:
+  selector:
+    component: honcho
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+  ports:
+    - name: api
+      port: 8000
+      targetPort: 8000
+      protocol: TCP
+{{- if .Values.ingress.enabled }}
+  type: ClusterIP
+{{- else }}
+  type: NodePort
+{{- end }}
+    

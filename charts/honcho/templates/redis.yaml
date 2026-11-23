@@ -1,0 +1,65 @@
+# Redis for fault tolerance https://www.plural.sh/blog/redis-cluster-on-kubernetes/
+# migrate to valkey: https://github.com/valkey-io/valkey-helm/tree/main/valkey
+{{- if .Values.redis.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-honcho-redis-svc
+  labels:
+    kalavai.job.name: {{ .Values.system.jobId }}
+    component: redis
+spec:
+  type: ClusterIP
+  ports:
+  - name: redis
+    port: 6379
+  selector:
+    kalavai.job.name: {{ .Values.system.jobId }}
+    component: redis
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-honcho-redis
+  labels:
+    component: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      kalavai.job.name: {{ .Values.system.jobId }}
+      component: redis
+  template:
+    metadata:
+      labels:
+        kalavai.job.name: {{ .Values.system.jobId }}
+        component: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:7.4.0
+        # command:
+        # - "sh"
+        # - "-c"
+        # - |
+        #   redis-server
+        ports:
+        - containerPort: 6379
+        env:
+      {{- if .Values.system.envFromSecrets }}
+        {{- range .Values.system.envFromSecrets }}
+        - name: {{ . }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ . }}
+              key: {{ . }}
+        {{- end }}
+      {{- end }}
+        resources:
+          requests:
+            cpu: 250m
+            memory: 250Mi
+          limits:
+            cpu: 250m
+            memory: 250Mi
+{{- end }}

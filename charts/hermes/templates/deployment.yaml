@@ -96,9 +96,9 @@ spec:
           chown -R 10000 $HERMES_HOME
           mkdir -p "$HERMES_HOME"
           cp /root/.hermes/config.yaml "$HERMES_HOME/config.yaml"
-          cat >> "$HERMES_HOME/.env" <<EOF
-          HERMES_DASHBOARD_BASIC_AUTH_SECRET=$(openssl rand -base64 32)
-          EOF
+          # cat >> "$HERMES_HOME/.env" <<EOF
+          # HERMES_DASHBOARD_BASIC_AUTH_SECRET=$(openssl rand -base64 32)
+          # EOF
         {{- if .Values.hermes.dashboard }}
           hermes webapp
         {{- end }}
@@ -135,6 +135,13 @@ spec:
             secretKeyRef:
               name: {{ .Release.Name }}-hermes-secrets
               key: password
+        {{- if .Values.hermes.openrouter.apiKey }}
+        - name: OPENROUTER_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-hermes-secrets
+              key: openrouter_api_key
+        {{- end }}
         resources:
           requests:
             cpu: {{ .Values.resources.cpus }}

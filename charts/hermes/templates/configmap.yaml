@@ -9,15 +9,17 @@ data:
       host: 0.0.0.0
       port: 9120
 
-    {{- if and .Values.hermes.model.base_url .Values.hermes.model.default }}
     model:
-      provider: custom
-      default: {{ .Values.hermes.model.default }}
-      base_url: {{ .Values.hermes.model.base_url }}
+      provider: {{ .Values.hermes.provider }}
+    {{- if eq .Values.hermes.provider "custom" }}
+      default: {{ .Values.hermes.custom.model }}
+      base_url: {{ .Values.hermes.custom.base_url }}
     custom_providers:
       - name: kalavai
-        base_url: {{ .Values.hermes.model.base_url }}
-        model: {{ .Values.hermes.model.default }}
+        base_url: {{ .Values.hermes.custom.base_url }}
+        model: {{ .Values.hermes.custom.model }}
         models:
-          {{ .Values.hermes.model.default }}: {}
+          {{ .Values.hermes.custom.model }}: {}
+    {{- else if eq .Values.hermes.provider "openrouter" }}
+      default: {{ .Values.hermes.openrouter.model }}
     {{- end }}

@@ -3,9 +3,13 @@ hermes:
   version: v0.23.0
   username: admin
   password: my-password
-  model:
-    default: null
+  provider: custom
+  custom:
+    model: null
     base_url: null
+  openrouter:
+    apiKey: null
+    model: null
 
 ingress:
   enabled: false

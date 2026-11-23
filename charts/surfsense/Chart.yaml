@@ -1,0 +1,16 @@
+apiVersion: v2
+appVersion: 0.0.1
+description: A free, open-source desktop app for research over your own documents.
+icon: https://www.surfsense.com/icon-128.svg
+kubeVersion: '>= 1.25.0'
+maintainers:
+- email: carlos@kalavai.net
+  name: Carlos Fernandez Musoles
+  url: https://kalavai.net
+name: surfsense
+sources:
+- https://www.surfsense.com/docs/
+version: 0.0.1
+annotations:
+  status: beta
+  category: agents

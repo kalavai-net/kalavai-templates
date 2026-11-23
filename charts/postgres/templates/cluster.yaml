@@ -1,0 +1,36 @@
+# Example of PostgreSQL cluster
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: {{ .Release.Name }}-postgres
+  labels:
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+spec:
+  imageName: {{ .Values.postgres.imageName }}
+  instances: {{ .Values.postgres.instances }}
+  storage: #https://cloudnative-pg.io/docs/1.30/cloudnative-pg.v1/#storageconfiguration
+    storageClass: {{ .Values.postgres.storage.storageClass }}
+    size: {{ .Values.postgres.storage.size }}Gi
+  enableSuperuserAccess: {{ .Values.postgres.enableSuperuserAccess }}
+{{- if .Values.postgres.enableSuperuserAccess }}
+  superuserSecret:
+    name: {{ .Release.Name }}-postgres-super-secret
+{{- end }}
+  bootstrap:
+    initdb:
+      database: {{ .Values.postgres.database }}
+      owner: {{ .Values.postgres.owner }}
+      secret:
+        name: {{ .Release.Name }}-postgres-secret
+  managed:
+    services: # https://cloudnative-pg.io/docs/1.30/service_management/
+      disabledDefaultServices: ["ro", "r"]
+      additional:
+      - selectorType: rw
+        serviceTemplate:
+          metadata:
+            name: {{ .Release.Name }}-postgres-svc
+            labels:
+              kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+          spec:
+            type: {{ if .Values.ingress.enabled }}ClusterIP{{ else }}NodePort{{ end }}

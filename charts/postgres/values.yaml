@@ -1,15 +1,18 @@
 postgres:
-  version: "pg18"
-  user: admin
-  db: db
+  imageName: ghcr.io/cloudnative-pg/postgresql:18.7-standard-trixie
+  instances: 1
+  owner: user
+  database: db
   password: mypassword
+  enableSuperuserAccess: false
+  superuserPassword: admin-password
+  storage:
+    size: 1
+    storageClass: longhorn
 
 ingress:
   enabled: false
   subdomain: spaces.kalavai.net
-
-# pvc:
-#   enabled: false
 
 system:
   priorityClassName: user-spot-priority

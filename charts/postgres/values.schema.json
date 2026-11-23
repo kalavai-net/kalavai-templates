@@ -5,24 +5,49 @@
       "postgres": {
          "type": "object",
          "properties": {
-            "user": {
+            "owner": {
                "type": "string",
-               "description": "Postgres admin username"
+               "description": "Postgres non-admin username"
             },
-            "db": {
+            "database": {
                "type": "string",
                "description": "Postgres default database name"
             },
             "password": {
                "type": "string",
-               "description": "Postgres password to use"
+               "description": "Postgres non-admin user password"
             },
-            "version": {
+            "imageName": {
                "type": "string",
-               "description": "Postgres version to deploy"
+               "description": "Postgres image name/version to deploy"
+            },
+            "instances": {
+               "type": "integer",
+               "description": "Number of instances of postgres to deploy in the cluster"
+            },
+            "enableSuperuserAccess": {
+               "type": "boolean",
+               "description": "Whether to enable superuser access (username 'postgres')"
+            },
+            "superuserPassword": {
+               "type": "string",
+               "description": "Superuser password"
+            },
+            "storage": {
+               "type": "object",
+               "properties": {
+                  "size": {
+                     "type": "number",
+                     "description": "Size of the storage for postgres, in Gi"
+                  },
+                  "storageClass": {
+                     "type": "string",
+                     "description": "Name of the underlying storage class to use"
+                  }
+               }
             }
          },
-         "required": ["password"]
+         "required": ["password", "owner", "database"]
       },
       "ingress": {
          "type": "object",

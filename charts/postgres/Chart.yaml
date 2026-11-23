@@ -1,6 +1,6 @@
 apiVersion: v2
-appVersion: 0.0.3
-description: PostgreSQL is a powerful, open source object-relational database system with over 35 years of active development. This includes the PGvector extension for modern semantic search.
+appVersion: 0.0.4
+description: CloudNativePG (CNPG) is an open-source operator designed to manage PostgreSQL workloads on any supported Kubernetes cluster
 icon: https://wiki.postgresql.org/images/thumb/a/a4/PostgreSQL_logo.3colors.svg/540px-PostgreSQL_logo.3colors.svg.png
 kubeVersion: '>= 1.25.0'
 maintainers:
@@ -10,7 +10,11 @@ maintainers:
 name: postgres
 sources:
 - https://www.postgresql.org/docs/
-version: 0.0.3
+version: 0.0.4
+dependencies:
+- name: cloudnative-pg
+  version: "0.29.2"
+  repository: "https://cloudnative-pg.github.io/charts"
 annotations:
   status: beta
   category: database

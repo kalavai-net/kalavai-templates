@@ -1,0 +1,16 @@
+apiVersion: v2
+appVersion: 0.0.1
+description: LightRAG - Simple and Fast Retrieval-Augmented Generation
+icon: https://raw.githubusercontent.com/HKUDS/LightRAG/raw/main/assets/logo.png
+kubeVersion: '>= 1.25.0'
+maintainers:
+- email: carlos@kalavai.net
+  name: Carlos Fernandez Musoles
+  url: https://kalavai.net
+name: lightrag
+sources:
+- https://github.com/HKUDS/LightRAG
+version: 0.0.1
+annotations:
+  status: beta
+  category: agents

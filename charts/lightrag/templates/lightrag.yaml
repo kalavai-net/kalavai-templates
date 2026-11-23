@@ -1,0 +1,206 @@
+# Service Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-lightrag-server
+  labels:
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+    component: lightrag
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+      component: lightrag
+  template:
+    metadata:
+      labels:
+        kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+        component: lightrag
+    spec:
+      terminationGracePeriodSeconds: 10
+      {{- if .Values.system.priorityClassName }}
+      priorityClassName: {{ .Values.system.priorityClassName }}
+      {{- end }}
+      tolerations:
+      - key: "node.kubernetes.io/not-ready"
+        operator: Exists
+        effect: NoExecute
+        tolerationSeconds: 10
+      - key: "node.kubernetes.io/unreachable"
+        operator: Exists
+        effect: NoExecute
+        tolerationSeconds: 10
+      - key: "node.kubernetes.io/unknown"
+        operator: Exists
+        effect: NoExecute
+        tolerationSeconds: 10
+      - key: "node.kubernetes.io/memory-pressure"
+        operator: Exists
+        effect: NoSchedule
+      - key: "node.kubernetes.io/disk-pressure"
+        operator: Exists
+        effect: NoSchedule
+      - key: "node.kubernetes.io/pid-pressure"
+        operator: Exists
+        effect: NoSchedule
+      - key: "node.kubernetes.io/network-unavailable"
+        operator: Exists
+        effect: NoSchedule
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: kalavai.job.name
+                  operator: In
+                  values:
+                  - {{ .Values.system.jobId | default .Release.Name}}
+              topologyKey: "kubernetes.io/hostname"
+      {{- if .Values.system.nodeSelectors }}
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+          {{- if eq .Values.system.nodeSelectorsOps "OR" }}
+            {{ range $k, $v := .Values.system.nodeSelectors }}
+            - matchExpressions:
+              - key: {{$k}}
+                operator: In
+                values:
+                {{- range $v }}
+                - "{{ . }}"
+                {{- end }}
+            {{ end }}
+          {{- else }}
+            - matchExpressions:
+            {{ range $k, $v := .Values.system.nodeSelectors }}
+              {{ range $v }}
+              - key: {{ $k }}
+                operator: In
+                values:
+                - "{{ . }}"
+              {{ end }}
+            {{ end }}
+          {{- end }}`
+      {{- end }}
+      containers:
+      - name: service
+        image: "ghcr.io/hkuds/lightrag:{{ .Values.lightrag.version }}"
+        command:
+        # - sh
+        # - -c
+        # - |
+        #   # set pg schema to match embedding dimensions
+        #   /app/.venv/bin/python scripts/configure_embeddings.py --yes
+        #   sh docker/entrypoint.sh
+        ports:
+        - containerPort: 9621
+          name: api
+        env: # https://honcho.dev/docs/v3/contributing/configuration
+        {{- if .Values.system.envFromSecrets }}
+        {{- range .Values.system.envFromSecrets }}
+        - name: {{ . }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ . }}
+              key: {{ . }}
+        {{- end }}
+        {{- end }}
+        # - name: UI_TEMPLATES_DIR
+        #   value: "/app/data/ui_templates"
+        - name: EMBEDDING_BINDING
+          value: {{ .Values.lightrag.embedding.binding }}
+        - name: EMBEDDING_BINDING_HOST
+          value: {{ .Values.lightrag.embedding.host }}
+        - name: EMBEDDING_BINDING_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-lightrag-secret
+              key: embedding_api_key
+        - name: EMBEDDING_MODEL
+          value: {{ .Values.lightrag.embedding.model }}
+        - name: EMBEDDING_DIM
+          value: {{ .Values.lightrag.embedding.dim | quote }}
+      {{- if .Values.lightrag.rerank.host }}
+        - name: RERANK_BINDING
+          value: {{ .Values.lightrag.rerank.binding }}
+        - name: RERANK_BINDING_HOST
+          value: {{ .Values.lightrag.rerank.host }}
+        - name: RERANK_MODEL
+          value: {{ .Values.lightrag.rerank.model }}
+        - name: RERANK_BINDING_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-lightrag-secret
+              key: rerank_api_key
+      {{- end }}
+        - name: LLM_BINDING_HOST
+          value: {{ .Values.lightrag.llm.host }}
+        - name: LLM_MODEL
+          value: {{ .Values.lightrag.llm.model }}
+        - name: LLM_BINDING
+          value: {{ .Values.lightrag.llm.binding }}
+        - name: LLM_BINDING_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-lightrag-secret
+              key: llm_api_key
+      {{- if .Values.postgresql.enabled }}
+        - name: POSTGRES_HOST
+          value: "{{ .Release.Name }}-lightrag-db-svc"
+        - name: POSTGRES_USER
+          value: "rag"
+        - name: POSTGRES_PASSWORD
+          value: "rag"
+        - name: POSTGRES_DATABASE
+          value: "rag"
+        - name: POSTGRES_PORT
+          value: "5432"
+      {{- end }}
+        - name: LIGHTRAG_GRAPH_STORAGE
+          value: NetworkXStorage 
+        - name: WORKING_DIR
+          value: "/app/data/rag_storage"
+        - name: INPUT_DIR
+          value: "/app/data/inputs"
+        - name: PROMPT_DIR
+          value: "/app/data/prompts"
+      {{- if .Values.qdrant.enabled }}
+        - name: LIGHTRAG_VECTOR_STORAGE
+          value: QdrantVectorDBStorage
+        - name: QDRANT_URL
+          value: "http://{{ .Release.Name }}-lightrag-qdrant:6333"
+      {{- end }}
+      resources:
+        requests:
+          cpu: 0.5
+          memory: 2Gi
+        limits:
+          cpu: 0.5
+          memory: 2Gi
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-lightrag-svc
+  labels:
+    # must have this!
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+spec:
+  selector:
+    component: lightrag
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+  ports:
+    - name: api
+      port: 9621
+      targetPort: 9621
+      protocol: TCP
+{{- if .Values.ingress.enabled }}
+  type: ClusterIP
+{{- else }}
+  type: NodePort
+{{- end }}
+    

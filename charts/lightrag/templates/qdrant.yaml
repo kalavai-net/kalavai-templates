@@ -1,0 +1,97 @@
+{{- if .Values.qdrant.enabled }}
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: qdrant-repo-{{ .Release.Name }}
+  labels:
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+spec:
+  interval: 1h
+  url: https://qdrant.github.io/qdrant-helm
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: {{ .Release.Name}}-lightrag-qdrant
+  labels:
+    kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: qdrant
+      version: {{ .Values.qdrant.version | quote }}
+      sourceRef:
+        kind: HelmRepository
+        name: qdrant-repo-{{ .Release.Name }}
+        namespace: {{ .Release.Namespace }}
+  values:
+    # more options https://github.com/qdrant/qdrant-helm/blob/main/charts/qdrant/values.yaml
+    podLabels:
+      kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+    priorityClassName: {{ .Values.system.priorityClassName }}
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+              - key: kalavai.job.name
+                operator: In
+                values:
+                - {{ .Values.system.jobId | default .Release.Name }}
+            topologyKey: "kubernetes.io/hostname"
+    {{- if .Values.system.nodeSelectors }}
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+        {{- if eq .Values.system.nodeSelectorsOps "OR" }}
+          {{ range $k, $v := .Values.system.nodeSelectors }}
+          - matchExpressions:
+            - key: {{$k}}
+              operator: In
+              values:
+              {{- range $v }}
+              - "{{ . }}"
+              {{- end }}
+          {{ end }}
+        {{- else }}
+          - matchExpressions:
+          {{ range $k, $v := .Values.system.nodeSelectors }}
+            {{ range $v }}
+            - key: {{ $k }}
+              operator: In
+              values:
+              - "{{ . }}"
+            {{ end }}
+          {{ end }}
+        {{- end }}
+    {{- end }}
+    # Authentication via api keys
+  {{- if .Values.qdrant.apiKey }}
+    apiKey:
+      valueFrom:
+        secretKeyRef:
+          name: {{ .Release.Name }}-lightrag-secret
+          key: qdrant_api_key
+  {{- end }}
+  {{- if .Values.qdrant.readOnlyApiKey }}
+    readOnlyApiKey:
+      valueFrom:
+        secretKeyRef:
+          name: {{ .Release.Name }}-lightrag-secret
+          key: qdrant_readonly_api_key
+  {{- end }}
+    service:
+      additionalLabels:
+        kalavai.job.name: {{ .Values.system.jobId | default .Release.Name }}
+      type: ClusterIP
+    resources:
+      requests:
+        memory: 1Gi
+        cpu: 0.5
+      limits:
+        memory: 1Gi
+        cpu: 0.5
+{{- end }}

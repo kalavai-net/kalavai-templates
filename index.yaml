@@ -1002,6 +1002,29 @@ entries:
       category: agents
       status: beta
     apiVersion: v2
+    appVersion: 0.1.2
+    created: "2026-11-23T16:52:34.722927519Z"
+    description: The self-improving AI agent built by Nous Research. It's the only
+      agent with a built-in learning loop — it creates skills from experience, improves
+      them during use, nudges itself to persist knowledge, searches its own past conversations,
+      and builds a deepening model of who you are across sessions
+    digest: 169cd84d159f9e647cc8b574970175f30ba23d05373fabb44a78e6854e2021eb
+    icon: https://raw.githubusercontent.com/NousResearch/hermes-agent/main/assets/nous-girl-black.svg
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: hermes
+    sources:
+    - https://hermes-agent.nousresearch.com/docs/user-stories
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/hermes-0.1.2/hermes-0.1.2.tgz
+    version: 0.1.2
+  - annotations:
+      category: agents
+      status: beta
+    apiVersion: v2
     appVersion: 0.1.1
     created: "2026-11-08T19:50:37.195631731Z"
     description: The self-improving AI agent built by Nous Research. It's the only
@@ -3170,6 +3193,27 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/langfuse-0.0.1/langfuse-0.0.1.tgz
     version: 0.0.1
+  lightrag:
+  - annotations:
+      category: agents
+      status: beta
+    apiVersion: v2
+    appVersion: 0.0.1
+    created: "2026-11-23T16:52:34.868414283Z"
+    description: LightRAG - Simple and Fast Retrieval-Augmented Generation
+    digest: 713aec259c5e8ce93aea1ca4da19871d53ef7505456d686423369f6537f2ae18
+    icon: https://raw.githubusercontent.com/HKUDS/LightRAG/raw/main/assets/logo.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: lightrag
+    sources:
+    - https://github.com/HKUDS/LightRAG
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/lightrag-0.0.1/lightrag-0.0.1.tgz
+    version: 0.0.1
   llama.cpp:
   - annotations:
       category: llm
@@ -4483,6 +4527,31 @@ entries:
       category: database
       status: beta
     apiVersion: v2
+    appVersion: 0.0.4
+    created: "2026-11-23T16:52:35.123886798Z"
+    dependencies:
+    - name: cloudnative-pg
+      repository: https://cloudnative-pg.github.io/charts
+      version: 0.29.2
+    description: CloudNativePG (CNPG) is an open-source operator designed to manage
+      PostgreSQL workloads on any supported Kubernetes cluster
+    digest: cf2f0573c16a03e2cb80851e52e7b7067bd54ab1815d146a28da5ffa57204318
+    icon: https://wiki.postgresql.org/images/thumb/a/a4/PostgreSQL_logo.3colors.svg/540px-PostgreSQL_logo.3colors.svg.png
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: postgres
+    sources:
+    - https://www.postgresql.org/docs/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/postgres-0.0.4/postgres-0.0.4.tgz
+    version: 0.0.4
+  - annotations:
+      category: database
+      status: beta
+    apiVersion: v2
     appVersion: 0.0.3
     created: "2026-10-19T20:42:35.884726643Z"
     description: PostgreSQL is a powerful, open source object-relational database
@@ -5543,6 +5612,27 @@ entries:
     - https://speaches.ai/
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/speaches-0.0.1/speaches-0.0.1.tgz
+    version: 0.0.1
+  surfsense:
+  - annotations:
+      category: agents
+      status: beta
+    apiVersion: v2
+    appVersion: 0.0.1
+    created: "2026-11-23T16:52:35.434933764Z"
+    description: A free, open-source desktop app for research over your own documents.
+    digest: d46af9ea18e89abc92de80d66ea440196d68d68bb54ae22a6df2a57c2733b300
+    icon: https://www.surfsense.com/icon-128.svg
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - email: carlos@kalavai.net
+      name: Carlos Fernandez Musoles
+      url: https://kalavai.net
+    name: surfsense
+    sources:
+    - https://www.surfsense.com/docs/
+    urls:
+    - https://github.com/kalavai-net/kalavai-templates/releases/download/surfsense-0.0.1/surfsense-0.0.1.tgz
     version: 0.0.1
   unsloth:
   - annotations:
@@ -7199,4 +7289,4 @@ entries:
     urls:
     - https://github.com/kalavai-net/kalavai-templates/releases/download/vllm-0.0.1/vllm-0.0.1.tgz
     version: 0.0.1
-generated: "2026-11-19T09:37:43.648773987Z"
+generated: "2026-11-23T16:52:35.435759218Z"
